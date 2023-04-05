@@ -12,6 +12,7 @@ mod animation;
 mod assets;
 mod audio;
 mod debug;
+mod echolocation;
 mod enemy;
 mod input;
 mod io;
@@ -39,6 +40,7 @@ pub fn game_plugin(app: &mut App) {
         .fn_plugin(ui::ui_plugin)
         .fn_plugin(input::input_plugin)
         .fn_plugin(player::player_plugin)
+        .fn_plugin(echolocation::echo_plugin)
         .fn_plugin(time::time_plugin)
         .fn_plugin(level::lvl_plugin)
         .fn_plugin(enemy::enemy_plugin)

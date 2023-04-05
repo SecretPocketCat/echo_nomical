@@ -9,6 +9,7 @@ pub(super) fn actions_plugin(app: &mut App) {
 #[derive(Actionlike, PartialEq, Eq, Clone, Copy, Hash, Debug)]
 pub enum PlayerAction {
     Move,
+    Echo,
     Pause,
 }
 
