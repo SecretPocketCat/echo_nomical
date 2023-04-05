@@ -1,0 +1,71 @@
+[package]
+name = "echo_nomical"
+version = "0.1.0"
+publish = false
+edition = "2021"
+exclude = ["dist", "build", "assets", "credits"]
+rust-version = "1.70.0"
+
+[profile.dev.package."*"]
+opt-level = 3
+
+[profile.dev]
+opt-level = 1
+
+[profile.release]
+lto = true
+codegen-units = 1
+
+# The profile that 'cargo dist' will build with
+[profile.dist]
+inherits = "release"
+lto = "thin"
+
+[features]
+dev = ["bevy/bevy_dylib"]
+
+# Bevy defaults minus audio and some other not needed things
+# see https://github.com/bevyengine/bevy/blob/main/Cargo.toml#L31-L54
+default = [
+    "bevy/animation",
+    "bevy/bevy_asset",
+    "bevy/bevy_scene",
+    "bevy/bevy_winit",
+    "bevy/bevy_core_pipeline",
+    "bevy/bevy_pbr",
+    "bevy/bevy_gltf",
+    "bevy/bevy_render",
+    "bevy/bevy_sprite",
+    "bevy/bevy_text",
+    "bevy/bevy_ui",
+    "bevy/png",
+    "bevy/hdr",
+    "bevy/zstd",
+    "bevy/x11",
+    "bevy/ktx2",
+    "bevy/filesystem_watcher",
+    "bevy/tonemapping_luts",
+]
+
+[dependencies]
+bevy = { version = "0.10", default-features = false }
+bevy_kira_audio = { version = "0.15", features = ["mp3"] }
+bevy_asset_loader = { version = "0.15", features = [
+    "standard_dynamic_assets",
+    "progress_tracking",
+] }
+rand = { version = "0.8.3" }
+seldom_fn_plugin = "0.3.0"
+bevy_tweening = { git = "https://github.com/SecretPocketCat/bevy_tweening", branch = "main" }
+bevycheck = "0.5.2"
+bevy_pkv = "0.7.0"
+serde = "1.0.157"
+leafwing-input-manager = "0.9.1"
+iyes_progress = "0.8.0"
+
+# keep the following in sync with Bevy's dependencies
+winit = { version = "0.28", default-features = false }
+image = { version = "0.24", default-features = false }
+
+[build-dependencies]
+embed-resource = "1.4"
