@@ -11,9 +11,6 @@ pub struct Speed(pub f32);
 #[derive(Component, Deref, DerefMut, Default)]
 pub struct Rotation(pub f32);
 
-#[derive(Component)]
-pub struct Wrap;
-
 #[derive(Component, Deref, DerefMut)]
 pub struct DespawnParent(pub Entity);
 
@@ -38,24 +35,6 @@ pub(super) fn r#move(
 //         trans.translation += dir.extend(0.) * speed.0 * time.scaled_delta_seconds();
 //     }
 // }
-
-// todo: use global pos
-pub(super) fn wrap(
-    mut wrap_q: Query<(&mut Transform, &GlobalTransform), With<Wrap>>,
-    level_size: Res<LevelSize>,
-) {
-    for (mut t, global_t) in &mut wrap_q.iter_mut() {
-        let wrap_diff = t.translation.abs().truncate() - (level_size.0 / 2.);
-
-        if wrap_diff.x > 0. {
-            t.translation.x = -t.translation.x + wrap_diff.x * t.translation.x.signum();
-        }
-
-        if wrap_diff.y > 0. {
-            t.translation.y = -t.translation.y + wrap_diff.y * t.translation.y.signum();
-        }
-    }
-}
 
 pub(super) fn rotate(mut dir_q: Query<(&mut Transform, &Rotation)>, time: ScaledTime) {
     for (mut t, rotation) in &mut dir_q {

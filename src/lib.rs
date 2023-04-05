@@ -15,6 +15,7 @@ mod enemy;
 mod input;
 mod io;
 mod level;
+mod physics;
 mod player;
 mod render;
 mod state;
@@ -30,6 +31,7 @@ pub fn game_plugin(app: &mut App) {
     app.fn_plugin(state::state_plugin)
         .fn_plugin(animation::animation_plugin)
         .fn_plugin(assets::assets_plugin)
+        .fn_plugin(physics::physics_plugin)
         .fn_plugin(audio::audio_plugin)
         .fn_plugin(agent::agent_plugin)
         .fn_plugin(render::render_plugin)
@@ -37,7 +39,7 @@ pub fn game_plugin(app: &mut App) {
         .fn_plugin(input::input_plugin)
         .fn_plugin(player::player_plugin)
         .fn_plugin(time::time_plugin)
-        .fn_plugin(projectile::projectile_plugin)
+        .fn_plugin(level::lvl_plugin)
         .fn_plugin(enemy::enemy_plugin)
         .fn_plugin(io::io_plugin);
 

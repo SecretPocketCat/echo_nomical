@@ -2,10 +2,6 @@ use bevy::{prelude::*, sprite::MaterialMesh2dBundle, time::common_conditions::on
 
 use crate::{
     agent::agent::{Age, MovementDirection, Speed},
-    projectile::{
-        spawner::{ProjectileSpawner, SpawnInterval, SpawnerType},
-        ProjectilePath,
-    },
     state::AppState,
 };
 
@@ -19,5 +15,5 @@ fn setup_enemies(
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<ColorMaterial>>,
 ) {
-  // todo: just moving boxes with colliders for now
+    // todo: just moving boxes with colliders for now
 }

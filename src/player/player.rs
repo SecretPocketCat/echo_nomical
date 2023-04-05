@@ -1,5 +1,5 @@
 use crate::{
-    agent::agent::{MovementDirection, Speed, Wrap},
+    agent::agent::{MovementDirection, Speed},
     assets::textures::TextureAssets,
     input::actions::{PlayerAction, UiAction},
     time::time::{ScaledTime, ScaledTimeDelta},
@@ -22,7 +22,6 @@ pub(super) fn spawn_player(mut commands: Commands, textures: Res<TextureAssets>)
         .insert(Player)
         .insert(MovementDirection::default())
         .insert(Speed(400.))
-        .insert(Wrap)
         .insert(InputManagerBundle::<PlayerAction> {
             input_map: InputMap::default()
                 .insert(DualAxis::left_stick(), PlayerAction::Move)
