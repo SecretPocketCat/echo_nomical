@@ -11,6 +11,7 @@ mod agent;
 mod animation;
 mod assets;
 mod audio;
+mod debug;
 mod enemy;
 mod input;
 mod io;
@@ -45,7 +46,6 @@ pub fn game_plugin(app: &mut App) {
 
     #[cfg(debug_assertions)]
     {
-        // app.add_plugin(FrameTimeDiagnosticsPlugin::default())
-        //     .add_plugin(LogDiagnosticsPlugin::default());
+        app.fn_plugin(debug::debug_plugin);
     }
 }
