@@ -5,6 +5,7 @@ use crate::{
     time::time::{ScaledTime, ScaledTimeDelta},
 };
 use bevy::prelude::*;
+use bevy_rapier2d::prelude::*;
 use leafwing_input_manager::prelude::*;
 
 #[derive(Component)]
@@ -22,6 +23,13 @@ pub(super) fn spawn_player(mut commands: Commands, textures: Res<TextureAssets>)
                 ..default()
             },
             ..Default::default()
+        })
+        .insert(RigidBody::KinematicPositionBased)
+        .insert(Collider::ball(100.))
+        .insert(KinematicCharacterController {
+            max_slope_climb_angle: 90f32.to_radians(),
+            min_slope_slide_angle: 90f32.to_radians(),
+            ..default()
         })
         .insert(Player)
         .insert(MovementDirection::default())

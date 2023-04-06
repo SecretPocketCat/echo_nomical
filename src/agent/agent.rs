@@ -1,4 +1,5 @@
 use bevy::prelude::*;
+use bevy_rapier2d::prelude::*;
 
 use crate::{level::level::LevelSize, time::time::*};
 
@@ -23,6 +24,19 @@ pub(super) fn r#move(
 ) {
     for (dir, speed, mut trans) in velocity_q.iter_mut() {
         trans.translation += dir.extend(0.) * speed.0 * time.scaled_delta_seconds();
+    }
+}
+
+pub(super) fn move_char(
+    mut controllers: Query<(
+        &mut KinematicCharacterController,
+        &MovementDirection,
+        &Speed,
+    )>,
+    time: ScaledTime,
+) {
+    for (mut controller, dir, speed) in controllers.iter_mut() {
+        controller.translation = Some(dir.0 * speed.0 * time.scaled_delta_seconds());
     }
 }
 

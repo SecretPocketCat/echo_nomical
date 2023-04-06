@@ -11,7 +11,7 @@ pub fn debug_plugin(app: &mut App) {
     {
         app.add_plugin(EditorPlugin::default())
             .add_plugin(ShapePlugin)
-            // .add_plugin(RapierDebugRenderPlugin::default())
+            .add_plugin(RapierDebugRenderPlugin::default())
             .add_plugin(FrameTimeDiagnosticsPlugin::default());
         // .add_plugin(LogDiagnosticsPlugin::default());
     }
