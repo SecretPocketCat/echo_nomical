@@ -20,7 +20,7 @@ pub(super) fn setup_test_lvl(mut cmd: Commands) {
         // obstacles
         vec![(-250., 200.), (-200., 230.), (-170., 150.)],
         vec![(250., 200.), (400., 230.), (380., 90.)],
-        vec![(300., 280.), (220., 320.), (-200., -210.), (100., -180.)],
+        vec![(300., 280.), (220., 300.), (-200., -210.), (100., -180.)],
     ] {
         let mut vertices: Vec<_> = polyline.iter().map(|(x, y)| Vec2::new(*x, *y)).collect();
         vertices.push(polyline[0].into());
