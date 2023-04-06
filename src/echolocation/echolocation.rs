@@ -58,45 +58,53 @@ pub(super) fn test_intersections(
         let radius = echo.radius();
         let shape = Collider::ball(radius);
 
-        rapier_context.intersections_with_shape(pos, 0., &shape, QueryFilter::default(), |_| {
-            let ray_step = 360. / echo.ray_count as f32;
-            for i in 0..echo.ray_count {
-                if echo.used_rays.contains(&i) {
-                    continue;
-                }
+        rapier_context.intersections_with_shape(
+            pos,
+            0.,
+            &shape,
+            QueryFilter::exclude_kinematic(),
+            |_| {
+                let ray_step = 360. / echo.ray_count as f32;
+                for i in 0..echo.ray_count {
+                    if echo.used_rays.contains(&i) {
+                        continue;
+                    }
 
-                let dir = Vec2::from_angle(i as f32 * ray_step);
-                if let Some(hit) = rapier_context.cast_ray_and_get_normal(
-                    pos,
-                    dir,
-                    radius,
-                    false,
-                    // todo: ignore self
-                    QueryFilter::default(),
-                ) {
-                    echo.used_rays.insert(i);
-                    cmd.spawn(SpriteBundle {
-                        transform: Transform::from_translation(
-                            hit.1.point.extend(time.time().elapsed_seconds() / 100.),
-                        )
-                        .with_rotation(Quat::from_rotation_z(Vec2::Y.angle_between(hit.1.normal))),
-                        sprite: Sprite {
-                            color: Color::GREEN,
-                            custom_size: Some(Vec2::new(9., 3.)),
+                    let dir = Vec2::from_angle(i as f32 * ray_step);
+                    if let Some(hit) = rapier_context.cast_ray_and_get_normal(
+                        pos,
+                        dir,
+                        radius,
+                        false,
+                        // todo: ignore player as enemies will be kinematic too
+                        QueryFilter::exclude_kinematic(),
+                    ) {
+                        echo.used_rays.insert(i);
+                        cmd.spawn(SpriteBundle {
+                            transform: Transform::from_translation(
+                                hit.1.point.extend(time.time().elapsed_seconds() / 100.),
+                            )
+                            .with_rotation(Quat::from_rotation_z(
+                                Vec2::Y.angle_between(hit.1.normal),
+                            )),
+                            sprite: Sprite {
+                                color: Color::GREEN,
+                                custom_size: Some(Vec2::new(9., 3.)),
+                                ..default()
+                            },
                             ..default()
-                        },
-                        ..default()
-                    })
-                    .insert(get_fade_out_sprite_anim(
-                        Color::ANTIQUE_WHITE,
-                        3500,
-                        Some(TweenDoneAction::DespawnRecursive),
-                    ));
+                        })
+                        .insert(get_fade_out_sprite_anim(
+                            Color::ANTIQUE_WHITE,
+                            3500,
+                            Some(TweenDoneAction::DespawnRecursive),
+                        ));
+                    }
                 }
-            }
 
-            false
-        });
+                false
+            },
+        );
 
         echo.elapsed_time += time.scaled_delta_seconds();
 
