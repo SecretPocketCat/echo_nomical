@@ -82,7 +82,9 @@ pub(super) fn test_intersections(
                         echo.used_rays.insert(i);
                         cmd.spawn(SpriteBundle {
                             transform: Transform::from_translation(
-                                hit.1.point.extend(time.time().elapsed_seconds() / 100.),
+                                hit.1
+                                    .point
+                                    .extend(20. + time.time().elapsed_seconds() / 100.),
                             )
                             .with_rotation(Quat::from_rotation_z(
                                 Vec2::Y.angle_between(hit.1.normal),
