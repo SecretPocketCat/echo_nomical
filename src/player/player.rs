@@ -15,13 +15,17 @@ pub(super) fn spawn_player(mut commands: Commands, textures: Res<TextureAssets>)
     commands
         .spawn(SpriteBundle {
             texture: textures.texture_bevy.clone(),
-            transform: Transform::from_translation(Vec3::new(0., 0., 1.))
-                .with_scale(Vec2::splat(0.25).extend(1.)),
+            transform: Transform::from_translation(Vec3::new(200., -60., 1.))
+                .with_scale(Vec2::splat(0.2).extend(1.)),
+            sprite: Sprite {
+                color: Color::GRAY,
+                ..default()
+            },
             ..Default::default()
         })
         .insert(Player)
         .insert(MovementDirection::default())
-        .insert(Speed(400.))
+        .insert(Speed(100.))
         .insert(InputManagerBundle::<PlayerAction> {
             input_map: InputMap::default()
                 .insert(DualAxis::left_stick(), PlayerAction::Move)
