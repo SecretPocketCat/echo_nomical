@@ -1,37 +1,46 @@
 use bevy::prelude::*;
 use bevy_tweening::TweenCompleted;
 
+use crate::state::{AppState, PersistReset};
+
 #[repr(u64)]
 #[derive(Clone)]
 pub enum TweenDoneAction {
     None = 0,
     DespawnRecursive = 1,
-}
-
-impl From<u64> for TweenDoneAction {
-    fn from(val: u64) -> Self {
-        unsafe { ::std::mem::transmute(val) }
-    }
-}
-
-impl From<TweenDoneAction> for u64 {
-    fn from(val: TweenDoneAction) -> Self {
-        val as u64
-    }
+    ResetAndNextState(AppState),
 }
 
 pub fn on_tween_completed(
-    mut commands: Commands,
-    mut ev_reader: EventReader<TweenCompleted>,
+    mut cmd: Commands,
+    mut ev_reader: EventReader<TweenCompleted<TweenDoneAction>>,
     entity_q: Query<Entity>,
+    reset_q: Query<
+        Entity,
+        (
+            Without<PersistReset>,
+            Without<Window>,
+            Without<Camera>,
+            Without<DebugLinesMesh>,
+        ),
+    >,
+    mut next_state: ResMut<NextState<AppState>>,
 ) {
     for ev in ev_reader.iter() {
-        match TweenDoneAction::from(ev.user_data) {
+        warn!("tween done");
+        match &ev.user_data {
             TweenDoneAction::None => {}
             TweenDoneAction::DespawnRecursive => {
                 if entity_q.get(ev.entity).is_ok() {
-                    commands.entity(ev.entity).despawn_recursive();
+                    cmd.entity(ev.entity).despawn_recursive();
                 }
+            }
+            TweenDoneAction::ResetAndNextState(next) => {
+                for e in reset_q.iter() {
+                    cmd.entity(e).despawn_recursive();
+                }
+
+                next_state.set(next.clone());
             }
         }
     }
