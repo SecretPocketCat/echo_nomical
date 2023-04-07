@@ -8,6 +8,7 @@ pub fn physics_plugin(app: &mut App) {
     app.add_plugin(RapierPhysicsPlugin::<NoUserData>::pixels_per_meter(100.0));
 }
 
+#[allow(dead_code)]
 pub fn check_collision_pair<
     TW1: WorldQuery,
     TRW1: ReadOnlyWorldQuery,
@@ -21,6 +22,7 @@ pub fn check_collision_pair<
     check_collision_pair_with_type(CollisionEventType::Any, collision, q_1, q_2)
 }
 
+#[allow(dead_code)]
 pub fn check_collision_end_pair<
     TW1: WorldQuery,
     TRW1: ReadOnlyWorldQuery,
@@ -34,6 +36,7 @@ pub fn check_collision_end_pair<
     check_collision_pair_with_type(CollisionEventType::End, collision, q_1, q_2)
 }
 
+#[allow(dead_code)]
 pub fn check_collision_start_pair<
     TW1: WorldQuery,
     TRW1: ReadOnlyWorldQuery,

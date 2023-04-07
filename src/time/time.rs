@@ -71,6 +71,7 @@ impl<T: ScaledTimeFields> ScaledTimeDelta for T {
     }
 }
 
+#[allow(dead_code)]
 impl ScaledTimeMut<'_> {
     pub fn set_time_scale(&mut self, scale: f32) {
         self.time_scale.0 = scale;

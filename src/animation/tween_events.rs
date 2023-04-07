@@ -3,11 +3,11 @@ use bevy_tweening::TweenCompleted;
 
 use crate::state::{AppState, PersistReset};
 
-#[repr(u64)]
 #[derive(Clone)]
 pub enum TweenDoneAction {
-    None = 0,
-    DespawnRecursive = 1,
+    #[allow(dead_code)]
+    None,
+    DespawnRecursive,
     ResetAndNextState(AppState),
 }
 

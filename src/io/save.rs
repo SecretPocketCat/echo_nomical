@@ -29,6 +29,7 @@ impl VolumeSettings {
         self.master * self.sfx * self.muted_f64()
     }
 
+    #[allow(dead_code)]
     pub fn get_music_volume(&self) -> f64 {
         self.master * self.music * self.muted_f64()
     }
