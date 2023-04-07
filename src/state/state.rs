@@ -8,7 +8,6 @@ pub enum AppState {
     Loading,
     Menu,
     Game,
-    GameReset,
 }
 
 #[derive(States, Default, Clone, Eq, PartialEq, Debug, Hash)]
@@ -16,6 +15,7 @@ pub enum GameState {
     #[default]
     Running,
     Paused,
+    Fading,
 }
 
 pub fn reset_state<T: States>(mut state: ResMut<NextState<T>>) {

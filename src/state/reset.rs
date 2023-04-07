@@ -1,16 +1,14 @@
 use std::time::Duration;
 
 use bevy::prelude::*;
-use bevy_tweening::{lens::SpriteColorLens, *};
+use bevy_tweening::*;
 
 use crate::{
-    animation::{
-        get_fade_out_sprite_tween, SpriteRelativeColorLens, TweenDoneAction, UiBackgroundColorLens,
-    },
+    animation::{TweenDoneAction, UiBackgroundColorLens},
     time::time::{ScaledTime, ScaledTimeDelta},
 };
 
-use super::AppState;
+use super::{AppState, GameState};
 
 #[derive(Component)]
 pub struct PersistReset;
@@ -33,8 +31,13 @@ pub(crate) fn reset_plugin(app: &mut App) {
         .add_system(fade_in.run_if(state_changed::<AppState>()));
 }
 
-fn start_reset_fade_out(mut cmd: Commands, mut fade_reset: ResMut<FadeReset>) {
+fn start_reset_fade_out(
+    mut cmd: Commands,
+    mut fade_reset: ResMut<FadeReset>,
+    mut next_state: ResMut<NextState<GameState>>,
+) {
     if fade_reset.is_some() {
+        next_state.set(GameState::Fading);
         cmd.spawn(NodeBundle {
             background_color: Color::NONE.into(),
             style: Style {
