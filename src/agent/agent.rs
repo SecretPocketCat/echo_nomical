@@ -9,6 +9,10 @@ pub struct MovementDirection(pub Vec2);
 #[derive(Component, Deref, DerefMut, Default)]
 pub struct Speed(pub f32);
 
+/* How long does it take to damp the movement direction */
+#[derive(Component, Deref, DerefMut, Default)]
+pub struct Damping(pub f32);
+
 #[derive(Component, Deref, DerefMut, Default)]
 pub struct Rotation(pub f32);
 
@@ -18,25 +22,33 @@ pub struct DespawnParent(pub Entity);
 #[derive(Component, Deref, DerefMut, Default)]
 pub struct Age(pub f32);
 
-pub(super) fn r#move(
-    mut velocity_q: Query<(&MovementDirection, &Speed, &mut Transform)>,
-    time: ScaledTime,
-) {
-    for (dir, speed, mut trans) in velocity_q.iter_mut() {
-        trans.translation += dir.extend(0.) * speed.0 * time.scaled_delta_seconds();
-    }
-}
-
-pub(super) fn move_char(
-    mut controllers: Query<(
-        &mut KinematicCharacterController,
+pub(super) fn move_agents(
+    mut velocity_q: Query<(
         &MovementDirection,
         &Speed,
+        &mut Transform,
+        Option<&mut KinematicCharacterController>,
     )>,
     time: ScaledTime,
 ) {
-    for (mut controller, dir, speed) in controllers.iter_mut() {
-        controller.translation = Some(dir.0 * speed.0 * time.scaled_delta_seconds());
+    for (dir, speed, mut trans, char_cont) in velocity_q.iter_mut() {
+        let vel = dir.0 * speed.0 * time.scaled_delta_seconds();
+
+        if let Some(mut char_cont) = char_cont {
+            char_cont.translation = Some(vel);
+        } else {
+            trans.translation += vel.extend(0.);
+        }
+    }
+}
+
+pub(super) fn apply_damping(
+    mut damping_q: Query<(&mut MovementDirection, &Damping)>,
+    time: ScaledTime,
+) {
+    for (mut dir, damping) in damping_q.iter_mut() {
+        let damping = dir.0 * (1. / damping.0) * time.scaled_delta_seconds();
+        dir.0 -= damping;
     }
 }
 
