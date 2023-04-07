@@ -6,7 +6,7 @@ use crate::{state::GameState, AppState};
 pub mod player;
 
 pub fn player_plugin(app: &mut App) {
-    app.add_system(spawn_player.in_schedule(OnEnter(AppState::Game)))
+    app.add_system(spawn_player.in_set(OnUpdate(AppState::Game)))
         .add_system(
             move_player
                 .in_set(OnUpdate(AppState::Game))

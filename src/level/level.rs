@@ -4,6 +4,12 @@ use bevy_rapier2d::prelude::*;
 #[derive(Resource, Deref)]
 pub struct LevelSize(pub Vec2);
 
+#[derive(Component)]
+pub struct LevelEntry;
+
+#[derive(Component)]
+pub struct LevelExit;
+
 pub(super) fn setup_test_lvl(mut cmd: Commands) {
     for polyline in [
         // walls
@@ -26,4 +32,16 @@ pub(super) fn setup_test_lvl(mut cmd: Commands) {
         vertices.push(polyline[0].into());
         cmd.spawn(Collider::polyline(vertices, None));
     }
+
+    cmd.spawn(TransformBundle::from_transform(Transform::from_xyz(
+        280., 20., 0.,
+    )))
+    .insert(LevelEntry);
+
+    cmd.spawn(TransformBundle::from_transform(Transform::from_xyz(
+        -325., 260., 0.,
+    )))
+    .insert(Collider::cuboid(25., 25.))
+    .insert(Sensor)
+    .insert(LevelExit);
 }
