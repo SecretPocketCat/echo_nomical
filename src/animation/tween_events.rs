@@ -15,15 +15,7 @@ pub fn on_tween_completed(
     mut cmd: Commands,
     mut ev_reader: EventReader<TweenCompleted<TweenDoneAction>>,
     entity_q: Query<Entity>,
-    reset_q: Query<
-        Entity,
-        (
-            Without<PersistReset>,
-            Without<Window>,
-            Without<Camera>,
-            Without<DebugLinesMesh>,
-        ),
-    >,
+    reset_q: Query<Entity, (Without<PersistReset>, Without<Window>, Without<Camera>)>,
     mut next_state: ResMut<NextState<AppState>>,
 ) {
     for ev in ev_reader.iter() {

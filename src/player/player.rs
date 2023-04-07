@@ -2,10 +2,15 @@ use crate::{
     agent::agent::{MovementDirection, Speed},
     assets::textures::TextureAssets,
     input::actions::{PlayerAction, UiAction},
-    level::level::LevelEntry,
+    level::level::{LevelEntry, LevelExit},
+    physics::check_collision_start_pair,
+    state::{AppState, FadeReset},
     time::time::{ScaledTime, ScaledTimeDelta},
 };
-use bevy::prelude::*;
+use bevy::{
+    ecs::query::{ReadOnlyWorldQuery, WorldQuery},
+    prelude::*,
+};
 use bevy_rapier2d::prelude::*;
 use leafwing_input_manager::prelude::*;
 
@@ -33,8 +38,9 @@ pub(super) fn spawn_player(
             .insert(RigidBody::KinematicPositionBased)
             .insert(Collider::ball(100.))
             .insert(KinematicCharacterController {
+                filter_flags: QueryFilterFlags::EXCLUDE_SENSORS,
                 max_slope_climb_angle: 90f32.to_radians(),
-                min_slope_slide_angle: 90f32.to_radians(),
+                min_slope_slide_angle: 0f32.to_radians(),
                 ..default()
             })
             .insert(Player)
@@ -73,5 +79,20 @@ pub(super) fn move_player(
         if let Some(movement) = actions.clamped_axis_pair(PlayerAction::Move) {
             dir.0 = movement.xy();
         }
+    }
+}
+
+pub(super) fn exit_reached(
+    mut collision_events: EventReader<CollisionEvent>,
+    q_player: Query<(), With<Player>>,
+    q_exit: Query<(), With<LevelExit>>,
+    mut fade_reset: ResMut<FadeReset>,
+) {
+    if let Some(..) = collision_events
+        .iter()
+        .filter(|ev| check_collision_start_pair(ev, &q_player, &q_exit))
+        .next()
+    {
+        fade_reset.set(AppState::Game);
     }
 }

@@ -8,6 +8,7 @@ pub enum AppState {
     Loading,
     Menu,
     Game,
+    GameReset,
 }
 
 #[derive(States, Default, Clone, Eq, PartialEq, Debug, Hash)]

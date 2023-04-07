@@ -7,7 +7,10 @@ use std::time::Duration;
 
 use super::tween_events::TweenDoneAction;
 
-pub fn delay_tween<T: 'static>(tween: Tween<T>, delay_ms: u64) -> Sequence<T> {
+pub fn delay_tween<T: 'static>(
+    tween: Tween<T, TweenDoneAction>,
+    delay_ms: u64,
+) -> Sequence<T, TweenDoneAction> {
     if delay_ms > 0 {
         Delay::new(Duration::from_millis(delay_ms)).then(tween)
     } else {
@@ -19,7 +22,7 @@ pub fn get_relative_move_anim(
     end_pos: Vec3,
     duration_ms: u64,
     on_completed: Option<TweenDoneAction>,
-) -> Animator<Transform> {
+) -> Animator<Transform, TweenDoneAction> {
     Animator::new(get_relative_move_tween(end_pos, duration_ms, on_completed))
 }
 
@@ -27,7 +30,7 @@ pub fn get_relative_move_tween(
     end_pos: Vec3,
     duration_ms: u64,
     on_completed: Option<TweenDoneAction>,
-) -> Tween<Transform> {
+) -> Tween<Transform, TweenDoneAction> {
     let mut tween = Tween::new(
         EaseFunction::QuadraticInOut,
         Duration::from_millis(duration_ms),
@@ -50,7 +53,7 @@ pub fn get_move_anim(
     duration_ms: u64,
     ease: EaseFunction,
     on_completed: Option<TweenDoneAction>,
-) -> Animator<Transform> {
+) -> Animator<Transform, TweenDoneAction> {
     Animator::new(get_move_tween(
         start_pos,
         end_pos,
@@ -64,7 +67,7 @@ pub fn get_relative_move_by_anim(
     move_by: Vec3,
     duration_ms: u64,
     on_completed: Option<TweenDoneAction>,
-) -> Animator<Transform> {
+) -> Animator<Transform, TweenDoneAction> {
     Animator::new(get_relative_move_by_tween(
         move_by,
         duration_ms,
@@ -78,7 +81,7 @@ pub fn get_relative_move_by_tween(
     duration_ms: u64,
     ease: EaseFunction,
     on_completed: Option<TweenDoneAction>,
-) -> Tween<Transform> {
+) -> Tween<Transform, TweenDoneAction> {
     let mut tween = Tween::new(
         ease,
         Duration::from_millis(duration_ms),
@@ -98,7 +101,7 @@ pub fn get_move_tween(
     duration_ms: u64,
     ease: EaseFunction,
     on_completed: Option<TweenDoneAction>,
-) -> Tween<Transform> {
+) -> Tween<Transform, TweenDoneAction> {
     let mut tween = Tween::new(
         ease,
         Duration::from_millis(duration_ms),
@@ -119,7 +122,7 @@ pub fn get_relative_sprite_color_anim(
     col: Color,
     duration_ms: u64,
     on_completed: Option<TweenDoneAction>,
-) -> Animator<Sprite> {
+) -> Animator<Sprite, TweenDoneAction> {
     Animator::new(get_relative_sprite_color_tween(
         col,
         duration_ms,
@@ -131,7 +134,7 @@ pub fn get_relative_sprite_color_tween(
     col: Color,
     duration_ms: u64,
     on_completed: Option<TweenDoneAction>,
-) -> Tween<Sprite> {
+) -> Tween<Sprite, TweenDoneAction> {
     let mut tween = Tween::new(
         EaseFunction::QuadraticInOut,
         Duration::from_millis(duration_ms),
@@ -152,7 +155,7 @@ pub fn get_relative_fade_text_anim(
     col: Color,
     duration_ms: u64,
     on_completed: Option<TweenDoneAction>,
-) -> Animator<Text> {
+) -> Animator<Text, TweenDoneAction> {
     Animator::new(get_relative_fade_text_tween(
         col,
         duration_ms,
@@ -166,7 +169,7 @@ pub fn get_relative_fade_text_tween(
     duration_ms: u64,
     ease: EaseFunction,
     on_completed: Option<TweenDoneAction>,
-) -> Tween<Text> {
+) -> Tween<Text, TweenDoneAction> {
     let mut tween = Tween::new(
         ease,
         Duration::from_millis(duration_ms),
@@ -187,7 +190,7 @@ pub fn get_relative_spritesheet_color_anim(
     col: Color,
     duration_ms: u64,
     on_completed: Option<TweenDoneAction>,
-) -> Animator<TextureAtlasSprite> {
+) -> Animator<TextureAtlasSprite, TweenDoneAction> {
     Animator::new(get_relative_fade_spritesheet_tween(
         col,
         duration_ms,
@@ -199,7 +202,7 @@ pub fn get_relative_fade_spritesheet_tween(
     col: Color,
     duration_ms: u64,
     on_completed: Option<TweenDoneAction>,
-) -> Tween<TextureAtlasSprite> {
+) -> Tween<TextureAtlasSprite, TweenDoneAction> {
     let mut tween = Tween::new(
         EaseFunction::QuadraticInOut,
         Duration::from_millis(duration_ms),
@@ -222,7 +225,7 @@ pub fn get_scale_tween(
     ease: EaseFunction,
     duration_ms: u64,
     on_completed: Option<TweenDoneAction>,
-) -> Tween<Transform> {
+) -> Tween<Transform, TweenDoneAction> {
     let mut tween = Tween::new(
         ease,
         Duration::from_millis(duration_ms),
@@ -243,7 +246,7 @@ pub fn get_fade_out_sprite_anim(
     start_col: Color,
     duration_ms: u64,
     on_completed: Option<TweenDoneAction>,
-) -> Animator<Sprite> {
+) -> Animator<Sprite, TweenDoneAction> {
     Animator::new(get_fade_out_sprite_tween(
         start_col,
         duration_ms,
@@ -252,15 +255,15 @@ pub fn get_fade_out_sprite_anim(
 }
 
 pub fn get_fade_out_sprite_tween(
-    start_col: Color,
+    col: Color,
     duration_ms: u64,
     on_completed: Option<TweenDoneAction>,
-) -> Tween<Sprite> {
+) -> Tween<Sprite, TweenDoneAction> {
     let mut tween = Tween::new(
         EaseFunction::QuadraticInOut,
         Duration::from_millis(duration_ms),
         SpriteColorLens {
-            start: start_col,
+            start: col,
             end: Color::NONE,
         },
     );
@@ -382,6 +385,24 @@ impl Lens<Text> for TextRelativeColorLens {
 
     fn update_on_tween_start(&mut self, target: &Text) {
         self.start = target.sections.iter().map(|s| s.style.color).collect();
+    }
+}
+
+#[derive(Default)]
+pub struct UiBackgroundColorLens {
+    pub start: Option<Color>,
+    pub end: Color,
+}
+
+impl Lens<BackgroundColor> for UiBackgroundColorLens {
+    fn lerp(&mut self, target: &mut BackgroundColor, ratio: f32) {
+        target.0 = lerp_color(self.start.unwrap(), self.end, ratio);
+    }
+
+    fn update_on_tween_start(&mut self, target: &BackgroundColor) {
+        if self.start.is_none() {
+            self.start = Some(target.0);
+        }
     }
 }
 

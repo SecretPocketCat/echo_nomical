@@ -39,9 +39,12 @@ pub(super) fn setup_test_lvl(mut cmd: Commands) {
     .insert(LevelEntry);
 
     cmd.spawn(TransformBundle::from_transform(Transform::from_xyz(
-        -325., 260., 0.,
+        280., 20., 0.,
+        // -325., 260., 0.,
     )))
     .insert(Collider::cuboid(25., 25.))
     .insert(Sensor)
-    .insert(LevelExit);
+    .insert(LevelExit)
+    .insert(ActiveEvents::COLLISION_EVENTS)
+    .insert(ActiveCollisionTypes::all());
 }
