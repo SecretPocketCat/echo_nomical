@@ -1,7 +1,6 @@
-use bevy::{prelude::*, sprite::MaterialMesh2dBundle, time::common_conditions::on_timer};
+use bevy::{prelude::*};
 
 use crate::{
-    agent::agent::{Age, MovementDirection, Speed},
     state::AppState,
 };
 
@@ -11,9 +10,9 @@ pub fn enemy_plugin(app: &mut App) {
 
 // no procgen for now : just hardcoded enemies to try it out
 fn setup_enemies(
-    mut cmd: Commands,
-    mut meshes: ResMut<Assets<Mesh>>,
-    mut materials: ResMut<Assets<ColorMaterial>>,
+    _cmd: Commands,
+    _meshes: ResMut<Assets<Mesh>>,
+    _materials: ResMut<Assets<ColorMaterial>>,
 ) {
     // todo: just moving boxes with colliders for now
 }

@@ -1,11 +1,10 @@
 #![feature(let_chains)]
 
 use bevy::app::App;
-#[cfg(debug_assertions)]
-use bevy::diagnostic::{FrameTimeDiagnosticsPlugin, LogDiagnosticsPlugin};
+
 use seldom_fn_plugin::FnPluginExt;
 
-use state::{AppState, GameState};
+use state::{AppState};
 
 mod agent;
 mod animation;

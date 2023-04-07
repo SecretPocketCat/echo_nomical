@@ -5,7 +5,6 @@ use bevy_tweening::*;
 
 use crate::{
     animation::{TweenDoneAction, UiBackgroundColorLens},
-    time::time::{ScaledTime, ScaledTimeDelta},
 };
 
 use super::{AppState, GameState};

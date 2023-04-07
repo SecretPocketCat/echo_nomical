@@ -5,10 +5,8 @@ use crate::{
     level::level::{LevelEntry, LevelExit},
     physics::check_collision_start_pair,
     state::{AppState, FadeReset},
-    time::time::{ScaledTime, ScaledTimeDelta},
 };
 use bevy::{
-    ecs::query::{ReadOnlyWorldQuery, WorldQuery},
     prelude::*,
 };
 use bevy_rapier2d::prelude::*;

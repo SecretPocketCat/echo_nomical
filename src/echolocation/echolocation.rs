@@ -1,5 +1,5 @@
 use bevy::{prelude::*, utils::HashSet};
-use bevy_prototype_lyon::prelude::*;
+
 use bevy_rapier2d::prelude::*;
 use leafwing_input_manager::prelude::*;
 
