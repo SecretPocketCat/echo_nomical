@@ -2,9 +2,10 @@
 
 use bevy::app::App;
 
+use level::level::ReachedLevel;
 use seldom_fn_plugin::FnPluginExt;
 
-use state::{AppState};
+use state::AppState;
 
 mod agent;
 mod animation;

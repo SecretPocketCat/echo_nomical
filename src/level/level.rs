@@ -1,5 +1,3 @@
-use std::f32::consts::PI;
-
 use bevy::prelude::*;
 use bevy_rapier2d::prelude::*;
 use rand::*;
@@ -12,6 +10,14 @@ pub struct LevelEntry;
 
 #[derive(Component)]
 pub struct LevelExit;
+
+#[derive(Resource, Default)]
+pub struct ReachedLevel(usize);
+
+#[derive(Component)]
+pub enum PlayerEvent {
+    ClearedLevel,
+}
 
 pub(super) fn setup_test_lvl(mut cmd: Commands) {
     let mut rng = thread_rng();
@@ -59,4 +65,12 @@ pub(super) fn setup_test_lvl(mut cmd: Commands) {
     .insert(LevelExit)
     .insert(ActiveEvents::COLLISION_EVENTS)
     .insert(ActiveCollisionTypes::all());
+}
+
+pub(super) fn update_score(mut ev_r: EventReader<PlayerEvent>, mut reached: ResMut<ReachedLevel>) {
+    for ev in ev_r.iter() {
+        match ev {
+            PlayerEvent::ClearedLevel => reached.0 += 1,
+        }
+    }
 }

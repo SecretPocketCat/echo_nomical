@@ -5,6 +5,7 @@ use bevy_tweening::*;
 
 use crate::{
     animation::{TweenDoneAction, UiBackgroundColorLens},
+    level::level::ReachedLevel,
 };
 
 use super::{AppState, GameState};
@@ -27,7 +28,10 @@ impl FadeReset {
 pub(crate) fn reset_plugin(app: &mut App) {
     app.insert_resource(FadeReset(None))
         .add_system(start_reset_fade_out.run_if(resource_changed::<FadeReset>()))
-        .add_system(fade_in.run_if(state_changed::<AppState>()));
+        .add_system(fade_in.run_if(state_changed::<AppState>()))
+        .add_system(
+            reset_resource_to_default::<ReachedLevel>.in_schedule(OnExit(AppState::GameOver)),
+        );
 }
 
 fn start_reset_fade_out(
@@ -77,4 +81,8 @@ fn fade_in(mut fade_q: Query<&mut Animator<BackgroundColor, TweenDoneAction>, Wi
             .with_completed_event(TweenDoneAction::DespawnRecursive),
         );
     }
+}
+
+pub fn reset_resource_to_default<T: Resource + Default>(mut state: ResMut<T>) {
+    *state = T::default();
 }

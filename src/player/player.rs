@@ -2,13 +2,11 @@ use crate::{
     agent::agent::{MovementDirection, Speed},
     assets::textures::TextureAssets,
     input::actions::{PlayerAction, UiAction},
-    level::level::{LevelEntry, LevelExit},
+    level::level::{LevelEntry, LevelExit, PlayerEvent},
     physics::check_collision_start_pair,
     state::{AppState, FadeReset},
 };
-use bevy::{
-    prelude::*,
-};
+use bevy::prelude::*;
 use bevy_rapier2d::prelude::*;
 use leafwing_input_manager::prelude::*;
 
@@ -85,6 +83,7 @@ pub(super) fn exit_reached(
     q_player: Query<(), With<Player>>,
     q_exit: Query<(), With<LevelExit>>,
     mut fade_reset: ResMut<FadeReset>,
+    mut ev_w: EventWriter<PlayerEvent>,
 ) {
     if let Some(..) = collision_events
         .iter()
@@ -92,5 +91,6 @@ pub(super) fn exit_reached(
         .next()
     {
         fade_reset.set(AppState::Game);
+        ev_w.send(PlayerEvent::ClearedLevel);
     }
 }
