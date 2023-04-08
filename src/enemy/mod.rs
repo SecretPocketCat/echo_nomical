@@ -24,7 +24,8 @@ fn spawn_enemy(
         let radius = 30.;
         cmd.spawn(MaterialMesh2dBundle {
             mesh: meshes.add(shape::Circle::new(radius).into()).into(),
-            material: materials.add(ColorMaterial::from(Color::RED)),
+            material: materials.add(ColorMaterial::from(Color::NONE)),
+            // material: materials.add(ColorMaterial::from(Color::RED)),
             transform: Transform::from_translation(ev.extend(0.)),
             ..default()
         })
