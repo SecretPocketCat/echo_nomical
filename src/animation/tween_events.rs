@@ -15,7 +15,7 @@ pub fn on_tween_completed(
     mut cmd: Commands,
     mut ev_reader: EventReader<TweenCompleted<TweenDoneAction>>,
     entity_q: Query<Entity>,
-    #[cfg(debug_assertions)] reset_q: Query<
+    reset_q: Query<
         Entity,
         (
             Without<PersistReset>,
@@ -32,7 +32,7 @@ pub fn on_tween_completed(
         match &ev.user_data {
             TweenDoneAction::None => {}
             TweenDoneAction::DespawnRecursive => {
-                if entity_q.get(ev.entity).is_ok() {
+                if entity_q.contains(ev.entity) {
                     cmd.entity(ev.entity).despawn_recursive();
                 }
             }

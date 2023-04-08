@@ -1,5 +1,4 @@
 use bevy::prelude::*;
-use bevy_prototype_lyon::prelude::*;
 use bevy_tweening::*;
 
 use super::tween_macros::*;
@@ -67,8 +66,6 @@ impl Lens<Text> for TextRelativeColorLens {
 
 color_lens!(Sprite, SpriteRelativeColorLens, color);
 color_lens!(TextureAtlasSprite, SpriteSheetRelativeColorLens, color);
-color_lens!(Fill, ShapeFillRelativeColorLens, color);
-color_lens!(Stroke, ShapeStrokeRelativeColorLens, color);
 color_lens!(BackgroundColor, UiBackgroundColorLens, 0);
 
 fn lerp_color(from: Color, to: Color, ratio: f32) -> Color {

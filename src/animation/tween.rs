@@ -1,7 +1,6 @@
 #![allow(dead_code)]
 
 use bevy::prelude::*;
-use bevy_prototype_lyon::prelude::*;
 use bevy_tweening::*;
 use std::time::Duration;
 
@@ -70,24 +69,6 @@ relative_tween_fns!(
     BackgroundColor,
     TweenDoneAction,
     UiBackgroundColorLens,
-    Color,
-    Color
-);
-
-relative_tween_fns!(
-    shape_fill_color,
-    Fill,
-    TweenDoneAction,
-    ShapeFillRelativeColorLens,
-    Color,
-    Color
-);
-
-relative_tween_fns!(
-    shape_stroke_color,
-    Stroke,
-    TweenDoneAction,
-    ShapeStrokeRelativeColorLens,
     Color,
     Color
 );
