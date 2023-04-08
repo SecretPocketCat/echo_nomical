@@ -101,6 +101,7 @@ fn on_ui_btn_interaction(
             Interaction::Hovered => Some(button_colors.hovered),
             Interaction::None => Some(button_colors.normal),
         } {
+            // todo: maybe scale it a bit too
             cmd.entity(e)
                 .insert(Animator::new(Tween::<_, TweenDoneAction>::new(
                     EaseFunction::QuadraticInOut,
