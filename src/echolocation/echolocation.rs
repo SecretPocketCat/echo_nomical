@@ -4,7 +4,7 @@ use bevy_rapier2d::prelude::*;
 use leafwing_input_manager::prelude::*;
 
 use crate::{
-    animation::{get_fade_out_sprite_anim, TweenDoneAction},
+    animation::{get_relative_sprite_color_anim, TweenDoneAction},
     input::actions::PlayerAction,
     time::time::{ScaledTime, ScaledTimeDelta, ScaledTimeFields},
 };
@@ -96,10 +96,10 @@ pub(super) fn test_intersections(
                             },
                             ..default()
                         })
-                        .insert(get_fade_out_sprite_anim(
+                        .insert(get_relative_sprite_color_anim(
                             Color::ANTIQUE_WHITE,
                             3500,
-                            Some(TweenDoneAction::DespawnRecursive),
+                            TweenDoneAction::DespawnRecursive,
                         ));
                     }
                 }

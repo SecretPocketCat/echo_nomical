@@ -1,11 +1,8 @@
-use std::time::Duration;
-
 use bevy::prelude::*;
 use bevy_tweening::*;
 
 use crate::{
-    animation::{TweenDoneAction, UiBackgroundColorLens},
-    assets::fonts::FontAssets,
+    animation::{get_relative_ui_bg_color_anim, get_relative_ui_bg_color_tween, TweenDoneAction},
     level::level::ReachedLevel,
     ui::RootUiNode,
 };
@@ -57,18 +54,10 @@ fn start_reset_fade_out(
                     ..default()
                 })
                 .insert(ZIndex::Global(10000))
-                .insert(Animator::new(
-                    Tween::new(
-                        EaseFunction::QuadraticInOut,
-                        Duration::from_millis(500),
-                        UiBackgroundColorLens {
-                            end: Color::BLACK,
-                            ..default()
-                        },
-                    )
-                    .with_completed_event(TweenDoneAction::ResetAndNextState(
-                        fade_reset.take().unwrap(),
-                    )),
+                .insert(get_relative_ui_bg_color_anim(
+                    Color::BLACK,
+                    500,
+                    TweenDoneAction::ResetAndNextState(fade_reset.take().unwrap()),
                 ))
                 .insert(FadeNode)
                 .insert(PersistReset);
@@ -78,17 +67,11 @@ fn start_reset_fade_out(
 
 fn fade_in(mut fade_q: Query<&mut Animator<BackgroundColor, TweenDoneAction>, With<FadeNode>>) {
     for mut anim in fade_q.iter_mut() {
-        anim.set_tweenable(
-            Tween::new(
-                EaseFunction::QuadraticInOut,
-                Duration::from_millis(500),
-                UiBackgroundColorLens {
-                    end: Color::NONE,
-                    ..default()
-                },
-            )
-            .with_completed_event(TweenDoneAction::DespawnRecursive),
-        );
+        anim.set_tweenable(get_relative_ui_bg_color_tween(
+            Color::NONE,
+            500,
+            TweenDoneAction::DespawnRecursive,
+        ));
     }
 }
 

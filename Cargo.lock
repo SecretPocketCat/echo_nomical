@@ -1707,6 +1707,7 @@ dependencies = [
  "image",
  "iyes_progress",
  "leafwing-input-manager",
+ "paste",
  "rand",
  "seldom_fn_plugin",
  "serde",
