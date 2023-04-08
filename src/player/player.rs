@@ -33,7 +33,7 @@ pub(super) fn spawn_player(
             texture: textures.circle.clone(),
             transform: Transform::from_translation(Vec3::new(200., -60., 1.)),
             sprite: Sprite {
-                color: Color::GRAY,
+                color: Color::SEA_GREEN,
                 custom_size: Some(Vec2::splat(radius * 2.)),
                 ..default()
             },
