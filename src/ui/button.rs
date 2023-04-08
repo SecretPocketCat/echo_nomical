@@ -1,8 +1,12 @@
+use std::time::Duration;
+
 use crate::{
+    animation::{get_relative_move_anim, TweenDoneAction, UiBackgroundColorLens},
     assets::fonts::FontAssets,
     state::{AppState, FadeReset},
 };
 use bevy::prelude::*;
+use bevy_tweening::*;
 
 pub(super) fn button_plugin(app: &mut App) {
     app.init_resource::<ButtonColors>()
@@ -77,24 +81,35 @@ fn spawn_ui_btn(
 }
 
 fn on_ui_btn_interaction(
+    mut cmd: Commands,
     button_colors: Res<ButtonColors>,
-    mut interaction_query: Query<
-        (&Interaction, &mut BackgroundColor, &UiButton),
+    interaction_query: Query<
+        (Entity, &Interaction, &UiButton),
         (Changed<Interaction>, With<Button>),
     >,
     mut fade_reset: ResMut<FadeReset>,
 ) {
-    for (interaction, mut color, ui_btn) in &mut interaction_query {
-        match *interaction {
-            Interaction::Clicked => match &ui_btn.action {
-                UiButtonAction::ChangeState(next) => fade_reset.set(next.clone()),
-            },
-            Interaction::Hovered => {
-                *color = button_colors.hovered.into();
+    for (e, interaction, ui_btn) in interaction_query.iter() {
+        if let Some(col) = match *interaction {
+            Interaction::Clicked => {
+                match &ui_btn.action {
+                    UiButtonAction::ChangeState(next) => fade_reset.set(next.clone()),
+                };
+
+                None
             }
-            Interaction::None => {
-                *color = button_colors.normal.into();
-            }
+            Interaction::Hovered => Some(button_colors.hovered),
+            Interaction::None => Some(button_colors.normal),
+        } {
+            cmd.entity(e)
+                .insert(Animator::new(Tween::<_, TweenDoneAction>::new(
+                    EaseFunction::QuadraticInOut,
+                    Duration::from_millis(175),
+                    UiBackgroundColorLens {
+                        end: col,
+                        ..default()
+                    },
+                )));
         }
     }
 }
