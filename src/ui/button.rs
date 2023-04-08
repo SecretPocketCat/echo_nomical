@@ -2,6 +2,7 @@ use crate::{
     animation::{get_relative_ui_bg_color_anim, TweenDoneAction},
     assets::fonts::FontAssets,
     state::{AppState, FadeReset},
+    EntityCommandsExt,
 };
 use bevy::prelude::*;
 
@@ -48,7 +49,7 @@ fn spawn_ui_btn(
         let pad_y = if ui_btn.primary { 20.0 } else { 10. };
 
         cmd.entity(e)
-            .insert(ButtonBundle {
+            .try_insert(ButtonBundle {
                 style: Style {
                     padding: UiRect::new(
                         Val::Px(pad_x),

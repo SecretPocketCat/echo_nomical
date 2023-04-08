@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 use bevy_rapier2d::prelude::*;
 
-use crate::state::UnpausedGame;
+use crate::{echolocation::echolocation::EcholocationHitColor, state::UnpausedGame};
 
 pub fn enemy_plugin(app: &mut App) {
     app.add_event::<SpawnEnemyEv>()
@@ -25,6 +25,7 @@ fn spawn_enemy(mut ev_r: EventReader<SpawnEnemyEv>, mut cmd: Commands) {
         .insert(Enemy)
         .insert(Name::new("Enemy"))
         .insert(ActiveEvents::COLLISION_EVENTS)
-        .insert(ActiveCollisionTypes::all());
+        .insert(ActiveCollisionTypes::all())
+        .insert(EcholocationHitColor(Color::CRIMSON));
     }
 }

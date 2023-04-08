@@ -2,10 +2,10 @@ use bevy::prelude::*;
 
 use crate::state::UnpausedGame;
 
-use self::echolocation::{echolocate, test_intersections};
+use self::echolocation::{echo_hit, echolocate};
 
 pub mod echolocation;
 
 pub fn echo_plugin(app: &mut App) {
-    app.add_systems((test_intersections, echolocate).in_set(UnpausedGame));
+    app.add_systems((echolocate, echo_hit).in_set(UnpausedGame));
 }

@@ -1,117 +1,152 @@
-use bevy::{prelude::*, utils::HashSet};
-
+use bevy::prelude::*;
 use bevy_rapier2d::prelude::*;
+use bevy_tweening::{Animator, Sequence};
 use leafwing_input_manager::prelude::*;
 
 use crate::{
-    animation::{get_relative_sprite_color_anim, TweenDoneAction},
+    agent::agent::{Age, Damping, MovementDirection, Speed},
+    animation::{
+        get_relative_scale_anim, get_relative_scale_tween, get_relative_sprite_color_anim,
+        TweenDoneAction,
+    },
+    assets::textures::TextureAssets,
+    enemy::Enemy,
     input::actions::PlayerAction,
-    time::time::{ScaledTime, ScaledTimeDelta, ScaledTimeFields},
+    physics::{check_collision_start, ECHO_COLL_GROUP, PLAYER_COLL_GROUP},
+    EntityCommandsExt,
 };
 
-#[derive(Component)]
-pub(super) struct Echolocate {
-    elapsed_time: f32,
-    max_time: f32,
-    max_radius: f32,
-    used_rays: HashSet<u16>,
-    ray_count: u16,
-}
+const ECHO_RAY_MAX_AGE_MS: u64 = 2500;
+const ECHO_RAY_MAX_AGE_S: f32 = (ECHO_RAY_MAX_AGE_MS / 1000) as f32;
 
-impl Echolocate {
-    fn radius(&self) -> f32 {
-        self.max_radius * (self.elapsed_time / self.max_time)
-    }
-}
+#[derive(Component)]
+pub(super) struct EcholocationRay;
+
+#[derive(Component)]
+pub struct EcholocationHitColor(pub Color);
 
 pub(super) fn echolocate(
     mut cmd: Commands,
     input_q: Query<(&ActionState<PlayerAction>, &GlobalTransform)>,
+    textures: Res<TextureAssets>,
 ) {
     for (_, t) in input_q
         .iter()
-        .filter(|(input, ..)| input.just_released(PlayerAction::Echo))
+        .filter(|(input, ..)| input.just_pressed(PlayerAction::Echo))
     {
-        cmd.spawn((
-            Echolocate {
-                elapsed_time: 0.,
-                max_time: 2.,
-                max_radius: 300.,
-                used_rays: default(),
-                ray_count: 500,
-            },
-            TransformBundle::from_transform(Transform::from_translation(t.translation())),
-        ));
+        let ray_count = 100;
+        let ray_step = 360. / ray_count as f32;
+        let pos = t.translation();
+        let radius = 3.;
+
+        for i in 0..ray_count {
+            let dir = Vec2::from_angle(i as f32 * ray_step);
+
+            cmd.spawn(SpatialBundle::from_transform(Transform::from_translation(
+                pos + dir.extend(0.) * 10.,
+            )))
+            .insert(EcholocationRay)
+            .insert(MovementDirection(dir))
+            .insert(Speed(180.))
+            .insert(Damping(ECHO_RAY_MAX_AGE_S - 0.1))
+            .insert(Age::default())
+            .insert(RigidBody::KinematicPositionBased)
+            .insert(Collider::ball(radius))
+            .insert(Sensor)
+            .insert(ActiveEvents::COLLISION_EVENTS)
+            .insert(ActiveCollisionTypes::all())
+            .insert(CollisionGroups::new(
+                ECHO_COLL_GROUP.into(),
+                Group::all()
+                    .difference(ECHO_COLL_GROUP)
+                    .difference(PLAYER_COLL_GROUP),
+            ))
+            .with_children(|b| {
+                let parent_e = b.parent_entity();
+
+                b.spawn(SpriteBundle {
+                    transform: Transform::from_scale(Vec2::ZERO.extend(1.)),
+                    texture: textures.circle.clone(),
+                    sprite: Sprite {
+                        color: Color::SEA_GREEN,
+                        custom_size: Some(Vec2::splat(8.)),
+                        ..default()
+                    },
+                    ..Default::default()
+                })
+                .insert(get_relative_scale_anim(
+                    Vec3::ONE,
+                    180,
+                    TweenDoneAction::None,
+                ))
+                .insert(get_relative_sprite_color_anim(
+                    Color::NONE,
+                    ECHO_RAY_MAX_AGE_MS,
+                    TweenDoneAction::DespawnRecursive(parent_e),
+                ));
+            });
+        }
     }
 }
 
-pub(super) fn test_intersections(
+pub(super) fn echo_hit(
     mut cmd: Commands,
-    rapier_context: Res<RapierContext>,
-    mut echo_q: Query<(Entity, &mut Echolocate, &GlobalTransform)>,
-    // coll_q: Query<(&Collider)>,
-    time: ScaledTime,
+    mut collision_events: EventReader<CollisionEvent>,
+    ray_q: Query<(), With<EcholocationRay>>,
+    trans_q: Query<(&GlobalTransform, &Age)>,
+    color_q: Query<&EcholocationHitColor>,
+    mut move_q: Query<&mut MovementDirection>,
+    textures: Res<TextureAssets>,
 ) {
-    for (e, mut echo, t) in echo_q.iter_mut() {
-        let pos = t.translation().truncate();
+    for coll_success in collision_events
+        .iter()
+        .filter_map(|ev| check_collision_start(ev, &ray_q))
+    {
+        cmd.entity(coll_success.hit)
+            .try_insert(ColliderDisabled)
+            .try_insert(get_relative_scale_anim(
+                Vec2::ZERO.extend(1.),
+                150,
+                TweenDoneAction::DespawnSelfRecursive,
+            ));
 
-        let radius = echo.radius();
-        let shape = Collider::ball(radius);
+        if let Ok(mut dir) = move_q.get_mut(coll_success.hit) {
+            dir.0 = Vec2::ZERO;
+        }
 
-        rapier_context.intersections_with_shape(
-            pos,
-            0.,
-            &shape,
-            QueryFilter::exclude_kinematic(),
-            |_| {
-                let ray_step = 360. / echo.ray_count as f32;
-                for i in 0..echo.ray_count {
-                    if echo.used_rays.contains(&i) {
-                        continue;
-                    }
+        if let Ok((t, age)) = trans_q.get(coll_success.hit) {
+            let age_mult = ((ECHO_RAY_MAX_AGE_S - age.0 - 0.1) / ECHO_RAY_MAX_AGE_S).min(1.);
 
-                    let dir = Vec2::from_angle(i as f32 * ray_step);
-                    if let Some(hit) = rapier_context.cast_ray_and_get_normal(
-                        pos,
-                        dir,
-                        radius,
-                        false,
-                        // todo: ignore player as enemies will be kinematic too
-                        QueryFilter::exclude_kinematic(),
-                    ) {
-                        echo.used_rays.insert(i);
-                        cmd.spawn(SpriteBundle {
-                            transform: Transform::from_translation(
-                                hit.1
-                                    .point
-                                    .extend(20. + time.time().elapsed_seconds() / 100.),
-                            )
-                            .with_rotation(Quat::from_rotation_z(
-                                Vec2::Y.angle_between(hit.1.normal),
-                            )),
-                            sprite: Sprite {
-                                color: Color::GREEN,
-                                custom_size: Some(Vec2::new(9., 3.)),
-                                ..default()
-                            },
-                            ..default()
-                        })
-                        .insert(get_relative_sprite_color_anim(
-                            Color::ANTIQUE_WHITE,
-                            3500,
-                            TweenDoneAction::DespawnRecursive,
-                        ));
-                    }
-                }
+            if age_mult > 0. {
+                let col = color_q
+                    .get(coll_success.other)
+                    .map_or(Color::SEA_GREEN, |c| c.0);
 
-                false
-            },
-        );
-
-        echo.elapsed_time += time.scaled_delta_seconds();
-
-        if echo.elapsed_time >= echo.max_time || echo.used_rays.len() >= echo.ray_count as usize {
-            cmd.entity(e).despawn_recursive();
+                cmd.spawn(SpriteBundle {
+                    transform: Transform::from_translation(t.translation())
+                        .with_scale(Vec2::ZERO.extend(1.)),
+                    texture: textures.circle.clone(),
+                    sprite: Sprite {
+                        color: col,
+                        custom_size: Some(Vec2::splat(20.) * age_mult),
+                        ..default()
+                    },
+                    ..Default::default()
+                })
+                .try_insert(Animator::new(Sequence::new(vec![
+                    get_relative_scale_tween(Vec3::ONE, 150, TweenDoneAction::None),
+                    get_relative_scale_tween(
+                        Vec3::ZERO,
+                        (4000. * age_mult) as u64,
+                        TweenDoneAction::None,
+                    ),
+                ])))
+                .try_insert(get_relative_sprite_color_anim(
+                    Color::NONE,
+                    (4200. * age_mult) as u64,
+                    TweenDoneAction::DespawnSelfRecursive,
+                ));
+            }
         }
     }
 }

@@ -8,6 +8,14 @@ pub fn physics_plugin(app: &mut App) {
     app.add_plugin(RapierPhysicsPlugin::<NoUserData>::pixels_per_meter(100.0));
 }
 
+pub const ECHO_COLL_GROUP: Group = Group::GROUP_1;
+pub const PLAYER_COLL_GROUP: Group = Group::GROUP_2;
+
+pub struct CollisionSuccess {
+    pub hit: Entity,
+    pub other: Entity,
+}
+
 #[allow(dead_code)]
 pub fn check_collision_pair<
     TW1: WorldQuery,
@@ -54,7 +62,7 @@ pub fn check_collision_start_pair<
 pub fn check_collision<TW: WorldQuery, TRW: ReadOnlyWorldQuery>(
     collision: &CollisionEvent,
     q: &Query<TW, TRW>,
-) -> Option<Entity> {
+) -> Option<CollisionSuccess> {
     check_collision_with_type(CollisionEventType::Any, collision, q)
 }
 
@@ -62,7 +70,7 @@ pub fn check_collision<TW: WorldQuery, TRW: ReadOnlyWorldQuery>(
 pub fn check_collision_start<TW: WorldQuery, TRW: ReadOnlyWorldQuery>(
     collision: &CollisionEvent,
     q: &Query<TW, TRW>,
-) -> Option<Entity> {
+) -> Option<CollisionSuccess> {
     check_collision_with_type(CollisionEventType::Start, collision, q)
 }
 
@@ -70,7 +78,7 @@ pub fn check_collision_start<TW: WorldQuery, TRW: ReadOnlyWorldQuery>(
 pub fn check_collision_end<TW: WorldQuery, TRW: ReadOnlyWorldQuery>(
     collision: &CollisionEvent,
     q: &Query<TW, TRW>,
-) -> Option<Entity> {
+) -> Option<CollisionSuccess> {
     check_collision_with_type(CollisionEventType::End, collision, q)
 }
 
@@ -109,12 +117,12 @@ fn check_collision_with_type<TW: WorldQuery, TRW: ReadOnlyWorldQuery>(
     event_type: CollisionEventType,
     collision: &CollisionEvent,
     q: &Query<TW, TRW>,
-) -> Option<Entity> {
+) -> Option<CollisionSuccess> {
     if let Some((e1, e2)) = get_collision_pair(event_type, collision) {
         if q.contains(e1) {
-            Some(e1)
+            Some(CollisionSuccess { hit: e1, other: e2 })
         } else if q.contains(e2) {
-            Some(e2)
+            Some(CollisionSuccess { hit: e2, other: e1 })
         } else {
             None
         }

@@ -70,7 +70,7 @@ fn fade_in(mut fade_q: Query<&mut Animator<BackgroundColor, TweenDoneAction>, Wi
         anim.set_tweenable(get_relative_ui_bg_color_tween(
             Color::NONE,
             500,
-            TweenDoneAction::DespawnRecursive,
+            TweenDoneAction::DespawnSelfRecursive,
         ));
     }
 }

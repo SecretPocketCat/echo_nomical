@@ -5,6 +5,8 @@ use seldom_fn_plugin::FnPluginExt;
 
 use state::AppState;
 
+pub use tools::ecs::EntityCommandsExt;
+
 mod agent;
 mod animation;
 mod assets;

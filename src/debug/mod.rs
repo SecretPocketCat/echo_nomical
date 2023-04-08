@@ -6,7 +6,7 @@ pub fn debug_plugin(app: &mut App) {
     #[cfg(debug_assertions)]
     {
         app.add_plugin(EditorPlugin::default())
-            .add_plugin(RapierDebugRenderPlugin::default())
+            // .add_plugin(RapierDebugRenderPlugin::default())
             .add_plugin(FrameTimeDiagnosticsPlugin::default());
     }
 }
