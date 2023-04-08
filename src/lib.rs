@@ -1,11 +1,9 @@
 #![feature(let_chains)]
 
-use bevy::app::App;
-#[cfg(debug_assertions)]
-use bevy::diagnostic::{FrameTimeDiagnosticsPlugin, LogDiagnosticsPlugin};
+use bevy::prelude::*;
 use seldom_fn_plugin::FnPluginExt;
 
-use state::{AppState, GameState};
+use state::AppState;
 
 mod agent;
 mod animation;
@@ -25,7 +23,8 @@ mod time;
 mod tools;
 mod ui;
 
-pub use level::level::LevelSize;
+#[derive(Resource, Deref)]
+pub struct AppSize(pub Vec2);
 
 pub const GAME_NAME: &str = "todo";
 

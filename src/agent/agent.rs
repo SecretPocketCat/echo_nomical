@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 use bevy_rapier2d::prelude::*;
 
-use crate::{level::level::LevelSize, time::time::*};
+use crate::{state::PersistReset, time::time::*, AppSize};
 
 #[derive(Component, Deref, DerefMut, Default)]
 pub struct MovementDirection(pub Vec2);
@@ -75,8 +75,8 @@ pub(super) fn age(mut age_q: Query<&mut Age>, time: ScaledTime) {
 }
 
 pub(super) fn despawn_out_of_bounds(
-    despawn_q: Query<(Entity, &GlobalTransform, Option<&DespawnParent>)>,
-    level_size: Res<LevelSize>,
+    despawn_q: Query<(Entity, &GlobalTransform, Option<&DespawnParent>), Without<PersistReset>>,
+    level_size: Res<AppSize>,
     mut cmd: Commands,
 ) {
     for (e, t, despawn_parent) in despawn_q.iter() {

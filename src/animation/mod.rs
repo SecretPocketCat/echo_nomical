@@ -8,7 +8,8 @@ pub use tween::*;
 pub use tween_events::TweenDoneAction;
 
 pub fn animation_plugin(app: &mut App) {
-    app.add_plugin(TweeningPlugin)
+    app.add_plugin(TweeningPlugin::<TweenDoneAction>::new())
         .add_system(tween_events::on_tween_completed)
-        .add_system(component_animator_system::<TextureAtlasSprite>);
+        .add_system(component_animator_system::<TextureAtlasSprite, TweenDoneAction>)
+        .add_system(component_animator_system::<BackgroundColor, TweenDoneAction>);
 }

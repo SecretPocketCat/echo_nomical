@@ -2,7 +2,7 @@ use std::{ops::RangeInclusive, time::Duration};
 
 use bevy::prelude::*;
 use bevy_asset_loader::prelude::*;
-use iyes_progress::{ProgressCounter, ProgressPlugin};
+use iyes_progress::{ProgressPlugin};
 
 use crate::{time::time::after_delay, AppState};
 
