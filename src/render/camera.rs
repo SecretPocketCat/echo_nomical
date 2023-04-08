@@ -8,8 +8,8 @@ use crate::AppSize;
 #[derive(Component)]
 pub struct PrimaryCamera;
 
-pub(super) fn setup_camera(mut commands: Commands) {
-    commands.spawn((
+pub(super) fn setup_camera(mut cmd: Commands) {
+    cmd.spawn((
         Camera2dBundle {
             camera_2d: Camera2d {
                 clear_color: bevy::core_pipeline::clear_color::ClearColorConfig::Custom(
