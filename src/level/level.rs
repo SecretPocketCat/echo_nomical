@@ -2,8 +2,7 @@ use bevy::prelude::*;
 use bevy_rapier2d::prelude::*;
 use rand::*;
 
-#[derive(Resource, Deref)]
-pub struct LevelSize(pub Vec2);
+use crate::{enemy::SpawnEnemyEv, player::player::PlayerEv};
 
 #[derive(Component)]
 pub struct LevelEntry;
@@ -12,14 +11,9 @@ pub struct LevelEntry;
 pub struct LevelExit;
 
 #[derive(Resource, Default)]
-pub struct ReachedLevel(usize);
+pub struct ReachedLevel(pub usize);
 
-#[derive(Component)]
-pub enum PlayerEvent {
-    ClearedLevel,
-}
-
-pub(super) fn setup_test_lvl(mut cmd: Commands) {
+pub(super) fn setup_test_lvl(mut cmd: Commands, mut ev_w: EventWriter<SpawnEnemyEv>) {
     let mut rng = thread_rng();
 
     for polyline in [
@@ -65,12 +59,17 @@ pub(super) fn setup_test_lvl(mut cmd: Commands) {
     .insert(LevelExit)
     .insert(ActiveEvents::COLLISION_EVENTS)
     .insert(ActiveCollisionTypes::all());
+
+    // enemies
+    for (x, y) in [(-200., -100.), (360., -250.), (0., 200.)].iter() {
+        ev_w.send(SpawnEnemyEv(Vec2::new(*x, *y)));
+    }
 }
 
-pub(super) fn update_score(mut ev_r: EventReader<PlayerEvent>, mut reached: ResMut<ReachedLevel>) {
+pub(super) fn update_score(mut ev_r: EventReader<PlayerEv>, mut reached: ResMut<ReachedLevel>) {
     for ev in ev_r.iter() {
-        match ev {
-            PlayerEvent::ClearedLevel => reached.0 += 1,
+        if let PlayerEv::ClearedLevel = ev {
+            reached.0 += 1;
         }
     }
 }

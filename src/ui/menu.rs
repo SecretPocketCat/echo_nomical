@@ -1,11 +1,12 @@
 use crate::{assets::fonts::FontAssets, state::AppState};
 use bevy::prelude::*;
 
+use super::RootUiNode;
+
 pub(super) fn menu_plugin(app: &mut App) {
     app.init_resource::<ButtonColors>()
-        .add_system(setup_menu.in_schedule(OnEnter(AppState::Menu)))
-        .add_system(click_play_button.in_set(OnUpdate(AppState::Menu)))
-        .add_system(cleanup_menu.in_schedule(OnExit(AppState::Menu)));
+        .add_system(setup_ui.in_schedule(OnEnter(AppState::Menu)))
+        .add_system(click_play_button.in_set(OnUpdate(AppState::Menu)));
 }
 
 #[derive(Resource)]
@@ -23,33 +24,36 @@ impl Default for ButtonColors {
     }
 }
 
-fn setup_menu(
+fn setup_ui(
     mut commands: Commands,
     font_assets: Res<FontAssets>,
     button_colors: Res<ButtonColors>,
+    root: Res<RootUiNode>,
 ) {
-    commands
-        .spawn(ButtonBundle {
-            style: Style {
-                size: Size::new(Val::Px(120.0), Val::Px(50.0)),
-                margin: UiRect::all(Val::Auto),
-                justify_content: JustifyContent::Center,
-                align_items: AlignItems::Center,
-                ..Default::default()
-            },
-            background_color: button_colors.normal.into(),
-            ..Default::default()
-        })
-        .with_children(|parent| {
-            parent.spawn(TextBundle::from_section(
-                "Play",
-                TextStyle {
-                    font: font_assets.fira_sans.clone(),
-                    font_size: 40.0,
-                    color: Color::rgb(0.9, 0.9, 0.9),
+    commands.entity(root.0).with_children(|parent| {
+        parent
+            .spawn(ButtonBundle {
+                style: Style {
+                    size: Size::new(Val::Px(120.0), Val::Px(50.0)),
+                    margin: UiRect::all(Val::Auto),
+                    justify_content: JustifyContent::Center,
+                    align_items: AlignItems::Center,
+                    ..Default::default()
                 },
-            ));
-        });
+                background_color: button_colors.normal.into(),
+                ..Default::default()
+            })
+            .with_children(|parent| {
+                parent.spawn(TextBundle::from_section(
+                    "Play",
+                    TextStyle {
+                        font: font_assets.menu.clone(),
+                        font_size: 40.0,
+                        color: Color::rgb(0.9, 0.9, 0.9),
+                    },
+                ));
+            });
+    });
 }
 
 fn click_play_button(
@@ -73,8 +77,4 @@ fn click_play_button(
             }
         }
     }
-}
-
-fn cleanup_menu(mut commands: Commands, button: Query<Entity, With<Button>>) {
-    commands.entity(button.single()).despawn_recursive();
 }

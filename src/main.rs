@@ -3,12 +3,12 @@
 
 use bevy::prelude::*;
 use bevy::DefaultPlugins;
-use echo_nomical::LevelSize;
+use echo_nomical::AppSize;
 use echo_nomical::GAME_NAME;
 use seldom_fn_plugin::FnPluginExt;
 
 fn main() {
-    let lvl_size = LevelSize(Vec2::new(1000., 800.));
+    let lvl_size = AppSize(Vec2::new(1000., 800.));
 
     App::new()
         .insert_resource(Msaa::Off)

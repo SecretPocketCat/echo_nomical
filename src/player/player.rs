@@ -1,8 +1,9 @@
 use crate::{
     agent::agent::{MovementDirection, Speed},
     assets::textures::TextureAssets,
+    enemy::Enemy,
     input::actions::{PlayerAction, UiAction},
-    level::level::{LevelEntry, LevelExit, PlayerEvent},
+    level::level::{LevelEntry, LevelExit},
     physics::check_collision_start_pair,
     state::{AppState, FadeReset},
 };
@@ -12,6 +13,12 @@ use leafwing_input_manager::prelude::*;
 
 #[derive(Component)]
 pub struct Player;
+
+#[derive(Component)]
+pub enum PlayerEv {
+    ClearedLevel,
+    Died,
+}
 
 // todo: bind gamepads?
 pub(super) fn spawn_player(
@@ -83,7 +90,7 @@ pub(super) fn exit_reached(
     q_player: Query<(), With<Player>>,
     q_exit: Query<(), With<LevelExit>>,
     mut fade_reset: ResMut<FadeReset>,
-    mut ev_w: EventWriter<PlayerEvent>,
+    mut ev_w: EventWriter<PlayerEv>,
 ) {
     if let Some(..) = collision_events
         .iter()
@@ -91,6 +98,23 @@ pub(super) fn exit_reached(
         .next()
     {
         fade_reset.set(AppState::Game);
-        ev_w.send(PlayerEvent::ClearedLevel);
+        ev_w.send(PlayerEv::ClearedLevel);
+    }
+}
+
+pub(super) fn player_hit(
+    mut collision_events: EventReader<CollisionEvent>,
+    q_player: Query<(), With<Player>>,
+    q_enemy: Query<(), With<Enemy>>,
+    mut fade_reset: ResMut<FadeReset>,
+    mut ev_w: EventWriter<PlayerEv>,
+) {
+    if let Some(..) = collision_events
+        .iter()
+        .filter(|ev| check_collision_start_pair(ev, &q_player, &q_enemy))
+        .next()
+    {
+        fade_reset.set(AppState::GameOver);
+        ev_w.send(PlayerEv::Died);
     }
 }

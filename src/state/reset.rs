@@ -5,7 +5,9 @@ use bevy_tweening::*;
 
 use crate::{
     animation::{TweenDoneAction, UiBackgroundColorLens},
+    assets::fonts::FontAssets,
     level::level::ReachedLevel,
+    ui::RootUiNode,
 };
 
 use super::{AppState, GameState};
@@ -38,32 +40,39 @@ fn start_reset_fade_out(
     mut cmd: Commands,
     mut fade_reset: ResMut<FadeReset>,
     mut next_state: ResMut<NextState<GameState>>,
+    root: Res<RootUiNode>,
 ) {
     if fade_reset.is_some() {
         next_state.set(GameState::Fading);
-        cmd.spawn(NodeBundle {
-            background_color: Color::NONE.into(),
-            style: Style {
-                size: Size::all(Val::Px(5000.)),
-                ..default()
-            },
-            ..default()
-        })
-        .insert(Animator::new(
-            Tween::new(
-                EaseFunction::QuadraticInOut,
-                Duration::from_millis(500),
-                UiBackgroundColorLens {
-                    end: Color::BLACK,
+
+        cmd.entity(root.0).with_children(|parent| {
+            parent
+                .spawn(NodeBundle {
+                    background_color: Color::NONE.into(),
+                    style: Style {
+                        position_type: PositionType::Absolute,
+                        size: Size::all(Val::Percent(110.)),
+                        ..default()
+                    },
                     ..default()
-                },
-            )
-            .with_completed_event(TweenDoneAction::ResetAndNextState(
-                fade_reset.take().unwrap(),
-            )),
-        ))
-        .insert(FadeNode)
-        .insert(PersistReset);
+                })
+                .insert(ZIndex::Global(10000))
+                .insert(Animator::new(
+                    Tween::new(
+                        EaseFunction::QuadraticInOut,
+                        Duration::from_millis(500),
+                        UiBackgroundColorLens {
+                            end: Color::BLACK,
+                            ..default()
+                        },
+                    )
+                    .with_completed_event(TweenDoneAction::ResetAndNextState(
+                        fade_reset.take().unwrap(),
+                    )),
+                ))
+                .insert(FadeNode)
+                .insert(PersistReset);
+        });
     }
 }
 
