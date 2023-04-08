@@ -66,7 +66,7 @@ pub(super) fn echolocate(
 
                 b.spawn(SpriteBundle {
                     transform: Transform::from_scale(Vec2::ZERO.extend(1.)),
-                    texture: textures.circle.clone(),
+                    texture: textures.echo_ping.clone(),
                     sprite: Sprite {
                         color: Color::SEA_GREEN,
                         custom_size: Some(Vec2::splat(8.)),
@@ -97,6 +97,7 @@ pub(super) fn echo_hit(
     color_q: Query<&EcholocationHitColor>,
     mut move_q: Query<&mut MovementDirection>,
     textures: Res<TextureAssets>,
+    time: Res<Time>,
 ) {
     for coll_success in collision_events
         .iter()
@@ -123,9 +124,13 @@ pub(super) fn echo_hit(
                     .map_or(Color::SEA_GREEN, |c| c.0);
 
                 cmd.spawn(SpriteBundle {
-                    transform: Transform::from_translation(t.translation())
-                        .with_scale(Vec2::ZERO.extend(1.)),
-                    texture: textures.circle.clone(),
+                    transform: Transform::from_translation(
+                        t.translation()
+                            .truncate()
+                            .extend(time.elapsed_seconds_wrapped() / 10000.),
+                    )
+                    .with_scale(Vec2::ZERO.extend(1.)),
+                    texture: textures.echo_ping.clone(),
                     sprite: Sprite {
                         color: col,
                         custom_size: Some(Vec2::splat(20.) * age_mult),

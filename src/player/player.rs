@@ -30,7 +30,7 @@ pub(super) fn spawn_player(
 
     if entry_q.iter().next().is_some() {
         cmd.spawn(SpriteBundle {
-            texture: textures.circle.clone(),
+            texture: textures.player.clone(),
             transform: Transform::from_translation(Vec3::new(200., -60., 1.)),
             sprite: Sprite {
                 color: Color::SEA_GREEN,
