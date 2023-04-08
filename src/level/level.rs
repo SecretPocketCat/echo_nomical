@@ -2,7 +2,9 @@ use bevy::prelude::*;
 use bevy_rapier2d::prelude::*;
 use rand::*;
 
-use crate::{enemy::SpawnEnemyEv, player::player::PlayerEv};
+use crate::{
+    echolocation::echolocation::EcholocationHitColor, enemy::SpawnEnemyEv, player::player::PlayerEv,
+};
 
 #[derive(Component)]
 pub struct LevelEntry;
@@ -54,9 +56,10 @@ pub(super) fn setup_test_lvl(mut cmd: Commands, mut ev_w: EventWriter<SpawnEnemy
     cmd.spawn(TransformBundle::from_transform(Transform::from_xyz(
         -325., 260., 0.,
     )))
-    .insert(Collider::cuboid(25., 25.))
+    .insert(Collider::round_cuboid(25., 25., 0.25))
     .insert(Sensor)
     .insert(LevelExit)
+    .insert(EcholocationHitColor(Color::GOLD))
     .insert(ActiveEvents::COLLISION_EVENTS)
     .insert(ActiveCollisionTypes::all());
 

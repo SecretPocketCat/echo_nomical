@@ -3,6 +3,8 @@ use bevy_tweening::{component_animator_system, TweeningPlugin};
 
 mod tween;
 mod tween_events;
+pub mod tween_lenses;
+mod tween_macros;
 
 pub use tween::*;
 pub use tween_events::TweenDoneAction;

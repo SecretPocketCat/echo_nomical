@@ -7,7 +7,6 @@ use rand::*;
 use crate::assets::audio::SfxAssets;
 use crate::io::save::VolumeSettings;
 
-
 // todo: use sfx + master volume
 pub(super) fn sfx_plugin(app: &mut bevy::prelude::App) {
     app.add_audio_channel::<SfxChannel>()
@@ -68,5 +67,4 @@ fn play_sfx_on_evt<TEvt: Event + SfxEv>(
 
 fn set_sfx_volume(audio: Res<AudioChannel<SfxChannel>>, volume: Res<VolumeSettings>) {
     audio.set_volume(volume.get_sfx_volume());
-    warn!("setting volume {}", volume.get_sfx_volume());
 }

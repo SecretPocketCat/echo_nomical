@@ -3,6 +3,9 @@ use bevy_asset_loader::prelude::*;
 
 #[derive(AssetCollection, Resource)]
 pub struct TextureAssets {
-    #[asset(path = "textures/bevy.png")]
-    pub texture_bevy: Handle<Image>,
+    #[asset(path = "textures/player.png")]
+    pub player: Handle<Image>,
+
+    #[asset(path = "textures/echo_ping.png")]
+    pub echo_ping: Handle<Image>,
 }

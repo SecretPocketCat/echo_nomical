@@ -1,12 +1,10 @@
-use std::time::Duration;
-
 use crate::{
-    animation::{get_relative_move_anim, TweenDoneAction, UiBackgroundColorLens},
+    animation::{get_relative_ui_bg_color_anim, TweenDoneAction},
     assets::fonts::FontAssets,
     state::{AppState, FadeReset},
+    EntityCommandsExt,
 };
 use bevy::prelude::*;
-use bevy_tweening::*;
 
 pub(super) fn button_plugin(app: &mut App) {
     app.init_resource::<ButtonColors>()
@@ -51,7 +49,7 @@ fn spawn_ui_btn(
         let pad_y = if ui_btn.primary { 20.0 } else { 10. };
 
         cmd.entity(e)
-            .insert(ButtonBundle {
+            .try_insert(ButtonBundle {
                 style: Style {
                     padding: UiRect::new(
                         Val::Px(pad_x),
@@ -102,15 +100,11 @@ fn on_ui_btn_interaction(
             Interaction::None => Some(button_colors.normal),
         } {
             // todo: maybe scale it a bit too
-            cmd.entity(e)
-                .insert(Animator::new(Tween::<_, TweenDoneAction>::new(
-                    EaseFunction::QuadraticInOut,
-                    Duration::from_millis(175),
-                    UiBackgroundColorLens {
-                        end: col,
-                        ..default()
-                    },
-                )));
+            cmd.entity(e).insert(get_relative_ui_bg_color_anim(
+                col,
+                175,
+                TweenDoneAction::None,
+            ));
         }
     }
 }
