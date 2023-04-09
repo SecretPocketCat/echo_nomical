@@ -4,10 +4,6 @@ use bevy::prelude::*;
 
 use crate::time::time::{ScaledTime, ScaledTimeDelta};
 
-pub fn cooldown_plugin<T: Sync + Send + 'static>(app: &mut App) {
-    app.add_system(tick_cooldown::<T>);
-}
-
 #[derive(Component)]
 #[component(storage = "SparseSet")]
 pub struct Cooldown<T: Send + Sync + 'static> {
@@ -24,7 +20,7 @@ impl<T: Send + Sync> Cooldown<T> {
     }
 }
 
-fn tick_cooldown<T: Send + Sync>(
+pub fn process_cooldown<T: Send + Sync>(
     mut cmd: Commands,
     mut cooldown_q: Query<(Entity, &mut Cooldown<T>)>,
     time: ScaledTime,

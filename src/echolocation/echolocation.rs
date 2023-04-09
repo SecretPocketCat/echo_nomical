@@ -10,7 +10,7 @@ use crate::{
         TweenDoneAction,
     },
     assets::textures::TextureAssets,
-    input::actions::PlayerAction,
+    input::{actions::PlayerAction, cooldown::Cooldown},
     physics::{check_collision_start, ECHO_COLL_GROUP, PLAYER_COLL_GROUP},
     EntityCommandsExt,
 };
@@ -32,18 +32,27 @@ pub struct EcholocationHitEv {
     pub hit_e: Entity,
 }
 
+pub struct Echolocate;
+
 pub(super) fn echolocate(
     mut cmd: Commands,
-    input_q: Query<(&ActionState<PlayerAction>, &GlobalTransform)>,
+    input_q: Query<
+        (Entity, &ActionState<PlayerAction>, &GlobalTransform),
+        Without<Cooldown<Echolocate>>,
+    >,
     textures: Res<TextureAssets>,
 ) {
-    for (_, t) in input_q
+    for (player_e, _, player_t) in input_q
         .iter()
-        .filter(|(input, ..)| input.just_pressed(PlayerAction::Echo))
+        .filter(|(_, input, ..)| input.just_pressed(PlayerAction::Echo))
     {
+        // cooldown
+        cmd.entity(player_e)
+            .try_insert(Cooldown::<Echolocate>::new(1.2));
+
         let ray_count = 100;
         let ray_step = 360. / ray_count as f32;
-        let pos = t.translation();
+        let pos = player_t.translation();
         let radius = 3.;
 
         for i in 0..ray_count {

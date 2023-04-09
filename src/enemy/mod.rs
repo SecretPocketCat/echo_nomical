@@ -11,6 +11,7 @@ use crate::{
     },
     assets::textures::TextureAssets,
     echolocation::echolocation::{EcholocationHitColor, EcholocationHitEv, FollowEchoOnHit},
+    input::cooldown::{process_cooldown, Cooldown},
     state::UnpausedGame,
     EntityCommandsExt,
 };
@@ -18,7 +19,8 @@ use crate::{
 pub fn enemy_plugin(app: &mut App) {
     app.add_event::<SpawnEnemyEv>()
         .add_system(spawn_enemy.in_set(UnpausedGame))
-        .add_systems((follow_echolocation, flash_on_echolocation));
+        .add_systems((follow_echolocation, flash_on_echolocation))
+        .add_system(process_cooldown::<FollowEchoOnHit>);
 }
 
 #[derive(Debug, Component, Clone, Copy)]
@@ -120,12 +122,18 @@ pub(super) fn flash_on_echolocation(
 }
 
 pub(super) fn follow_echolocation(
+    mut cmd: Commands,
     mut echo_hit_r: EventReader<EcholocationHitEv>,
-    mut follow_q: Query<&mut MovementDirection, With<FollowEchoOnHit>>,
+    mut follow_q: Query<
+        &mut MovementDirection,
+        (With<FollowEchoOnHit>, Without<Cooldown<FollowEchoOnHit>>),
+    >,
 ) {
     for ev in echo_hit_r.iter() {
         if let Ok(mut dir) = follow_q.get_mut(ev.hit_e) {
             dir.0 = ev.direction.normalize_or_zero();
+            cmd.entity(ev.hit_e)
+                .try_insert(Cooldown::<FollowEchoOnHit>::new(0.5));
         }
     }
 }
