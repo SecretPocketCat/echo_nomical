@@ -72,6 +72,9 @@ fn spawn_enemy(mut ev_r: EventReader<SpawnEnemyEv>, mut cmd: Commands, tex: Res<
                     let spike_count = 12;
                     let ray_step = 360. / (spike_count * 2) as f32;
 
+                    sprite_bundle.texture = tex.spiky.clone();
+                    sprite_bundle.sprite.custom_size = Some(Vec2::splat(radius * 2.));
+
                     let vert = (0..=(spike_count * 2))
                         .map(|i| {
                             let dir = Vec2::from_angle((i as f32 * ray_step).to_radians());
@@ -88,7 +91,7 @@ fn spawn_enemy(mut ev_r: EventReader<SpawnEnemyEv>, mut cmd: Commands, tex: Res<
                         .insert(Collider::polyline(vert, None))
                         .insert(Name::new("Spiky"))
                         .insert(Killer)
-                        .insert(EcholocationHitColor(Color::CRIMSON));
+                        .insert(EcholocationHitColor(Color::RED));
                 }
                 EnemyType::FollowPing => {
                     let radius = 25.;

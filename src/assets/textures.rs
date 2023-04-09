@@ -11,4 +11,7 @@ pub struct TextureAssets {
 
     #[asset(path = "textures/wave.png")]
     pub wave: Handle<Image>,
+
+    #[asset(path = "textures/spiky.png")]
+    pub spiky: Handle<Image>,
 }
