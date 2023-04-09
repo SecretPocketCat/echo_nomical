@@ -1,4 +1,4 @@
-use bevy::prelude::*;
+use bevy::{prelude::*, sprite::Anchor};
 use bevy_rapier2d::prelude::*;
 use bevy_tweening::{Animator, EaseFunction};
 use rand::{thread_rng, Rng};
@@ -94,13 +94,28 @@ fn spawn_enemy(mut ev_r: EventReader<SpawnEnemyEv>, mut cmd: Commands, tex: Res<
                         .insert(EcholocationHitColor(Color::RED));
                 }
                 EnemyType::FollowPing => {
-                    let radius = 25.;
-                    sprite_bundle.texture = tex.player.clone();
-                    sprite_bundle.sprite.custom_size = Some(Vec2::splat(radius * 2.));
+                    let half_width = 25.;
+                    let height = 60.;
+                    let btm = 5.;
+                    sprite_bundle.texture = tex.charge.clone();
+                    sprite_bundle.sprite.custom_size =
+                        Some(Vec2::new(half_width * 2.25, height * 1.125));
+                    sprite_bundle.sprite.anchor = Anchor::BottomCenter;
+                    sprite_bundle.transform.translation.y -= height / 2.;
+
+                    let verts = vec![
+                        (-half_width, btm),
+                        (half_width, btm),
+                        (0., height),
+                        (-half_width, btm),
+                    ]
+                    .iter()
+                    .map(|(x, y)| Vec2::new(*x, *y))
+                    .collect();
 
                     cmd.entity(e)
                         .insert(sprite_bundle)
-                        .insert(Collider::ball(radius * 0.85))
+                        .insert(Collider::polyline(verts, None))
                         .insert(Name::new("FolowPing"))
                         .insert(EcholocationHitColor(Color::CRIMSON))
                         .insert(FollowEchoOnHit)
