@@ -6,11 +6,11 @@ use leafwing_input_manager::prelude::*;
 use crate::{
     agent::agent::{Age, Damping, MovementDirection, Speed},
     animation::{
-        get_relative_scale_anim, get_relative_scale_tween, get_relative_sprite_color_anim,
-        TweenDoneAction,
+        delay_tween, get_relative_scale_anim, get_relative_scale_tween,
+        get_relative_sprite_color_anim, get_relative_sprite_color_tween, TweenDoneAction,
     },
     assets::textures::TextureAssets,
-    input::actions::PlayerAction,
+    input::{actions::PlayerAction, cooldown::Cooldown},
     physics::{check_collision_start, ECHO_COLL_GROUP, PLAYER_COLL_GROUP},
     EntityCommandsExt,
 };
@@ -24,18 +24,35 @@ pub(super) struct EcholocationRay;
 #[derive(Component)]
 pub struct EcholocationHitColor(pub Color);
 
+#[derive(Component)]
+pub struct FollowEchoOnHit;
+
+pub struct EcholocationHitEv {
+    pub direction: Vec2,
+    pub hit_e: Entity,
+}
+
+pub struct Echolocate;
+
 pub(super) fn echolocate(
     mut cmd: Commands,
-    input_q: Query<(&ActionState<PlayerAction>, &GlobalTransform)>,
+    input_q: Query<
+        (Entity, &ActionState<PlayerAction>, &GlobalTransform),
+        Without<Cooldown<Echolocate>>,
+    >,
     textures: Res<TextureAssets>,
 ) {
-    for (_, t) in input_q
+    for (player_e, _, player_t) in input_q
         .iter()
-        .filter(|(input, ..)| input.just_pressed(PlayerAction::Echo))
+        .filter(|(_, input, ..)| input.just_pressed(PlayerAction::Echo))
     {
+        // cooldown
+        cmd.entity(player_e)
+            .try_insert(Cooldown::<Echolocate>::new(1.2));
+
         let ray_count = 100;
         let ray_step = 360. / ray_count as f32;
-        let pos = t.translation();
+        let pos = player_t.translation();
         let radius = 3.;
 
         for i in 0..ray_count {
@@ -91,6 +108,7 @@ pub(super) fn echolocate(
 pub(super) fn echo_hit(
     mut cmd: Commands,
     mut collision_events: EventReader<CollisionEvent>,
+    mut echo_hit_w: EventWriter<EcholocationHitEv>,
     ray_q: Query<(), With<EcholocationRay>>,
     trans_q: Query<(&GlobalTransform, &Age)>,
     color_q: Query<&EcholocationHitColor>,
@@ -111,6 +129,10 @@ pub(super) fn echo_hit(
             ));
 
         if let Ok(mut dir) = move_q.get_mut(coll_success.hit) {
+            echo_hit_w.send(EcholocationHitEv {
+                direction: -dir.0,
+                hit_e: coll_success.other,
+            });
             dir.0 = Vec2::ZERO;
         }
 
@@ -151,6 +173,25 @@ pub(super) fn echo_hit(
                     TweenDoneAction::DespawnSelfRecursive,
                 ));
             }
+        }
+    }
+}
+
+pub(super) fn flash_on_echolocation(
+    mut cmd: Commands,
+    mut echo_hit_r: EventReader<EcholocationHitEv>,
+    color_q: Query<&EcholocationHitColor, With<Sprite>>,
+) {
+    for ev in echo_hit_r.iter() {
+        if let Ok(col) = color_q.get(ev.hit_e) {
+            cmd.entity(ev.hit_e).try_insert(Animator::new(
+                get_relative_sprite_color_tween(col.0, 250, TweenDoneAction::None).then(
+                    delay_tween(
+                        get_relative_sprite_color_tween(Color::NONE, 800, TweenDoneAction::None),
+                        600,
+                    ),
+                ),
+            ));
         }
     }
 }

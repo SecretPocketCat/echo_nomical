@@ -2,6 +2,7 @@ use bevy::prelude::*;
 use seldom_fn_plugin::FnPluginExt;
 
 pub mod actions;
+pub mod cooldown;
 pub mod mouse;
 
 pub fn input_plugin(app: &mut App) {

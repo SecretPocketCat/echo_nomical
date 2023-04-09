@@ -1,19 +1,15 @@
-use bevy::{prelude::*, window::PrimaryWindow};
+use bevy::prelude::*;
 use bevy_rapier2d::prelude::*;
-use rand::*;
 
+use super::mapgen::{gen_map, TileType};
 use crate::{
-    agent::agent::Bouncable,
+    agent::agent::AgentRotation,
+    assets::textures::TextureAssets,
     echolocation::echolocation::EcholocationHitColor,
     enemy::{EnemyType, SpawnEnemyEv},
     player::player::PlayerEv,
-    render::camera::PrimaryCamera,
     AppSize,
 };
-
-use super::mapgen::{gen_map, TileType};
-
-// use super::mapgen::{gen_map, TileType};
 
 #[derive(Component)]
 pub struct LevelEntry;
@@ -31,6 +27,7 @@ pub(super) fn setup_test_lvl(
     mut cmd: Commands,
     mut ev_w: EventWriter<SpawnEnemyEv>,
     bounds: Res<AppSize>,
+    tex: Res<TextureAssets>,
 ) {
     let bounds = &*bounds;
     let map = gen_map();
@@ -44,7 +41,6 @@ pub(super) fn setup_test_lvl(
                 )))
                 .insert(Collider::cuboid(20., 20.))
                 .insert(Wall)
-                .insert(Bouncable)
                 .insert(Name::new("Wall"));
             }
         }
@@ -56,22 +52,30 @@ pub(super) fn setup_test_lvl(
     .insert(LevelEntry)
     .insert(Name::new("Entry"));
 
-    cmd.spawn(TransformBundle::from_transform(Transform::from_xyz(
-        -325., 260., 0.,
-    )))
-    .insert(Collider::round_cuboid(25., 25., 0.25))
+    cmd.spawn(SpriteBundle {
+        transform: Transform::from_xyz(-325., 260., 0.),
+        texture: tex.portal.clone(),
+        sprite: Sprite {
+            color: Color::NONE,
+            custom_size: Some(Vec2::new(95., 100.)),
+            ..default()
+        },
+        ..default()
+    })
+    .insert(Collider::ball(40.))
     .insert(Sensor)
     .insert(LevelExit)
-    .insert(EcholocationHitColor(Color::GOLD))
     .insert(ActiveEvents::COLLISION_EVENTS)
     .insert(ActiveCollisionTypes::all())
+    .insert(EcholocationHitColor(Color::LIME_GREEN))
+    .insert(AgentRotation(-120.))
     .insert(Name::new("Exit"));
 
     // enemies
     for (x, y, enemy_type) in [
-        (-200., -100., EnemyType::Static),
-        (360., -250., EnemyType::Static),
-        (0., 200., EnemyType::FollowPing),
+        (-200., -100., EnemyType::FollowPing),
+        (360., -250., EnemyType::Spiky),
+        (200., -250., EnemyType::FollowPing),
     ]
     .iter()
     {
