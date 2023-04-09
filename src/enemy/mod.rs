@@ -67,6 +67,7 @@ fn spawn_enemy(mut ev_r: EventReader<SpawnEnemyEv>, mut cmd: Commands) {
                 }
                 EnemyType::Bouncy => {
                     cmd.entity(e)
+                        .insert(RigidBody::KinematicPositionBased)
                         .insert(Collider::ball(rng.gen_range(25.0..40.)))
                         .insert(Name::new("Bouncy"))
                         .insert(EcholocationHitColor(Color::ORANGE_RED))
