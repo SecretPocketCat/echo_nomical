@@ -2,7 +2,11 @@ use bevy::prelude::*;
 use bevy_rapier2d::prelude::*;
 use rand::{thread_rng, Rng};
 
-use crate::{echolocation::echolocation::EcholocationHitColor, state::UnpausedGame};
+use crate::{
+    agent::agent::{Bounce, MovementDirection, Speed},
+    echolocation::echolocation::EcholocationHitColor,
+    state::UnpausedGame,
+};
 
 pub fn enemy_plugin(app: &mut App) {
     app.add_event::<SpawnEnemyEv>()
@@ -29,6 +33,16 @@ fn spawn_enemy(mut ev_r: EventReader<SpawnEnemyEv>, mut cmd: Commands) {
         let mut rng = thread_rng();
 
         for ev in ev_r.iter() {
+            let e = cmd
+                .spawn(SpatialBundle::from_transform(Transform::from_translation(
+                    ev.position.extend(0.),
+                )))
+                .insert(Sensor)
+                .insert(ev.enemy_type)
+                .insert(ActiveEvents::COLLISION_EVENTS)
+                .insert(ActiveCollisionTypes::all())
+                .id();
+
             match ev.enemy_type {
                 EnemyType::Spiky => {
                     let radius = rng.gen_range(40.0..70.);
@@ -45,18 +59,24 @@ fn spawn_enemy(mut ev_r: EventReader<SpawnEnemyEv>, mut cmd: Commands) {
                             }
                         })
                         .collect();
-                    cmd.spawn(SpatialBundle::from_transform(Transform::from_translation(
-                        ev.position.extend(0.),
-                    )))
-                    .insert(Collider::polyline(vert, None))
-                    .insert(Sensor)
-                    .insert(ev.enemy_type)
-                    .insert(Name::new("Enemy"))
-                    .insert(ActiveEvents::COLLISION_EVENTS)
-                    .insert(ActiveCollisionTypes::all())
-                    .insert(EcholocationHitColor(Color::CRIMSON));
+
+                    cmd.entity(e)
+                        .insert(Collider::polyline(vert, None))
+                        .insert(Name::new("Spiky"))
+                        .insert(EcholocationHitColor(Color::CRIMSON));
                 }
-                EnemyType::Bouncy => {}
+                EnemyType::Bouncy => {
+                    cmd.entity(e)
+                        .insert(Collider::ball(rng.gen_range(25.0..40.)))
+                        .insert(Name::new("Bouncy"))
+                        .insert(EcholocationHitColor(Color::ORANGE_RED))
+                        .insert(Speed(50.))
+                        .insert(MovementDirection(
+                            Vec2::new(rng.gen_range(-1.1..=1.), rng.gen_range(-1.0..=1.))
+                                .normalize_or_zero(),
+                        ))
+                        .insert(Bounce);
+                }
                 EnemyType::Dasher => {}
             }
         }

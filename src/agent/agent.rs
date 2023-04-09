@@ -1,7 +1,15 @@
-use bevy::prelude::*;
+use bevy::{
+    prelude::*,
+    utils::{HashMap, HashSet},
+};
 use bevy_rapier2d::prelude::*;
 
-use crate::{state::PersistReset, time::time::*, AppSize};
+use crate::{
+    physics::{check_collision_start, check_collision_start_pair},
+    state::PersistReset,
+    time::time::*,
+    AppSize, EntityCommandsExt,
+};
 
 #[derive(Component, Deref, DerefMut, Default)]
 pub struct MovementDirection(pub Vec2);
@@ -15,6 +23,20 @@ pub struct Damping(pub f32);
 
 #[derive(Component, Deref, DerefMut, Default)]
 pub struct Rotation(pub f32);
+
+#[derive(Component)]
+pub struct Bounce;
+
+pub struct BounceEv {
+    entity: Entity,
+    position: Vec2,
+}
+
+#[derive(Component, Deref, DerefMut)]
+pub struct ReenableCollider(Timer);
+
+#[derive(Component)]
+pub struct Bouncable;
 
 #[derive(Component, Deref, DerefMut)]
 pub struct DespawnParent(pub Entity);
@@ -85,6 +107,61 @@ pub(super) fn despawn_out_of_bounds(
             if let Some(e_cmd) = cmd.get_entity(despawn_parent.map_or(e, |e| e.0)) {
                 e_cmd.despawn_recursive();
             }
+        }
+    }
+}
+
+pub(super) fn bounce(
+    mut cmd: Commands,
+    mut collision_events: EventReader<CollisionEvent>,
+    mut bounce_q: Query<(&mut MovementDirection, &GlobalTransform), With<Bounce>>,
+    bouncable_q: Query<(), With<Bouncable>>,
+    phys_ctx: Res<RapierContext>,
+) {
+    let bounces: HashSet<_> = collision_events
+        .iter()
+        .filter_map(|ev| check_collision_start_pair(ev, &bounce_q, &bouncable_q))
+        .map(|e| e.0)
+        .collect();
+
+    for e in bounces.iter() {
+        if let Ok((mut dir, t)) = bounce_q.get_mut(*e) {
+            if let Some(hit) = phys_ctx.cast_ray_and_get_normal(
+                t.translation().truncate(),
+                dir.0,
+                1000.,
+                true,
+                QueryFilter::default().exclude_collider(*e),
+            ) {
+                // disable coll to prevent double collisions and re-enable it after a short delay
+                cmd.entity(*e).try_insert((
+                    ColliderDisabled,
+                    ReenableCollider(Timer::from_seconds(0.05, TimerMode::Once)),
+                ));
+                // todo: this doesn's quite work
+                let reflected_dir = dir.0 - 2. * dir.0.dot(hit.1.normal) * hit.1.normal;
+                dir.0 = reflected_dir;
+            }
+
+            // todo: reflect dir
+            // todo: reenable coll after a bit
+            // todo: bounce ev
+        }
+    }
+}
+
+pub(super) fn reenable_collider(
+    mut cmd: Commands,
+    time: ScaledTime,
+    mut enable_q: Query<(Entity, &mut ReenableCollider)>,
+) {
+    for (e, mut enable) in &mut enable_q {
+        enable.tick(time.scaled_delta());
+
+        if enable.just_finished() {
+            cmd.entity(e)
+                .remove::<ReenableCollider>()
+                .remove::<ColliderDisabled>();
         }
     }
 }

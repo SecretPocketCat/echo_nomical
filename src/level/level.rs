@@ -3,6 +3,7 @@ use bevy_rapier2d::prelude::*;
 use rand::*;
 
 use crate::{
+    agent::agent::Bouncable,
     echolocation::echolocation::EcholocationHitColor,
     enemy::{EnemyType, SpawnEnemyEv},
     player::player::PlayerEv,
@@ -16,6 +17,9 @@ pub struct LevelExit;
 
 #[derive(Resource, Default)]
 pub struct ReachedLevel(pub usize);
+
+#[derive(Component)]
+pub struct Wall;
 
 pub(super) fn setup_test_lvl(mut cmd: Commands, mut ev_w: EventWriter<SpawnEnemyEv>) {
     let mut rng = thread_rng();
@@ -47,13 +51,17 @@ pub(super) fn setup_test_lvl(mut cmd: Commands, mut ev_w: EventWriter<SpawnEnemy
             })
             .collect();
         vertices.push(vertices[0]);
-        cmd.spawn(Collider::polyline(vertices, None));
+        cmd.spawn(Collider::polyline(vertices, None))
+            .insert(Wall)
+            .insert(Bouncable)
+            .insert(Name::new("Wall"));
     }
 
     cmd.spawn(TransformBundle::from_transform(Transform::from_xyz(
         330., 20., 0.,
     )))
-    .insert(LevelEntry);
+    .insert(LevelEntry)
+    .insert(Name::new("Entry"));
 
     cmd.spawn(TransformBundle::from_transform(Transform::from_xyz(
         -325., 260., 0.,
@@ -63,7 +71,8 @@ pub(super) fn setup_test_lvl(mut cmd: Commands, mut ev_w: EventWriter<SpawnEnemy
     .insert(LevelExit)
     .insert(EcholocationHitColor(Color::GOLD))
     .insert(ActiveEvents::COLLISION_EVENTS)
-    .insert(ActiveCollisionTypes::all());
+    .insert(ActiveCollisionTypes::all())
+    .insert(Name::new("Exit"));
 
     // enemies
     for (x, y, enemy_type) in [
