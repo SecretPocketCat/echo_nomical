@@ -1,12 +1,12 @@
 use bevy::prelude::*;
 use bevy_rapier2d::prelude::*;
-use bevy_tweening::{Animator, EaseFunction, Sequence};
+use bevy_tweening::{Animator, EaseFunction};
 use rand::{thread_rng, Rng};
 
 use crate::{
     agent::agent::{MovementDirection, MovementDirectionEasing, Speed},
     animation::{
-        delay_tween, get_relative_sprite_color_anim, get_relative_sprite_color_tween,
+        delay_tween, get_relative_sprite_color_tween,
         TweenDoneAction,
     },
     assets::textures::TextureAssets,

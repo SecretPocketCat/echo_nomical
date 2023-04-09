@@ -1,9 +1,9 @@
-use bevy::{prelude::*, utils::HashSet};
+use bevy::{prelude::*};
 use bevy_rapier2d::prelude::*;
 use bevy_tweening::*;
 use interpolation::*;
 
-use crate::{physics::check_collision_start_pair, state::PersistReset, time::time::*, AppSize};
+use crate::{state::PersistReset, time::time::*, AppSize};
 
 #[derive(Component, Deref, DerefMut, Default, Reflect)]
 pub struct MovementDirection(pub Vec2);
