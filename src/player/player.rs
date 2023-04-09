@@ -1,10 +1,11 @@
 use crate::{
     agent::agent::{MovementDirection, MovementDirectionEasing, Speed},
     animation::{
-        delay_tween, get_relative_scale_anim, get_scale_anim, get_scale_tween, TweenDoneAction,
+        delay_tween, get_relative_scale_anim, get_relative_sprite_color_anim, get_scale_anim,
+        get_scale_tween, TweenDoneAction,
     },
     assets::textures::TextureAssets,
-    echolocation::wave::Wave,
+    echolocation::{echolocation::EcholocationHitColor, wave::Wave},
     enemy::EnemyType,
     input::actions::{PlayerAction, UiAction},
     level::level::{LevelEntry, LevelExit},
@@ -117,21 +118,51 @@ pub(super) fn move_player(
 }
 
 pub(super) fn exit_reached(
+    mut cmd: Commands,
     mut collision_events: EventReader<CollisionEvent>,
-    q_player: Query<(), With<Player>>,
-    q_exit: Query<(), With<LevelExit>>,
+    player_q: Query<(), With<Player>>,
+    exit_q: Query<(), With<LevelExit>>,
+    col_q: Query<(&EcholocationHitColor, &GlobalTransform)>,
     mut fade_reset: ResMut<FadeReset>,
     mut ev_w: EventWriter<PlayerEv>,
 ) {
-    if let Some(..) = collision_events
+    if let Some(coll) = collision_events
         .iter()
-        .filter(|ev| check_collision_start_pair(ev, &q_player, &q_exit).is_some())
+        .filter_map(|ev| check_collision_start_pair(ev, &player_q, &exit_q))
         .next()
     {
         fade_reset.set(AppState::Game);
         ev_w.send(PlayerEv::ClearedLevel);
 
-        // todo: tween
+        cmd.entity(coll.0).try_insert(get_scale_anim(
+            None,
+            Vec2::ZERO.extend(1.),
+            400,
+            EaseFunction::BackIn,
+            TweenDoneAction::DespawnSelfRecursive,
+        ));
+
+        if let Ok((col, t)) = col_q.get(coll.1) {
+            cmd.entity(coll.1)
+                .try_insert(get_scale_anim(
+                    None,
+                    Vec2::ZERO.extend(1.),
+                    400,
+                    EaseFunction::BackIn,
+                    TweenDoneAction::DespawnSelfRecursive,
+                ))
+                .try_insert(get_relative_sprite_color_anim(
+                    col.0,
+                    200,
+                    TweenDoneAction::None,
+                ));
+
+            cmd.spawn(Wave {
+                position: t.translation(),
+                radius: 130.,
+                color: col.0,
+            });
+        }
     }
 }
 
