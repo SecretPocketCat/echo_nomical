@@ -1,15 +1,7 @@
-use bevy::{
-    prelude::*,
-    utils::{HashMap, HashSet},
-};
+use bevy::{prelude::*, utils::HashSet};
 use bevy_rapier2d::prelude::*;
 
-use crate::{
-    physics::{check_collision_start, check_collision_start_pair},
-    state::PersistReset,
-    time::time::*,
-    AppSize, EntityCommandsExt,
-};
+use crate::{physics::check_collision_start_pair, state::PersistReset, time::time::*, AppSize};
 
 #[derive(Component, Deref, DerefMut, Default)]
 pub struct MovementDirection(pub Vec2);
@@ -27,10 +19,10 @@ pub struct Rotation(pub f32);
 #[derive(Component)]
 pub struct Bounce;
 
-pub struct BounceEv {
-    entity: Entity,
-    position: Vec2,
-}
+// pub struct BounceEv {
+//     entity: Entity,
+//     position: Vec2,
+// }
 
 #[derive(Component, Deref, DerefMut)]
 pub struct ReenableCollider(Timer);

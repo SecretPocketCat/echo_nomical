@@ -1,13 +1,12 @@
-use bevy::{prelude::*, window::PrimaryWindow};
+use bevy::{prelude::*};
 use bevy_rapier2d::prelude::*;
-use rand::*;
+
 
 use crate::{
     agent::agent::Bouncable,
     echolocation::echolocation::EcholocationHitColor,
     enemy::{EnemyType, SpawnEnemyEv},
     player::player::PlayerEv,
-    render::camera::PrimaryCamera,
     AppSize,
 };
 

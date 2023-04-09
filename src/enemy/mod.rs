@@ -2,11 +2,7 @@ use bevy::prelude::*;
 use bevy_rapier2d::prelude::*;
 use rand::{thread_rng, Rng};
 
-use crate::{
-    agent::agent::{Bouncable, Bounce, MovementDirection, Speed},
-    echolocation::echolocation::EcholocationHitColor,
-    state::UnpausedGame,
-};
+use crate::{echolocation::echolocation::EcholocationHitColor, state::UnpausedGame};
 
 pub fn enemy_plugin(app: &mut App) {
     app.add_event::<SpawnEnemyEv>()
@@ -17,7 +13,7 @@ pub fn enemy_plugin(app: &mut App) {
 pub enum EnemyType {
     Static,
     FollowPing,
-    Bouncy,
+    // Bouncy,
 }
 
 #[derive(Debug)]
@@ -63,19 +59,19 @@ fn spawn_enemy(mut ev_r: EventReader<SpawnEnemyEv>, mut cmd: Commands) {
                         .insert(Name::new("Spiky"))
                         .insert(EcholocationHitColor(Color::CRIMSON));
                 }
-                EnemyType::Bouncy => {
-                    cmd.entity(e)
-                        .insert(RigidBody::KinematicPositionBased)
-                        .insert(Collider::ball(rng.gen_range(25.0..40.)))
-                        .insert(Name::new("Bouncy"))
-                        .insert(EcholocationHitColor(Color::ORANGE_RED))
-                        .insert(Speed(50.))
-                        .insert(MovementDirection(
-                            Vec2::new(rng.gen_range(-1.1..=1.), rng.gen_range(-1.0..=1.))
-                                .normalize_or_zero(),
-                        ))
-                        .insert(Bounce);
-                }
+                // EnemyType::Bouncy => {
+                //     cmd.entity(e)
+                //         .insert(RigidBody::KinematicPositionBased)
+                //         .insert(Collider::ball(rng.gen_range(25.0..40.)))
+                //         .insert(Name::new("Bouncy"))
+                //         .insert(EcholocationHitColor(Color::ORANGE_RED))
+                //         .insert(Speed(50.))
+                //         .insert(MovementDirection(
+                //             Vec2::new(rng.gen_range(-1.1..=1.), rng.gen_range(-1.0..=1.))
+                //                 .normalize_or_zero(),
+                //         ))
+                //         .insert(Bounce);
+                // }
                 EnemyType::FollowPing => {}
             }
         }
