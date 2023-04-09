@@ -1,9 +1,17 @@
-use bevy::{prelude::*};
+use std::marker::PhantomData;
+
+use bevy::prelude::*;
 use bevy_rapier2d::prelude::*;
 use bevy_tweening::*;
 use interpolation::*;
 
-use crate::{state::PersistReset, time::time::*, AppSize};
+use crate::{
+    level::level::Wall,
+    physics::{check_collision_start, check_collision_start_pair},
+    state::PersistReset,
+    time::time::*,
+    AppSize,
+};
 
 #[derive(Component, Deref, DerefMut, Default, Reflect)]
 pub struct MovementDirection(pub Vec2);
@@ -42,8 +50,14 @@ pub struct Damping(pub f32);
 #[derive(Component, Deref, DerefMut, Default)]
 pub struct Rotation(pub f32);
 
-#[derive(Component, Deref, DerefMut)]
-pub struct ReenableCollider(Timer);
+#[derive(Component)]
+pub struct StopOnCollision<T>(PhantomData<T>);
+
+impl<T> StopOnCollision<T> {
+    pub fn new() -> Self {
+        Self(PhantomData::default())
+    }
+}
 
 #[derive(Component, Deref, DerefMut)]
 pub struct DespawnParent(pub Entity);
@@ -132,6 +146,22 @@ pub(super) fn despawn_out_of_bounds(
             if let Some(e_cmd) = cmd.get_entity(despawn_parent.map_or(e, |e| e.0)) {
                 e_cmd.despawn_recursive();
             }
+        }
+    }
+}
+
+pub(super) fn stop_on_wall_collision(
+    mut collision_events: EventReader<CollisionEvent>,
+    stoppable_q: Query<(), With<StopOnCollision<Wall>>>,
+    stop_q: Query<(), With<Wall>>,
+    mut dir_q: Query<&mut MovementDirection>,
+) {
+    for coll in collision_events
+        .iter()
+        .filter_map(|ev| check_collision_start_pair(ev, &stoppable_q, &stop_q))
+    {
+        if let Ok(mut dir) = dir_q.get_mut(coll.0) && dir.0.length() > 0. {
+            dir.0 = Vec2::ZERO;
         }
     }
 }

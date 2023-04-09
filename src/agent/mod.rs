@@ -4,7 +4,7 @@ use crate::state::UnpausedGame;
 
 use self::agent::{
     age, apply_damping, despawn_out_of_bounds, ease_direction, move_agents, rotate,
-    MovementDirection, MovementDirectionEasing,
+    stop_on_wall_collision, MovementDirection, MovementDirectionEasing,
 };
 
 pub mod agent;
@@ -17,8 +17,8 @@ pub fn agent_plugin(app: &mut App) {
             .in_base_set(CoreSet::PostUpdate)
             .before(TransformSystem::TransformPropagate),
     )
-    .add_system(age.in_base_set(CoreSet::PreUpdate))
-    .add_system(despawn_out_of_bounds);
+    .add_systems((stop_on_wall_collision, despawn_out_of_bounds).in_set(UnpausedGame))
+    .add_system(age.in_base_set(CoreSet::PreUpdate));
 
     app.register_type::<MovementDirection>()
         .register_type::<MovementDirectionEasing>();

@@ -4,14 +4,12 @@ use bevy_tweening::{Animator, EaseFunction};
 use rand::{thread_rng, Rng};
 
 use crate::{
-    agent::agent::{MovementDirection, MovementDirectionEasing, Speed},
-    animation::{
-        delay_tween, get_relative_sprite_color_tween,
-        TweenDoneAction,
-    },
+    agent::agent::{MovementDirection, MovementDirectionEasing, Speed, StopOnCollision},
+    animation::{delay_tween, get_relative_sprite_color_tween, TweenDoneAction},
     assets::textures::TextureAssets,
     echolocation::echolocation::{EcholocationHitColor, EcholocationHitEv, FollowEchoOnHit},
     input::cooldown::{process_cooldown, Cooldown},
+    level::level::Wall,
     state::UnpausedGame,
     EntityCommandsExt,
 };
@@ -90,6 +88,7 @@ fn spawn_enemy(mut ev_r: EventReader<SpawnEnemyEv>, mut cmd: Commands, tex: Res<
                         .insert(Name::new("FolowPing"))
                         .insert(EcholocationHitColor(Color::CRIMSON))
                         .insert(FollowEchoOnHit)
+                        .insert(StopOnCollision::<Wall>::new())
                         .insert(Speed(220.))
                         .insert(MovementDirection::default())
                         .insert(MovementDirectionEasing::with_ease_fn(
