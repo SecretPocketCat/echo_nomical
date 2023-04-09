@@ -1,6 +1,8 @@
 use crate::{
     agent::agent::{MovementDirection, MovementDirectionEasing, Speed},
-    animation::{get_relative_scale_anim, TweenDoneAction},
+    animation::{
+        delay_tween, get_relative_scale_anim, get_scale_anim, get_scale_tween, TweenDoneAction,
+    },
     assets::textures::TextureAssets,
     echolocation::wave::Wave,
     enemy::EnemyType,
@@ -12,6 +14,7 @@ use crate::{
 };
 use bevy::prelude::*;
 use bevy_rapier2d::prelude::*;
+use bevy_tweening::{Animator, EaseFunction};
 use leafwing_input_manager::prelude::*;
 
 #[derive(Component)]
@@ -32,16 +35,9 @@ pub(super) fn spawn_player(
     let radius = 20.;
 
     if entry_q.iter().next().is_some() {
-        cmd.spawn(SpriteBundle {
-            texture: textures.player.clone(),
-            transform: Transform::from_translation(Vec3::new(200., -60., 1.)),
-            sprite: Sprite {
-                color: Color::SEA_GREEN,
-                custom_size: Some(Vec2::splat(radius * 2.)),
-                ..default()
-            },
-            ..Default::default()
-        })
+        cmd.spawn(SpatialBundle::from_transform(Transform::from_translation(
+            Vec3::new(200., -60., 1.),
+        )))
         .insert(RigidBody::KinematicPositionBased)
         .insert(Collider::ball(radius * 0.8))
         .insert(KinematicCharacterController {
@@ -83,7 +79,30 @@ pub(super) fn spawn_player(
                 .build(),
             ..default()
         })
-        .insert(Name::new("PLAYER"));
+        .insert(Name::new("PLAYER"))
+        .with_children(|parent| {
+            parent
+                .spawn(SpriteBundle {
+                    texture: textures.player.clone(),
+                    transform: Transform::from_scale(Vec2::ZERO.extend(0.)),
+                    sprite: Sprite {
+                        color: Color::SEA_GREEN,
+                        custom_size: Some(Vec2::splat(radius * 2.)),
+                        ..default()
+                    },
+                    ..default()
+                })
+                .insert(Animator::new(delay_tween(
+                    get_scale_tween(
+                        None,
+                        Vec3::ONE,
+                        400,
+                        EaseFunction::BackOut,
+                        TweenDoneAction::None,
+                    ),
+                    1000,
+                )));
+        });
     }
 }
 
@@ -111,6 +130,8 @@ pub(super) fn exit_reached(
     {
         fade_reset.set(AppState::Game);
         ev_w.send(PlayerEv::ClearedLevel);
+
+        // todo: tween
     }
 }
 
@@ -119,7 +140,7 @@ pub(super) fn player_hit(
     mut collision_events: EventReader<CollisionEvent>,
     player_q: Query<(), With<Player>>,
     enemy_q: Query<(), With<EnemyType>>,
-    trans_q: Query<(&GlobalTransform)>,
+    trans_q: Query<&GlobalTransform>,
     mut fade_reset: ResMut<FadeReset>,
     mut ev_w: EventWriter<PlayerEv>,
 ) {
