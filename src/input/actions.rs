@@ -20,6 +20,12 @@ pub enum UiAction {
     Cancel,
 }
 
+#[derive(Actionlike, PartialEq, Eq, Clone, Copy, Hash, Debug)]
+pub enum DebugAction {
+    ToggleRapierDebug,
+    RestartGame,
+}
+
 pub fn any_player_just_released<A: Actionlike>(
     action: A,
 ) -> impl FnMut(Query<&ActionState<A>>) -> bool {
