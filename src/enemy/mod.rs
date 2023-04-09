@@ -3,7 +3,7 @@ use bevy_rapier2d::prelude::*;
 use rand::{thread_rng, Rng};
 
 use crate::{
-    agent::agent::{Bounce, MovementDirection, Speed},
+    agent::agent::{Bouncable, Bounce, MovementDirection, Speed},
     echolocation::echolocation::EcholocationHitColor,
     state::UnpausedGame,
 };
@@ -15,11 +15,9 @@ pub fn enemy_plugin(app: &mut App) {
 
 #[derive(Debug, Component, Clone, Copy)]
 pub enum EnemyType {
-    Spiky,
+    Static,
+    FollowPing,
     Bouncy,
-    Dasher,
-    // Walker,
-    // Elite,
 }
 
 #[derive(Debug)]
@@ -44,7 +42,7 @@ fn spawn_enemy(mut ev_r: EventReader<SpawnEnemyEv>, mut cmd: Commands) {
                 .id();
 
             match ev.enemy_type {
-                EnemyType::Spiky => {
+                EnemyType::Static => {
                     let radius = rng.gen_range(40.0..70.);
                     let spike_count = 12;
                     let ray_step = 360. / (spike_count * 2) as f32;
@@ -78,7 +76,7 @@ fn spawn_enemy(mut ev_r: EventReader<SpawnEnemyEv>, mut cmd: Commands) {
                         ))
                         .insert(Bounce);
                 }
-                EnemyType::Dasher => {}
+                EnemyType::FollowPing => {}
             }
         }
     }

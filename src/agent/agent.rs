@@ -112,7 +112,6 @@ pub(super) fn despawn_out_of_bounds(
 }
 
 pub(super) fn bounce(
-    mut cmd: Commands,
     mut collision_events: EventReader<CollisionEvent>,
     mut bounce_q: Query<(&mut MovementDirection, &GlobalTransform), With<Bounce>>,
     bouncable_q: Query<(), With<Bouncable>>,
@@ -137,9 +136,6 @@ pub(super) fn bounce(
                 let reflected_dir = dir.0 - 2. * dir.0.dot(hit.1.normal) * hit.1.normal;
                 dir.0 = reflected_dir;
             }
-
-            // todo: reflect dir
-            // todo: reenable coll after a bit
             // todo: bounce ev
         }
     }

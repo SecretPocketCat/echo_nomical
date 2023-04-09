@@ -77,8 +77,8 @@ pub(super) fn setup_test_lvl(mut cmd: Commands, mut ev_w: EventWriter<SpawnEnemy
     // enemies
     for (x, y, enemy_type) in [
         (-200., -100., EnemyType::Bouncy),
-        (360., -250., EnemyType::Spiky),
-        (0., 200., EnemyType::Dasher),
+        (360., -250., EnemyType::Static),
+        (0., 200., EnemyType::FollowPing),
     ]
     .iter()
     {
