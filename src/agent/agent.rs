@@ -1,10 +1,35 @@
 use bevy::{prelude::*, utils::HashSet};
 use bevy_rapier2d::prelude::*;
+use bevy_tweening::*;
+use interpolation::*;
 
 use crate::{physics::check_collision_start_pair, state::PersistReset, time::time::*, AppSize};
 
 #[derive(Component, Deref, DerefMut, Default)]
 pub struct MovementDirection(pub Vec2);
+
+#[derive(Component)]
+pub struct MovementDirectionEasing {
+    time_to_ease: f32,
+    time: f32,
+    ease: EaseFunction,
+    eased_dir: Vec2,
+}
+
+impl MovementDirectionEasing {
+    pub fn new(time_to_ease: f32) -> Self {
+        Self::with_ease_fn(time_to_ease, EaseFunction::SineInOut)
+    }
+
+    pub fn with_ease_fn(time_to_ease: f32, ease: EaseFunction) -> Self {
+        Self {
+            time_to_ease,
+            time: 0.,
+            ease,
+            eased_dir: Vec2::ZERO,
+        }
+    }
+}
 
 #[derive(Component, Deref, DerefMut, Default)]
 pub struct Speed(pub f32);
@@ -28,20 +53,38 @@ pub struct Age(pub f32);
 pub(super) fn move_agents(
     mut velocity_q: Query<(
         &MovementDirection,
+        Option<&MovementDirectionEasing>,
         &Speed,
         &mut Transform,
         Option<&mut KinematicCharacterController>,
     )>,
     time: ScaledTime,
 ) {
-    for (dir, speed, mut trans, char_cont) in velocity_q.iter_mut() {
-        let vel = dir.0 * speed.0 * time.scaled_delta_seconds();
+    for (dir, eased, speed, mut trans, char_cont) in velocity_q.iter_mut() {
+        let vel = eased.map_or(dir.0, |e| e.eased_dir) * speed.0 * time.scaled_delta_seconds();
 
         if let Some(mut char_cont) = char_cont {
             char_cont.translation = Some(vel);
         } else {
             trans.translation += vel.extend(0.);
         }
+    }
+}
+
+pub(super) fn ease_direction(
+    mut dir_easing_q: Query<(&MovementDirection, &mut MovementDirectionEasing)>,
+    time: ScaledTime,
+) {
+    for (dir, mut ease_dir) in dir_easing_q.iter_mut() {
+        ease_dir.time = (ease_dir.time
+            + time.scaled_delta_seconds()
+                * if dir.0.length() > ease_dir.eased_dir.length() {
+                    1.
+                } else {
+                    -1.
+                })
+        .clamp(0., 1.);
+        ease_dir.eased_dir = dir.0 * (ease_dir.time / ease_dir.time_to_ease).calc(ease_dir.ease);
     }
 }
 

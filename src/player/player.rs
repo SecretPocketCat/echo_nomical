@@ -1,5 +1,5 @@
 use crate::{
-    agent::agent::{MovementDirection, Speed},
+    agent::agent::{MovementDirection, MovementDirectionEasing, Speed},
     assets::textures::TextureAssets,
     enemy::EnemyType,
     input::actions::{PlayerAction, UiAction},
@@ -55,6 +55,7 @@ pub(super) fn spawn_player(
         ))
         .insert(Player)
         .insert(MovementDirection::default())
+        .insert(MovementDirectionEasing::new(0.085))
         .insert(Speed(100.))
         .insert(InputManagerBundle::<PlayerAction> {
             input_map: InputMap::default()

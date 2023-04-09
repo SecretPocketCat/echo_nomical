@@ -1,9 +1,10 @@
 use bevy::prelude::*;
 use bevy_rapier2d::prelude::*;
+use bevy_tweening::EaseFunction;
 use rand::{thread_rng, Rng};
 
 use crate::{
-    agent::agent::{MovementDirection, Speed},
+    agent::agent::{MovementDirection, MovementDirectionEasing, Speed},
     echolocation::echolocation::{EcholocationHitColor, EcholocationHitEv, FollowEchoOnHit},
     state::UnpausedGame,
 };
@@ -66,11 +67,15 @@ fn spawn_enemy(mut ev_r: EventReader<SpawnEnemyEv>, mut cmd: Commands) {
                 EnemyType::FollowPing => {
                     cmd.entity(e)
                         .insert(Collider::ball(30.))
-                        .insert(Name::new("Spiky"))
+                        .insert(Name::new("FolowPing"))
                         .insert(EcholocationHitColor(Color::CRIMSON))
                         .insert(FollowEchoOnHit)
-                        .insert(Speed(200.))
-                        .insert(MovementDirection::default());
+                        .insert(Speed(220.))
+                        .insert(MovementDirection::default())
+                        .insert(MovementDirectionEasing::with_ease_fn(
+                            1.5,
+                            EaseFunction::QuadraticIn,
+                        ));
                 }
             }
         }
