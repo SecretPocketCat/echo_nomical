@@ -1,10 +1,13 @@
-use bevy::prelude::*;
+use bevy::{prelude::*, window::PrimaryWindow};
 use bevy_rapier2d::prelude::*;
 use rand::*;
 
 use crate::{
-    echolocation::echolocation::EcholocationHitColor, enemy::SpawnEnemyEv, player::player::PlayerEv,
+    echolocation::echolocation::EcholocationHitColor, enemy::SpawnEnemyEv,
+    player::player::PlayerEv, render::camera::PrimaryCamera, AppSize,
 };
+
+use super::mapgen::{gen_map, TileType};
 
 #[derive(Component)]
 pub struct LevelEntry;
@@ -15,37 +18,24 @@ pub struct LevelExit;
 #[derive(Resource, Default)]
 pub struct ReachedLevel(pub usize);
 
-pub(super) fn setup_test_lvl(mut cmd: Commands, mut ev_w: EventWriter<SpawnEnemyEv>) {
-    let mut rng = thread_rng();
-
-    for polyline in [
-        // walls
-        vec![
-            (-350., 350.),
-            (400., 360.),
-            (380., 30.),
-            (480., -330.),
-            (420., -360.),
-            (100., -310.),
-            (-380., -280.),
-            (-425., 280.),
-        ],
-        // obstacles
-        vec![(-250., 200.), (-200., 230.), (-170., 150.)],
-        vec![(250., 200.), (400., 230.), (380., 90.)],
-        vec![(300., 280.), (220., 300.), (-200., -210.), (100., -180.)],
-    ] {
-        let mut vertices: Vec<_> = polyline
-            .iter()
-            .map(|(x, y)| {
-                Vec2::new(
-                    *x + rng.gen_range(-50.0..50.),
-                    *y + rng.gen_range(-50.0..50.),
-                )
-            })
-            .collect();
-        vertices.push(vertices[0]);
-        cmd.spawn(Collider::polyline(vertices, None));
+pub(super) fn setup_test_lvl(
+    mut cmd: Commands,
+    mut ev_w: EventWriter<SpawnEnemyEv>,
+    bounds: Res<AppSize>,
+) {
+    // let bounds = &*app_size;
+    let map = gen_map();
+    for y in 0..map.height {
+        for x in 0..map.width {
+            if map.xy(x, y) == &TileType::Wall {
+                let x = 40 * x - (bounds.x as i32) / 2;
+                let y = 40 * y - (bounds.y as i32) / 2;
+                cmd.spawn(TransformBundle::from_transform(Transform::from_xyz(
+                    x as f32, y as f32, 0.,
+                )))
+                .insert(Collider::cuboid(20., 20.));
+            }
+        }
     }
 
     cmd.spawn(TransformBundle::from_transform(Transform::from_xyz(

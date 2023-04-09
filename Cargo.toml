@@ -32,8 +32,6 @@ default = [
     "bevy/bevy_scene",
     "bevy/bevy_winit",
     "bevy/bevy_core_pipeline",
-    "bevy/bevy_pbr",
-    "bevy/bevy_gltf",
     "bevy/bevy_render",
     "bevy/bevy_sprite",
     "bevy/bevy_text",
@@ -70,6 +68,8 @@ image = { version = "0.24", default-features = false }
 bevy_framepace = "0.12.1"
 bevy_editor_pls = "0.4.0"
 paste = "1.0.12"
+
+rltk = "0.8"
 
 [build-dependencies]
 embed-resource = "1.4"
