@@ -1,6 +1,8 @@
+use std::time::Duration;
+
 use bevy::{prelude::*, sprite::Anchor};
 use bevy_rapier2d::prelude::*;
-use bevy_tweening::{Animator, EaseFunction};
+use bevy_tweening::{lens::TransformRotateZLens, Animator, EaseFunction, Tween};
 use rand::{thread_rng, Rng};
 
 use crate::{
@@ -156,15 +158,37 @@ pub(super) fn follow_echolocation(
     mut cmd: Commands,
     mut echo_hit_r: EventReader<EcholocationHitEv>,
     mut follow_q: Query<
-        &mut MovementDirection,
+        (
+            &mut MovementDirection,
+            Option<&mut MovementDirectionEasing>,
+            &Transform,
+        ),
         (With<FollowEchoOnHit>, Without<Cooldown<FollowEchoOnHit>>),
     >,
 ) {
     for ev in echo_hit_r.iter() {
-        if let Ok(mut dir) = follow_q.get_mut(ev.hit_e) {
-            dir.0 = ev.direction.normalize_or_zero();
+        if let Ok((mut dir, dir_easing, t)) = follow_q.get_mut(ev.hit_e) {
+            let dir_norm = ev.direction.normalize_or_zero();
+
+            // look at dir
+            cmd.entity(ev.hit_e).try_insert(Animator::new(
+                Tween::new(
+                    EaseFunction::QuadraticInOut,
+                    Duration::from_millis(400),
+                    TransformRotateZLens {
+                        start: t.rotation.to_euler(EulerRot::XYZ).2,
+                        end: Vec2::Y.angle_between(dir_norm),
+                    },
+                )
+                .with_completed_event(TweenDoneAction::None),
+            ));
+            dir.0 = dir_norm;
             cmd.entity(ev.hit_e)
-                .try_insert(Cooldown::<FollowEchoOnHit>::new(0.5));
+                .try_insert(Cooldown::<FollowEchoOnHit>::new(1.25));
+
+            if let Some(mut dir_ease) = dir_easing {
+                dir_ease.reset();
+            }
         }
     }
 }

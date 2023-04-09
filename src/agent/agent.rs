@@ -38,6 +38,10 @@ impl MovementDirectionEasing {
             eased_dir: Vec2::ZERO,
         }
     }
+
+    pub fn reset(&mut self) {
+        self.time = 0.
+    }
 }
 
 #[derive(Component, Deref, DerefMut, Default)]
