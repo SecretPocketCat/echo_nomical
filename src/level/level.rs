@@ -3,7 +3,9 @@ use bevy_rapier2d::prelude::*;
 use rand::*;
 
 use crate::{
-    echolocation::echolocation::EcholocationHitColor, enemy::SpawnEnemyEv, player::player::PlayerEv,
+    echolocation::echolocation::EcholocationHitColor,
+    enemy::{EnemyType, SpawnEnemyEv},
+    player::player::PlayerEv,
 };
 
 #[derive(Component)]
@@ -64,8 +66,17 @@ pub(super) fn setup_test_lvl(mut cmd: Commands, mut ev_w: EventWriter<SpawnEnemy
     .insert(ActiveCollisionTypes::all());
 
     // enemies
-    for (x, y) in [(-200., -100.), (360., -250.), (0., 200.)].iter() {
-        ev_w.send(SpawnEnemyEv(Vec2::new(*x, *y)));
+    for (x, y, enemy_type) in [
+        (-200., -100., EnemyType::Bouncy),
+        (360., -250., EnemyType::Spiky),
+        (0., 200., EnemyType::Dasher),
+    ]
+    .iter()
+    {
+        ev_w.send(SpawnEnemyEv {
+            position: Vec2::new(*x, *y),
+            enemy_type: *enemy_type,
+        });
     }
 }
 
