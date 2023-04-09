@@ -2,13 +2,13 @@ use bevy::{prelude::*, transform::TransformSystem};
 
 use crate::state::UnpausedGame;
 
-use self::agent::{age, apply_damping, bounce, despawn_out_of_bounds, move_agents, rotate};
+use self::agent::{age, apply_damping, despawn_out_of_bounds, move_agents, rotate};
 
 pub mod agent;
 
 pub fn agent_plugin(app: &mut App) {
     app.add_systems(
-        (rotate, apply_damping, move_agents, bounce)
+        (rotate, apply_damping, move_agents)
             .chain()
             .in_set(UnpausedGame)
             .in_base_set(CoreSet::PostUpdate)

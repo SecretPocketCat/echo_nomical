@@ -1,9 +1,7 @@
-use bevy::{prelude::*};
+use bevy::prelude::*;
 use bevy_rapier2d::prelude::*;
 
-
 use crate::{
-    agent::agent::Bouncable,
     echolocation::echolocation::EcholocationHitColor,
     enemy::{EnemyType, SpawnEnemyEv},
     player::player::PlayerEv,
@@ -43,7 +41,6 @@ pub(super) fn setup_test_lvl(
                 )))
                 .insert(Collider::cuboid(20., 20.))
                 .insert(Wall)
-                .insert(Bouncable)
                 .insert(Name::new("Wall"));
             }
         }
