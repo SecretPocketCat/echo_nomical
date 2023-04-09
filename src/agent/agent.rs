@@ -5,13 +5,14 @@ use interpolation::*;
 
 use crate::{physics::check_collision_start_pair, state::PersistReset, time::time::*, AppSize};
 
-#[derive(Component, Deref, DerefMut, Default)]
+#[derive(Component, Deref, DerefMut, Default, Reflect)]
 pub struct MovementDirection(pub Vec2);
 
-#[derive(Component)]
+#[derive(Component, Reflect)]
 pub struct MovementDirectionEasing {
     time_to_ease: f32,
     time: f32,
+    #[reflect(ignore)]
     ease: EaseFunction,
     eased_dir: Vec2,
 }
@@ -76,15 +77,15 @@ pub(super) fn ease_direction(
     time: ScaledTime,
 ) {
     for (dir, mut ease_dir) in dir_easing_q.iter_mut() {
-        ease_dir.time = (ease_dir.time
-            + time.scaled_delta_seconds()
-                * if dir.0.length() > ease_dir.eased_dir.length() {
-                    1.
-                } else {
-                    -1.
-                })
-        .clamp(0., 1.);
-        ease_dir.eased_dir = dir.0 * (ease_dir.time / ease_dir.time_to_ease).calc(ease_dir.ease);
+        let time_step = time.scaled_delta_seconds()
+            * if ease_dir.eased_dir.length() < dir.0.length() {
+                1.
+            } else {
+                -1.
+            };
+
+        ease_dir.time = (ease_dir.time + time_step).clamp(0., ease_dir.time_to_ease);
+        ease_dir.eased_dir = dir.0 * ((ease_dir.time / ease_dir.time_to_ease).calc(ease_dir.ease));
     }
 }
 

@@ -2,7 +2,10 @@ use bevy::{prelude::*, transform::TransformSystem};
 
 use crate::state::UnpausedGame;
 
-use self::agent::{age, apply_damping, despawn_out_of_bounds, ease_direction, move_agents, rotate};
+use self::agent::{
+    age, apply_damping, despawn_out_of_bounds, ease_direction, move_agents, rotate,
+    MovementDirection, MovementDirectionEasing,
+};
 
 pub mod agent;
 
@@ -16,4 +19,7 @@ pub fn agent_plugin(app: &mut App) {
     )
     .add_system(age.in_base_set(CoreSet::PreUpdate))
     .add_system(despawn_out_of_bounds);
+
+    app.register_type::<MovementDirection>()
+        .register_type::<MovementDirectionEasing>();
 }

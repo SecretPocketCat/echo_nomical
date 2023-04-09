@@ -79,7 +79,8 @@ pub(super) fn spawn_player(
                 .insert(GamepadButtonType::South, UiAction::Confirm)
                 .build(),
             ..default()
-        });
+        })
+        .insert(Name::new("PLAYER"));
     }
 }
 
@@ -88,7 +89,7 @@ pub(super) fn move_player(
 ) {
     for (mut dir, actions) in &mut player_q {
         if let Some(movement) = actions.clamped_axis_pair(PlayerAction::Move) {
-            dir.0 = movement.xy();
+            dir.0 = movement.xy().normalize_or_zero();
         }
     }
 }

@@ -125,7 +125,7 @@ pub(super) fn follow_echolocation(
 ) {
     for ev in echo_hit_r.iter() {
         if let Ok(mut dir) = follow_q.get_mut(ev.hit_e) {
-            dir.0 = ev.direction;
+            dir.0 = ev.direction.normalize_or_zero();
         }
     }
 }
