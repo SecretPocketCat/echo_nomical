@@ -69,7 +69,7 @@ pub(super) fn setup_test_lvl(
 
     // enemies
     for (x, y, enemy_type) in [
-        (-200., -100., EnemyType::Bouncy),
+        (-200., -100., EnemyType::Static),
         (360., -250., EnemyType::Static),
         (0., 200., EnemyType::FollowPing),
     ]
