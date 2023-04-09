@@ -100,7 +100,7 @@ pub(super) fn spawn_player(
                         EaseFunction::BackOut,
                         TweenDoneAction::None,
                     ),
-                    1000,
+                    500,
                 )));
         });
     }
