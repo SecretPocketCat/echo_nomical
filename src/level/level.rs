@@ -1,16 +1,13 @@
 use bevy::prelude::*;
 use bevy_rapier2d::prelude::*;
 
+use super::mapgen::{gen_map, TileType};
 use crate::{
     echolocation::echolocation::EcholocationHitColor,
     enemy::{EnemyType, SpawnEnemyEv},
     player::player::PlayerEv,
     AppSize,
 };
-
-use super::mapgen::{gen_map, TileType};
-
-// use super::mapgen::{gen_map, TileType};
 
 #[derive(Component)]
 pub struct LevelEntry;
@@ -65,8 +62,8 @@ pub(super) fn setup_test_lvl(
 
     // enemies
     for (x, y, enemy_type) in [
-        (-200., -100., EnemyType::Static),
-        (360., -250., EnemyType::Static),
+        (-200., -100., EnemyType::FollowPing),
+        (360., -250., EnemyType::FollowPing),
         (0., 200., EnemyType::FollowPing),
     ]
     .iter()

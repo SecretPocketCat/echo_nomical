@@ -2,11 +2,16 @@ use bevy::prelude::*;
 use bevy_rapier2d::prelude::*;
 use rand::{thread_rng, Rng};
 
-use crate::{echolocation::echolocation::EcholocationHitColor, state::UnpausedGame};
+use crate::{
+    agent::agent::{MovementDirection, Speed},
+    echolocation::echolocation::{EcholocationHitColor, EcholocationHitEv, FollowEchoOnHit},
+    state::UnpausedGame,
+};
 
 pub fn enemy_plugin(app: &mut App) {
     app.add_event::<SpawnEnemyEv>()
-        .add_system(spawn_enemy.in_set(UnpausedGame));
+        .add_system(spawn_enemy.in_set(UnpausedGame))
+        .add_systems((follow_echolocation, flash_on_echolocation));
 }
 
 #[derive(Debug, Component, Clone, Copy)]
@@ -59,9 +64,28 @@ fn spawn_enemy(mut ev_r: EventReader<SpawnEnemyEv>, mut cmd: Commands) {
                         .insert(EcholocationHitColor(Color::CRIMSON));
                 }
                 EnemyType::FollowPing => {
-                    //
+                    cmd.entity(e)
+                        .insert(Collider::ball(30.))
+                        .insert(Name::new("Spiky"))
+                        .insert(EcholocationHitColor(Color::CRIMSON))
+                        .insert(FollowEchoOnHit)
+                        .insert(Speed(200.))
+                        .insert(MovementDirection::default());
                 }
             }
+        }
+    }
+}
+
+pub(super) fn flash_on_echolocation(mut echo_hit_r: EventReader<EcholocationHitEv>) {}
+
+pub(super) fn follow_echolocation(
+    mut echo_hit_r: EventReader<EcholocationHitEv>,
+    mut follow_q: Query<&mut MovementDirection, With<FollowEchoOnHit>>,
+) {
+    for ev in echo_hit_r.iter() {
+        if let Ok(mut dir) = follow_q.get_mut(ev.hit_e) {
+            dir.0 = ev.direction;
         }
     }
 }

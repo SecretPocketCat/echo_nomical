@@ -24,6 +24,14 @@ pub(super) struct EcholocationRay;
 #[derive(Component)]
 pub struct EcholocationHitColor(pub Color);
 
+#[derive(Component)]
+pub struct FollowEchoOnHit;
+
+pub struct EcholocationHitEv {
+    pub direction: Vec2,
+    pub hit_e: Entity,
+}
+
 pub(super) fn echolocate(
     mut cmd: Commands,
     input_q: Query<(&ActionState<PlayerAction>, &GlobalTransform)>,
@@ -91,6 +99,7 @@ pub(super) fn echolocate(
 pub(super) fn echo_hit(
     mut cmd: Commands,
     mut collision_events: EventReader<CollisionEvent>,
+    mut echo_hit_w: EventWriter<EcholocationHitEv>,
     ray_q: Query<(), With<EcholocationRay>>,
     trans_q: Query<(&GlobalTransform, &Age)>,
     color_q: Query<&EcholocationHitColor>,
@@ -111,6 +120,10 @@ pub(super) fn echo_hit(
             ));
 
         if let Ok(mut dir) = move_q.get_mut(coll_success.hit) {
+            echo_hit_w.send(EcholocationHitEv {
+                direction: -dir.0,
+                hit_e: coll_success.other,
+            });
             dir.0 = Vec2::ZERO;
         }
 
