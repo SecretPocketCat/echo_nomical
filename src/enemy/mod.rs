@@ -1,12 +1,18 @@
 use bevy::prelude::*;
 use bevy_rapier2d::prelude::*;
-use bevy_tweening::EaseFunction;
+use bevy_tweening::{Animator, EaseFunction, Sequence};
 use rand::{thread_rng, Rng};
 
 use crate::{
     agent::agent::{MovementDirection, MovementDirectionEasing, Speed},
+    animation::{
+        delay_tween, get_relative_sprite_color_anim, get_relative_sprite_color_tween,
+        TweenDoneAction,
+    },
+    assets::textures::TextureAssets,
     echolocation::echolocation::{EcholocationHitColor, EcholocationHitEv, FollowEchoOnHit},
     state::UnpausedGame,
+    EntityCommandsExt,
 };
 
 pub fn enemy_plugin(app: &mut App) {
@@ -27,16 +33,22 @@ pub struct SpawnEnemyEv {
     pub enemy_type: EnemyType,
 }
 
-fn spawn_enemy(mut ev_r: EventReader<SpawnEnemyEv>, mut cmd: Commands) {
+fn spawn_enemy(mut ev_r: EventReader<SpawnEnemyEv>, mut cmd: Commands, tex: Res<TextureAssets>) {
     if !ev_r.is_empty() {
         let mut rng = thread_rng();
 
         for ev in ev_r.iter() {
+            let mut sprite_bundle = SpriteBundle {
+                transform: Transform::from_translation(ev.position.extend(0.)),
+                sprite: Sprite {
+                    color: Color::NONE,
+                    ..default()
+                },
+                ..default()
+            };
+
             let e = cmd
-                .spawn(SpatialBundle::from_transform(Transform::from_translation(
-                    ev.position.extend(0.),
-                )))
-                .insert(Sensor)
+                .spawn(Sensor)
                 .insert(ev.enemy_type)
                 .insert(ActiveEvents::COLLISION_EVENTS)
                 .insert(ActiveCollisionTypes::all())
@@ -60,13 +72,19 @@ fn spawn_enemy(mut ev_r: EventReader<SpawnEnemyEv>, mut cmd: Commands) {
                         .collect();
 
                     cmd.entity(e)
+                        .insert(sprite_bundle)
                         .insert(Collider::polyline(vert, None))
                         .insert(Name::new("Spiky"))
                         .insert(EcholocationHitColor(Color::CRIMSON));
                 }
                 EnemyType::FollowPing => {
+                    let radius = 25.;
+                    sprite_bundle.texture = tex.player.clone();
+                    sprite_bundle.sprite.custom_size = Some(Vec2::splat(radius * 2.));
+
                     cmd.entity(e)
-                        .insert(Collider::ball(30.))
+                        .insert(sprite_bundle)
+                        .insert(Collider::ball(radius * 0.85))
                         .insert(Name::new("FolowPing"))
                         .insert(EcholocationHitColor(Color::CRIMSON))
                         .insert(FollowEchoOnHit)
@@ -82,7 +100,24 @@ fn spawn_enemy(mut ev_r: EventReader<SpawnEnemyEv>, mut cmd: Commands) {
     }
 }
 
-pub(super) fn flash_on_echolocation(mut echo_hit_r: EventReader<EcholocationHitEv>) {}
+pub(super) fn flash_on_echolocation(
+    mut cmd: Commands,
+    mut echo_hit_r: EventReader<EcholocationHitEv>,
+    color_q: Query<&EcholocationHitColor, With<Sprite>>,
+) {
+    for ev in echo_hit_r.iter() {
+        if let Ok(col) = color_q.get(ev.hit_e) {
+            cmd.entity(ev.hit_e).try_insert(Animator::new(
+                get_relative_sprite_color_tween(col.0, 250, TweenDoneAction::None).then(
+                    delay_tween(
+                        get_relative_sprite_color_tween(Color::NONE, 800, TweenDoneAction::None),
+                        600,
+                    ),
+                ),
+            ));
+        }
+    }
+}
 
 pub(super) fn follow_echolocation(
     mut echo_hit_r: EventReader<EcholocationHitEv>,
