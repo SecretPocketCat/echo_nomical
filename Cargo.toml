@@ -69,7 +69,7 @@ bevy_framepace = "0.12.1"
 bevy_editor_pls = "0.4.0"
 paste = "1.0.12"
 
-rltk = "0.8"
+rltk = { git = "https://github.com/amethyst/bracket-lib", rev = "0d2d5e6a9a8e7c7ae3710cfef85be4cab0109a27" }
 
 [build-dependencies]
 embed-resource = "1.4"

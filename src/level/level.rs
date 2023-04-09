@@ -1,10 +1,10 @@
-use bevy::{prelude::*, window::PrimaryWindow};
+use bevy::{prelude::*};
 use bevy_rapier2d::prelude::*;
-use rand::*;
+
 
 use crate::{
     echolocation::echolocation::EcholocationHitColor, enemy::SpawnEnemyEv,
-    player::player::PlayerEv, render::camera::PrimaryCamera, AppSize,
+    player::player::PlayerEv, AppSize,
 };
 
 use super::mapgen::{gen_map, TileType};

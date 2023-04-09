@@ -10,7 +10,6 @@ use crate::{
         TweenDoneAction,
     },
     assets::textures::TextureAssets,
-    enemy::Enemy,
     input::actions::PlayerAction,
     physics::{check_collision_start, ECHO_COLL_GROUP, PLAYER_COLL_GROUP},
     EntityCommandsExt,

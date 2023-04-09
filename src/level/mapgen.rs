@@ -1,4 +1,4 @@
-use rltk::{BaseMap, Point};
+use rltk::{BaseMap};
 
 #[derive(Clone, PartialEq, Eq, Debug)]
 pub enum TileType {
