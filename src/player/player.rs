@@ -1,7 +1,7 @@
 use crate::{
     agent::agent::{MovementDirection, Speed},
     assets::textures::TextureAssets,
-    enemy::Enemy,
+    enemy::EnemyType,
     input::actions::{PlayerAction, UiAction},
     level::level::{LevelEntry, LevelExit},
     physics::{check_collision_start_pair, ECHO_COLL_GROUP, PLAYER_COLL_GROUP},
@@ -112,7 +112,7 @@ pub(super) fn exit_reached(
 pub(super) fn player_hit(
     mut collision_events: EventReader<CollisionEvent>,
     q_player: Query<(), With<Player>>,
-    q_enemy: Query<(), With<Enemy>>,
+    q_enemy: Query<(), With<EnemyType>>,
     mut fade_reset: ResMut<FadeReset>,
     mut ev_w: EventWriter<PlayerEv>,
 ) {

@@ -1,4 +1,6 @@
-use rltk::{BaseMap, Point};
+use bracket_algorithm_traits::prelude::{BaseMap, SmallVec};
+use bracket_geometry::prelude::{DistanceAlg, Point};
+use rand::{thread_rng, Rng};
 
 #[derive(Clone, PartialEq, Eq, Debug)]
 pub enum TileType {
@@ -54,8 +56,8 @@ impl BaseMap for Map {
         self.tiles[idx] == TileType::Wall
     }
 
-    fn get_available_exits(&self, idx: usize) -> rltk::SmallVec<[(usize, f32); 10]> {
-        let mut exits = rltk::SmallVec::new();
+    fn get_available_exits(&self, idx: usize) -> SmallVec<[(usize, f32); 10]> {
+        let mut exits = SmallVec::new();
         let (x, y) = self.idx_xy(idx);
         NEIGHBORS.iter().for_each(|&[dx, dy]| {
             let delta = if dx == 0 || dy == 0 { 1.0f32 } else { 1.45f32 };
@@ -71,8 +73,8 @@ impl BaseMap for Map {
     fn get_pathing_distance(&self, idx1: usize, idx2: usize) -> f32 {
         let [p1, p2] = [idx1, idx2]
             .map(|i| self.idx_xy(i))
-            .map(|(x, y)| rltk::Point::new(x, y));
-        rltk::DistanceAlg::Pythagoras.distance2d(p1, p2)
+            .map(|(x, y)| Point::new(x, y));
+        DistanceAlg::Pythagoras.distance2d(p1, p2)
     }
 }
 
@@ -88,9 +90,9 @@ const NEIGHBORS: [[i32; 2]; 8] = [
 ];
 
 pub fn gen_map() -> Map {
-    let mut rng = rltk::RandomNumberGenerator::new();
+    let mut rng = thread_rng();
     let mut map = Map::new(24, 14, move |_x, _y| {
-        let roll = rng.roll_dice(1, 100);
+        let roll = rng.gen_range(1..100);
         if roll > 55 {
             TileType::Floor
         } else {

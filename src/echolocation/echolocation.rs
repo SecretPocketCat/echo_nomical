@@ -10,7 +10,6 @@ use crate::{
         TweenDoneAction,
     },
     assets::textures::TextureAssets,
-    enemy::Enemy,
     input::actions::PlayerAction,
     physics::{check_collision_start, ECHO_COLL_GROUP, PLAYER_COLL_GROUP},
     EntityCommandsExt,
@@ -40,7 +39,7 @@ pub(super) fn echolocate(
         let radius = 3.;
 
         for i in 0..ray_count {
-            let dir = Vec2::from_angle(i as f32 * ray_step);
+            let dir = Vec2::from_angle((i as f32 * ray_step).to_radians());
 
             cmd.spawn(SpatialBundle::from_transform(Transform::from_translation(
                 pos + dir.extend(0.) * 10.,
