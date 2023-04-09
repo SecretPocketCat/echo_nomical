@@ -133,11 +133,6 @@ pub(super) fn bounce(
                 true,
                 QueryFilter::default().exclude_collider(*e),
             ) {
-                // disable coll to prevent double collisions and re-enable it after a short delay
-                cmd.entity(*e).try_insert((
-                    ColliderDisabled,
-                    ReenableCollider(Timer::from_seconds(0.05, TimerMode::Once)),
-                ));
                 // todo: this doesn's quite work
                 let reflected_dir = dir.0 - 2. * dir.0.dot(hit.1.normal) * hit.1.normal;
                 dir.0 = reflected_dir;
@@ -146,22 +141,6 @@ pub(super) fn bounce(
             // todo: reflect dir
             // todo: reenable coll after a bit
             // todo: bounce ev
-        }
-    }
-}
-
-pub(super) fn reenable_collider(
-    mut cmd: Commands,
-    time: ScaledTime,
-    mut enable_q: Query<(Entity, &mut ReenableCollider)>,
-) {
-    for (e, mut enable) in &mut enable_q {
-        enable.tick(time.scaled_delta());
-
-        if enable.just_finished() {
-            cmd.entity(e)
-                .remove::<ReenableCollider>()
-                .remove::<ColliderDisabled>();
         }
     }
 }

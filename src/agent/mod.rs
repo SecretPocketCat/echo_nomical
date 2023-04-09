@@ -2,9 +2,7 @@ use bevy::{prelude::*, transform::TransformSystem};
 
 use crate::state::UnpausedGame;
 
-use self::agent::{
-    age, apply_damping, bounce, despawn_out_of_bounds, move_agents, reenable_collider, rotate,
-};
+use self::agent::{age, apply_damping, bounce, despawn_out_of_bounds, move_agents, rotate};
 
 pub mod agent;
 
@@ -17,5 +15,5 @@ pub fn agent_plugin(app: &mut App) {
             .before(TransformSystem::TransformPropagate),
     )
     .add_system(age.in_base_set(CoreSet::PreUpdate))
-    .add_systems((despawn_out_of_bounds, reenable_collider));
+    .add_system(despawn_out_of_bounds);
 }
