@@ -81,6 +81,7 @@ macro_rules! relative_tween_fns {
                     Some(start),
                     end,
                     duration_ms,
+                    EaseFunction::QuadraticInOut,
                     on_completed,
                 )
             }
@@ -94,6 +95,7 @@ macro_rules! relative_tween_fns {
                     None,
                     end,
                     duration_ms,
+                    EaseFunction::QuadraticInOut,
                     on_completed,
                 )
             }
@@ -124,14 +126,32 @@ macro_rules! relative_tween_fns {
                 ))
             }
 
+            pub fn [<get_ $name _anim>](
+                start: Option<$value_start>,
+                end: $value_end,
+                duration_ms: u64,
+                ease: EaseFunction,
+                on_completed: $done_action,
+            ) -> Animator<$component, $done_action> {
+                Animator::new([<get_ $name _tween>](
+                    start,
+                    end,
+                    duration_ms,
+                    ease,
+                    on_completed,
+                ))
+
+            }
+
             pub fn [<get_ $name _tween>](
                 start: Option<$value_start>,
                 end: $value_end,
                 duration_ms: u64,
+                ease: EaseFunction,
                 on_completed: $done_action,
             ) -> Tween<$component, $done_action> {
                 Tween::new(
-                    EaseFunction::QuadraticInOut,
+                    ease,
                     Duration::from_millis(duration_ms),
                     $lens {
                         start,
