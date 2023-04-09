@@ -6,8 +6,8 @@ use leafwing_input_manager::prelude::*;
 use crate::{
     agent::agent::{Age, Damping, MovementDirection, Speed},
     animation::{
-        get_relative_scale_anim, get_relative_scale_tween, get_relative_sprite_color_anim,
-        TweenDoneAction,
+        delay_tween, get_relative_scale_anim, get_relative_scale_tween,
+        get_relative_sprite_color_anim, get_relative_sprite_color_tween, TweenDoneAction,
     },
     assets::textures::TextureAssets,
     input::{actions::PlayerAction, cooldown::Cooldown},
@@ -173,6 +173,25 @@ pub(super) fn echo_hit(
                     TweenDoneAction::DespawnSelfRecursive,
                 ));
             }
+        }
+    }
+}
+
+pub(super) fn flash_on_echolocation(
+    mut cmd: Commands,
+    mut echo_hit_r: EventReader<EcholocationHitEv>,
+    color_q: Query<&EcholocationHitColor, With<Sprite>>,
+) {
+    for ev in echo_hit_r.iter() {
+        if let Ok(col) = color_q.get(ev.hit_e) {
+            cmd.entity(ev.hit_e).try_insert(Animator::new(
+                get_relative_sprite_color_tween(col.0, 250, TweenDoneAction::None).then(
+                    delay_tween(
+                        get_relative_sprite_color_tween(Color::NONE, 800, TweenDoneAction::None),
+                        600,
+                    ),
+                ),
+            ));
         }
     }
 }

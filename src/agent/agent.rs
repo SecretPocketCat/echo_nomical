@@ -52,7 +52,7 @@ pub struct Speed(pub f32);
 pub struct Damping(pub f32);
 
 #[derive(Component, Deref, DerefMut, Default)]
-pub struct Rotation(pub f32);
+pub struct AgentRotation(pub f32);
 
 #[derive(Component)]
 pub struct StopOnCollision<T>(PhantomData<T>);
@@ -117,17 +117,7 @@ pub(super) fn apply_damping(
     }
 }
 
-// todo: look at target?
-// pub(super) fn rotate_agent(
-//     mut velocity_q: Query<(&LookAtDirection, &Speed, &mut Transform)>,
-//     time: ScaledTime,
-// ) {
-//     for (dir, speed, mut trans) in velocity_q.iter_mut() {
-//         trans.translation += dir.extend(0.) * speed.0 * time.scaled_delta_seconds();
-//     }
-// }
-
-pub(super) fn rotate(mut dir_q: Query<(&mut Transform, &Rotation)>, time: ScaledTime) {
+pub(super) fn rotate(mut dir_q: Query<(&mut Transform, &AgentRotation)>, time: ScaledTime) {
     for (mut t, rotation) in &mut dir_q {
         t.rotate_local_z((rotation.0 * time.scaled_delta_seconds()).to_radians());
     }

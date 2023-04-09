@@ -17,4 +17,7 @@ pub struct TextureAssets {
 
     #[asset(path = "textures/charge.png")]
     pub charge: Handle<Image>,
+
+    #[asset(path = "textures/portal.png")]
+    pub portal: Handle<Image>,
 }

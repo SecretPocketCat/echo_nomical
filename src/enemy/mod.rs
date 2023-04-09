@@ -25,7 +25,7 @@ use crate::{
 pub fn enemy_plugin(app: &mut App) {
     app.add_event::<SpawnEnemyEv>()
         .add_systems((spawn_enemy, enemy_hit).in_set(UnpausedGame))
-        .add_systems((follow_echolocation, flash_on_echolocation))
+        .add_system(follow_echolocation)
         .add_system(process_cooldown::<FollowEchoOnHit>);
 }
 
@@ -131,25 +131,6 @@ fn spawn_enemy(mut ev_r: EventReader<SpawnEnemyEv>, mut cmd: Commands, tex: Res<
                         ));
                 }
             }
-        }
-    }
-}
-
-pub(super) fn flash_on_echolocation(
-    mut cmd: Commands,
-    mut echo_hit_r: EventReader<EcholocationHitEv>,
-    color_q: Query<&EcholocationHitColor, With<Sprite>>,
-) {
-    for ev in echo_hit_r.iter() {
-        if let Ok(col) = color_q.get(ev.hit_e) {
-            cmd.entity(ev.hit_e).try_insert(Animator::new(
-                get_relative_sprite_color_tween(col.0, 250, TweenDoneAction::None).then(
-                    delay_tween(
-                        get_relative_sprite_color_tween(Color::NONE, 800, TweenDoneAction::None),
-                        600,
-                    ),
-                ),
-            ));
         }
     }
 }
