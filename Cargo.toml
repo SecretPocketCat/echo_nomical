@@ -69,5 +69,7 @@ bevy_framepace = "0.12.1"
 bevy_editor_pls = "0.4.0"
 paste = "1.0.12"
 
+rltk = "0.8"
+
 [build-dependencies]
 embed-resource = "1.4"

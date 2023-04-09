@@ -5,6 +5,7 @@ use crate::state::AppState;
 use self::level::{setup_test_lvl, update_score, ReachedLevel};
 
 pub mod level;
+pub mod mapgen;
 
 pub fn lvl_plugin(app: &mut App) {
     app.init_resource::<ReachedLevel>()
