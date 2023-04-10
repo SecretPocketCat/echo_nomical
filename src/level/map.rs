@@ -1,4 +1,4 @@
-use bevy::prelude::{IVec2, Resource};
+use bevy::prelude::{warn, IVec2, Resource};
 use bracket_algorithm_traits::prelude::{BaseMap, SmallVec};
 use bracket_geometry::prelude::{DistanceAlg, Point};
 use bracket_pathfinding::prelude::DijkstraMap;
@@ -183,13 +183,13 @@ pub fn generate(width: i32, height: i32, difficulty: usize) -> Option<Map> {
                 && ADJACENTS
                     .iter()
                     .all(|[dx, dy]| map.xy(x + dx, y + dy) == &TileType::Floor)
-                && rand::random::<f32>() > 0.5
+                && rand::random::<f32>() > 0.3
             {
                 *map.xy_mut(x, y) = TileType::Enemy(EnemyType::Spiky);
             }
 
-            // Next, have a 5% chance of spawning following ones.
-            if map.xy(x, y) == &TileType::Floor && rand::random::<f32>() > 0.95 {
+            // Next, have a 3% chance of spawning following ones.
+            if map.xy(x, y) == &TileType::Floor && rand::random::<f32>() > 0.97 {
                 let idx = map.xy_idx(x, y);
                 if map.get_pathing_distance(idx, start_idx) > 2.0 {
                     *map.xy_mut(x, y) = TileType::Enemy(EnemyType::FollowPing);
@@ -199,7 +199,7 @@ pub fn generate(width: i32, height: i32, difficulty: usize) -> Option<Map> {
         }
     }
     // Remove followers if there's too many
-    let max_follow_spawns: usize = difficulty.pow(2);
+    let max_follow_spawns = (difficulty as f32).powf(1.3) as usize;
     while follow_spawns.len() > max_follow_spawns {
         let (x, y) = follow_spawns.swap_remove(rand::random::<usize>() % follow_spawns.len());
         *map.xy_mut(x, y) = TileType::Floor;
