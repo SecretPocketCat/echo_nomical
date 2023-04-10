@@ -3,7 +3,7 @@ use std::time::Duration;
 use bevy::{prelude::*, sprite::Anchor};
 use bevy_rapier2d::prelude::*;
 use bevy_tweening::{lens::TransformRotateZLens, Animator, EaseFunction, Tween};
-use rand::{thread_rng, Rng};
+use rand::thread_rng;
 
 use crate::{
     agent::agent::{MovementDirection, MovementDirectionEasing, Speed, StopOnCollision},
@@ -28,7 +28,7 @@ pub fn enemy_plugin(app: &mut App) {
         .add_system(process_cooldown::<FollowEchoOnHit>);
 }
 
-#[derive(Debug, Component, Clone, Copy)]
+#[derive(Debug, Component, Clone, Copy, PartialEq, Eq)]
 pub enum EnemyType {
     Spiky,
     FollowPing,
@@ -48,7 +48,7 @@ pub struct SpawnEnemyEv {
 
 fn spawn_enemy(mut ev_r: EventReader<SpawnEnemyEv>, mut cmd: Commands, tex: Res<TextureAssets>) {
     if !ev_r.is_empty() {
-        let mut rng = thread_rng();
+        let _rng = thread_rng();
 
         for ev in ev_r.iter() {
             let mut sprite_bundle = SpriteBundle {
@@ -69,7 +69,7 @@ fn spawn_enemy(mut ev_r: EventReader<SpawnEnemyEv>, mut cmd: Commands, tex: Res<
 
             match ev.enemy_type {
                 EnemyType::Spiky => {
-                    let radius = rng.gen_range(40.0..70.);
+                    let radius = 20.;
                     let spike_count = 12;
                     let ray_step = 360. / (spike_count * 2) as f32;
 
@@ -95,8 +95,8 @@ fn spawn_enemy(mut ev_r: EventReader<SpawnEnemyEv>, mut cmd: Commands, tex: Res<
                         .insert(EcholocationHitColor(COL_ENEMY));
                 }
                 EnemyType::FollowPing => {
-                    let half_width = 25.;
-                    let height = 60.;
+                    let half_width = 15.;
+                    let height = 30.;
                     let btm = 5.;
                     sprite_bundle.texture = tex.charge.clone();
                     sprite_bundle.sprite.custom_size =
