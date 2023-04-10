@@ -22,11 +22,12 @@ pub fn lvl_plugin(app: &mut App) {
                 .chain()
                 .in_schedule(OnEnter(AppState::Game)),
         )
-        .add_system(sync_camera.run_if(resource_changed::<AppSize>()))
+        .add_system(sync_camera.run_if(resource_changed::<AppSize>()).in_set(OnUpdate(AppState::Game)))
         .add_system(update_score);
 }
 
 pub fn update_map(mut map_resource: ResMut<Map>, reached: Res<ReachedLevel>) {
+    bevy::log::info!("Creating map");
     let map_scale = 16. + 6. * reached.0 as f32;
     let map_size = (Vec2::new(16.0f32, 12.0f32).normalize() * map_scale).as_ivec2();
     loop {

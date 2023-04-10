@@ -71,10 +71,7 @@ pub(super) fn setup_level(
                     .insert(Name::new("Exit"));
                 }
                 &TileType::PlayerSpawn => {
-                    if spawned_player {
-                        continue;
-                    }
-                    spawned_player = true;
+                    bevy::log::info!("Requesting player spawn");
                     cmd.spawn(TransformBundle::from_transform(Transform::from_xyz(
                         x, y, 0.,
                     )))
