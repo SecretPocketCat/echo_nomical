@@ -8,7 +8,7 @@ use rand::{thread_rng, Rng};
 use crate::{
     agent::agent::{MovementDirection, MovementDirectionEasing, Speed, StopOnCollision},
     animation::{
-        delay_tween, get_relative_scale_anim, get_relative_sprite_color_tween, TweenDoneAction,
+        get_relative_scale_anim, TweenDoneAction,
     },
     assets::textures::TextureAssets,
     echolocation::{
