@@ -18,7 +18,6 @@ pub fn assets_plugin(app: &mut App) {
         .add_loading_state(LoadingState::new(AppState::Loading))
         .add_collection_to_loading_state::<_, fonts::FontAssets>(AppState::Loading)
         .add_collection_to_loading_state::<_, audio::SfxAssets>(AppState::Loading)
-        .add_collection_to_loading_state::<_, audio::AudioAssets>(AppState::Loading)
         .add_collection_to_loading_state::<_, textures::TextureAssets>(AppState::Loading)
         .add_startup_system(audio::setup_sfx_assets)
         .add_plugin(ProgressPlugin::new(AppState::Loading))

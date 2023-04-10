@@ -63,9 +63,9 @@ fn load_game(pkv: Res<PkvStore>, mut cmd: Commands) {
         .get::<GameSettings>(SETTINGS_KEY)
         .unwrap_or_else(|_| GameSettings {
             volume: VolumeSettings {
-                master: 0.5,
-                sfx: 0.5,
-                music: 0.5,
+                master: 0.75,
+                sfx: 1.0,
+                music: 0.75,
                 muted: false,
             },
         });
