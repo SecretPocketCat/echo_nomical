@@ -103,18 +103,18 @@ fn spawn_enemy(mut ev_r: EventReader<SpawnEnemyEv>, mut cmd: Commands, tex: Res<
                 EnemyType::FollowPing => {
                     let half_width = 15.;
                     let height = 30.;
-                    let btm = 5.;
+                    let offset = 15.;
                     sprite_bundle.texture = tex.charge.clone();
                     sprite_bundle.sprite.custom_size =
                         Some(Vec2::new(half_width * 2.25, height * 1.125));
-                    sprite_bundle.sprite.anchor = Anchor::BottomCenter;
-                    sprite_bundle.transform.translation.y -= height / 2.;
+                    // sprite_bundle.sprite.anchor = Anchor::BottomCenter;
+                    sprite_bundle.transform.translation.y -= height / 2. + offset;
 
                     let verts = vec![
-                        (-half_width, btm),
-                        (half_width, btm),
-                        (0., height),
-                        (-half_width, btm),
+                        (-half_width, -offset),
+                        (half_width, -offset),
+                        (0., height - offset),
+                        (-half_width, -offset),
                     ]
                     .iter()
                     .map(|(x, y)| Vec2::new(*x, *y))
