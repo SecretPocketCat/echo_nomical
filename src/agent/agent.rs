@@ -6,8 +6,7 @@ use bevy_tweening::*;
 use interpolation::*;
 
 use crate::{
-    level::level::Wall, physics::check_collision_start_pair, state::PersistReset, time::time::*,
-    AppSize,
+    level::level::Wall, physics::check_collision_start_pair, time::time::*,
 };
 
 #[derive(Component, Deref, DerefMut, Default, Reflect)]
