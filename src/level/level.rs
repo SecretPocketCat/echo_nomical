@@ -29,8 +29,6 @@ pub(super) fn setup_level(
     let tile_size = super::TILE_SIZE;
     let half_ts = tile_size / 2.;
 
-    let mut spawned_player = false;
-
     for y in 0..map.height {
         for x in 0..map.width {
             let tile = map.xy(x, y);

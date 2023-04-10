@@ -1,6 +1,10 @@
-use bevy::prelude::*;
+use bevy::{prelude::*, render::view::NoFrustumCulling};
 
-use crate::{render::camera::PrimaryCamera, state::AppState, AppSize};
+use crate::{
+    render::camera::PrimaryCamera,
+    state::{AppState, PersistReset},
+    AppSize,
+};
 
 use self::{
     level::{setup_level, update_score, ReachedLevel},
@@ -22,7 +26,11 @@ pub fn lvl_plugin(app: &mut App) {
                 .chain()
                 .in_schedule(OnEnter(AppState::Game)),
         )
-        .add_system(sync_camera.run_if(resource_changed::<AppSize>()).in_set(OnUpdate(AppState::Game)))
+        .add_system(
+            sync_camera
+                .run_if(resource_changed::<AppSize>())
+                .in_set(OnUpdate(AppState::Game)),
+        )
         .add_system(update_score);
 }
 
