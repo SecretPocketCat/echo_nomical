@@ -2,13 +2,15 @@ use bevy::prelude::*;
 use seldom_fn_plugin::FnPluginExt;
 
 use crate::{
-    state::{AppState, PersistReset},
-    AppSize,
+    animation::{get_relative_text_color_anim, get_relative_ui_bg_color_anim, TweenDoneAction},
+    state::{AppState, GameState, PersistReset},
+    AppSize, EntityCommandsExt,
 };
 
 mod button;
 mod game_over;
 mod menu;
+mod pause;
 
 pub fn ui_plugin(app: &mut App) {
     app.fn_plugin(button::button_plugin)
@@ -17,8 +19,13 @@ pub fn ui_plugin(app: &mut App) {
             resource_exists::<RootUiNode>().and_then(resource_exists_and_changed::<AppSize>()),
         ))
         .add_system(menu::setup_ui.in_schedule(OnEnter(AppState::Menu)))
-        .add_system(game_over::setup_ui.in_schedule(OnEnter(AppState::GameOver)));
+        .add_system(game_over::setup_ui.in_schedule(OnEnter(AppState::GameOver)))
+        .add_system(pause::setup_ui.in_schedule(OnEnter(GameState::Paused)))
+        .add_system(teardown_ui.in_schedule(OnExit(GameState::Paused)));
 }
+
+#[derive(Component)]
+pub struct UiDisabled;
 
 #[derive(Resource)]
 pub struct RootUiNode(pub Entity);
@@ -47,4 +54,30 @@ fn resize_root_node(size: Res<AppSize>, root: Res<RootUiNode>, mut style_q: Quer
         .get_mut(root.0)
         .expect("Root node should always exist");
     style.size = Size::new(Val::Px(size.x), Val::Px(size.y));
+}
+
+fn teardown_ui(
+    mut cmd: Commands,
+    teardown_bg_q: Query<Entity, (With<BackgroundColor>, Without<PersistReset>)>,
+    teardown_txt_q: Query<Entity, (With<BackgroundColor>, Without<PersistReset>)>,
+) {
+    for e in teardown_bg_q.iter() {
+        cmd.entity(e)
+            .try_insert(get_relative_ui_bg_color_anim(
+                Color::NONE,
+                350,
+                TweenDoneAction::DespawnSelfRecursive,
+            ))
+            .try_insert(UiDisabled);
+    }
+
+    for e in teardown_txt_q.iter() {
+        cmd.entity(e)
+            .try_insert(get_relative_text_color_anim(
+                Color::NONE,
+                350,
+                TweenDoneAction::DespawnSelfRecursive,
+            ))
+            .try_insert(UiDisabled);
+    }
 }

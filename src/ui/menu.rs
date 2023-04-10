@@ -11,7 +11,7 @@ pub(super) fn setup_ui(mut cmd: Commands, root: Res<RootUiNode>) {
         parent.spawn(UiButton {
             action: UiButtonAction::ChangeState(AppState::Game),
             primary: true,
-            text: "PLAY".into(),
+            text: "play".into(),
         });
     });
 }

@@ -1,11 +1,13 @@
 use crate::{
-    animation::{get_relative_ui_bg_color_anim, TweenDoneAction},
+    animation::{get_relative_text_color_anim, get_relative_ui_bg_color_anim, TweenDoneAction},
     assets::fonts::FontAssets,
     palette::{COL_PLAYER, COL_PORTAL, COL_TEXT},
-    state::{AppState, FadeReset},
+    state::{AppState, FadeReset, GameState},
     EntityCommandsExt,
 };
 use bevy::prelude::*;
+
+use super::UiDisabled;
 
 pub(super) fn button_plugin(app: &mut App) {
     app.init_resource::<ButtonColors>()
@@ -21,6 +23,7 @@ pub(super) struct ButtonColors {
 
 pub(super) enum UiButtonAction {
     ChangeState(AppState),
+    Unpause,
 }
 
 #[derive(Component)]
@@ -60,21 +63,33 @@ fn spawn_ui_btn(
                     ),
                     justify_content: JustifyContent::Center,
                     align_items: AlignItems::Center,
-                    margin: UiRect::bottom(Val::Px(25.)),
+                    margin: UiRect::vertical(Val::Px(if ui_btn.primary { 20.0 } else { 12. })),
+                    min_size: Size::width(Val::Percent(if ui_btn.primary { 40.0 } else { 25. })),
                     ..default()
                 },
-                background_color: button_colors.normal.into(),
+                background_color: Color::NONE.into(),
                 ..Default::default()
             })
+            .try_insert(get_relative_ui_bg_color_anim(
+                button_colors.normal,
+                350,
+                TweenDoneAction::None,
+            ))
             .with_children(|parent| {
-                parent.spawn(TextBundle::from_section(
-                    ui_btn.text.clone(),
-                    TextStyle {
-                        font: font_assets.menu.clone(),
-                        font_size: if ui_btn.primary { 60.0 } else { 40. },
-                        color: COL_TEXT,
-                    },
-                ));
+                parent
+                    .spawn(TextBundle::from_section(
+                        ui_btn.text.clone(),
+                        TextStyle {
+                            font: font_assets.menu.clone(),
+                            font_size: if ui_btn.primary { 60.0 } else { 40. },
+                            color: Color::NONE,
+                        },
+                    ))
+                    .insert(get_relative_text_color_anim(
+                        COL_TEXT,
+                        500,
+                        TweenDoneAction::None,
+                    ));
             });
     }
 }
@@ -84,15 +99,17 @@ fn on_ui_btn_interaction(
     button_colors: Res<ButtonColors>,
     interaction_query: Query<
         (Entity, &Interaction, &UiButton),
-        (Changed<Interaction>, With<Button>),
+        (Changed<Interaction>, With<Button>, Without<UiDisabled>),
     >,
     mut fade_reset: ResMut<FadeReset>,
+    mut next_pause_state: ResMut<NextState<GameState>>,
 ) {
     for (e, interaction, ui_btn) in interaction_query.iter() {
         if let Some(col) = match *interaction {
             Interaction::Clicked => {
                 match &ui_btn.action {
                     UiButtonAction::ChangeState(next) => fade_reset.set(next.clone()),
+                    UiButtonAction::Unpause => next_pause_state.set(GameState::Running),
                 };
 
                 None
