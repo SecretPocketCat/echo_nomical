@@ -2,11 +2,8 @@ use bevy::prelude::*;
 
 use bevy_tweening::{Animator, EaseFunction};
 
-
 use crate::{
-    animation::{
-        get_relative_sprite_color_tween, get_scale_anim, TweenDoneAction,
-    },
+    animation::{get_relative_sprite_color_tween, get_scale_anim, TweenDoneAction},
     assets::textures::TextureAssets,
     EntityCommandsExt,
 };
