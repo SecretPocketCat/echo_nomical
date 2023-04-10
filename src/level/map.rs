@@ -201,7 +201,7 @@ pub fn generate(width: i32, height: i32, difficulty: usize) -> Option<Map> {
     // Remove followers if there's too many
     let max_follow_spawns: usize = difficulty.pow(2);
     while follow_spawns.len() > max_follow_spawns {
-        let (x, y) = follow_spawns.remove(rand::random::<usize>() % follow_spawns.len());
+        let (x, y) = follow_spawns.swap_remove(rand::random::<usize>() % follow_spawns.len());
         *map.xy_mut(x, y) = TileType::Floor;
     }
 
