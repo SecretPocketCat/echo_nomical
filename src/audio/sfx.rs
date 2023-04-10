@@ -115,5 +115,5 @@ fn play_drone(audio: Res<Audio>, assets: Res<SfxAssets>) {
             Duration::from_secs(2),
             AudioEasing::OutPowi(2),
         ))
-        .with_volume(0.3);
+        .with_volume(0.2);
 }
