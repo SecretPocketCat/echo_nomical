@@ -103,7 +103,7 @@ const NEIGHBORS: [[i32; 2]; 8] = [
 ];
 const ADJACENTS: [[i32; 2]; 4] = [[-1, 0], [1, 0], [0, -1], [0, 1]];
 
-pub fn generate(width: i32, height: i32) -> Option<Map> {
+pub fn generate(width: i32, height: i32, difficulty: usize) -> Option<Map> {
     let mut map = Map::new(width, height, move |_x, _y| {
         if rand::random::<f32>() > 0.55 {
             TileType::Floor
@@ -175,6 +175,7 @@ pub fn generate(width: i32, height: i32) -> Option<Map> {
     map.tiles[start_idx] = TileType::PlayerSpawn;
 
     // Set enemy spawns
+    let mut follow_spawns = vec![];
     for y in 1..map.height - 1 {
         for x in 1..map.width - 1 {
             // First, the static ones
@@ -192,9 +193,16 @@ pub fn generate(width: i32, height: i32) -> Option<Map> {
                 let idx = map.xy_idx(x, y);
                 if map.get_pathing_distance(idx, start_idx) > 2.0 {
                     *map.xy_mut(x, y) = TileType::Enemy(EnemyType::FollowPing);
+                    follow_spawns.push((x, y));
                 }
             }
         }
+    }
+    // Remove followers if there's too many
+    let max_follow_spawns: usize = difficulty.pow(2);
+    while follow_spawns.len() > max_follow_spawns {
+        let (x, y) = follow_spawns.remove(rand::random::<usize>() % follow_spawns.len());
+        *map.xy_mut(x, y) = TileType::Floor;
     }
 
     // Set goal spawn
