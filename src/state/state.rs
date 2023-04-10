@@ -2,10 +2,11 @@ use bevy::{app::AppExit, prelude::*};
 
 #[derive(States, Default, Clone, Eq, PartialEq, Debug, Hash)]
 pub enum AppState {
-    // #[default]
-    // Splash,
     #[default]
     Loading,
+    SplashFade,
+    Splash,
+    // yes, this is hacky, but the jam end is nigh
     Menu,
     Game,
     GameOver,

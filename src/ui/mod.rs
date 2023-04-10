@@ -1,16 +1,22 @@
-use bevy::prelude::*;
+use std::time::Duration;
+
+use bevy::{input::keyboard::KeyboardInput, prelude::*, time::common_conditions::on_timer};
 use seldom_fn_plugin::FnPluginExt;
 
 use crate::{
     animation::{get_relative_text_color_anim, get_relative_ui_bg_color_anim, TweenDoneAction},
-    state::{AppState, GameState, PersistReset},
+    state::{AppState, FadeReset, GameState, PersistReset},
+    time::time::after_delay,
     AppSize, EntityCommandsExt,
 };
+
+use self::splash::show_splash;
 
 mod button;
 mod game_over;
 mod menu;
 mod pause;
+mod splash;
 
 pub fn ui_plugin(app: &mut App) {
     app.fn_plugin(button::button_plugin)
@@ -21,7 +27,13 @@ pub fn ui_plugin(app: &mut App) {
         .add_system(menu::setup_ui.in_schedule(OnEnter(AppState::Menu)))
         .add_system(game_over::setup_ui.in_schedule(OnEnter(AppState::GameOver)))
         .add_system(pause::setup_ui.in_schedule(OnEnter(GameState::Paused)))
-        .add_system(teardown_ui.in_schedule(OnExit(GameState::Paused)));
+        .add_system(teardown_ui.in_schedule(OnExit(GameState::Paused)))
+        .add_system(show_splash.in_schedule(OnEnter(AppState::Splash)))
+        .add_system(
+            fade_to_menu
+                .in_set(OnUpdate(AppState::Splash))
+                .run_if(on_timer(Duration::from_secs(2)).and_then(run_once())),
+        );
 }
 
 #[derive(Component)]
@@ -80,4 +92,8 @@ fn teardown_ui(
             ))
             .try_insert(UiDisabled);
     }
+}
+
+fn fade_to_menu(mut fade_reset: ResMut<FadeReset>) {
+    fade_reset.set(AppState::Menu);
 }
