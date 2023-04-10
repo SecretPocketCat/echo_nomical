@@ -1,11 +1,12 @@
 <!DOCTYPE html><html lang="en"><head>
-        <meta charset="utf-8">
-        <title>Bevy game</title> <!-- ToDo -->
-        
-        
-        
-        <link rel="icon" href="icon.ico">
-        <style type="text/css">body, html {
+    <meta charset="utf-8">
+    <title>echo_nomical</title>
+    <!-- ToDo -->
+    
+    
+    
+    <link rel="icon" href="icon.ico">
+    <style type="text/css">body, html {
     height: 100%;
 }
 
@@ -34,11 +35,11 @@ body {
     height: 600px;
 }
 </style>
-    
-<link rel="preload" href="/echo_nomical/echo_nomical-4fd0f5548ef33675_bg.wasm" as="fetch" type="application/wasm" crossorigin="">
-<link rel="modulepreload" href="/echo_nomical/echo_nomical-4fd0f5548ef33675.js"></head>
-    <body>
-        <script>// Insert hack to make sound autoplay on Chrome as soon as the user interacts with the tab:
+  
+<link rel="preload" href="/echo_nomical/echo_nomical-30a17b5767b41616_bg.wasm" as="fetch" type="application/wasm" crossorigin="">
+<link rel="modulepreload" href="/echo_nomical/echo_nomical-30a17b5767b41616.js"></head>
+  <body>
+    <script>// Insert hack to make sound autoplay on Chrome as soon as the user interacts with the tab:
 // https://developers.google.com/web/updates/2018/11/web-audio-autoplay#moving-forward
 
 // the following function keeps track of all AudioContexts and resumes them on the first user
@@ -101,11 +102,9 @@ body {
     });
 })();
 </script>
-        <div class="game-container">
-            <canvas id="bevy">
-                Javascript and support for canvas is required
-            </canvas>
-        </div>
-    
+    <div class="game-container">
+      <canvas id="bevy"> Javascript and support for canvas is required </canvas>
+    </div>
+  
 
-<script type="module">import init from '/echo_nomical/echo_nomical-4fd0f5548ef33675.js';init('/echo_nomical/echo_nomical-4fd0f5548ef33675_bg.wasm');</script></body></html>
+<script type="module">import init from '/echo_nomical/echo_nomical-30a17b5767b41616.js';init('/echo_nomical/echo_nomical-30a17b5767b41616_bg.wasm');</script></body></html>
