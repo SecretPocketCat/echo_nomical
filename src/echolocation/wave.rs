@@ -1,11 +1,11 @@
 use bevy::prelude::*;
-use bevy_rapier2d::prelude::*;
-use bevy_tweening::{Animator, EaseFunction, Sequence};
-use leafwing_input_manager::prelude::*;
+
+use bevy_tweening::{Animator, EaseFunction};
+
 
 use crate::{
     animation::{
-        get_relative_scale_anim, get_relative_sprite_color_tween, get_scale_anim, TweenDoneAction,
+        get_relative_sprite_color_tween, get_scale_anim, TweenDoneAction,
     },
     assets::textures::TextureAssets,
     EntityCommandsExt,
