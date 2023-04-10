@@ -3,6 +3,8 @@ use bracket_algorithm_traits::prelude::{BaseMap, SmallVec};
 use bracket_geometry::prelude::{DistanceAlg, Point};
 use bracket_pathfinding::prelude::DijkstraMap;
 
+use crate::enemy::EnemyType;
+
 // A lot of things here taken from https://bfnightly.bracketproductions.com/rustbook/chapter_27.html
 // and the rest of the Rust Roguelike Tutorial.
 
@@ -10,6 +12,8 @@ use bracket_pathfinding::prelude::DijkstraMap;
 pub enum TileType {
     Wall,
     Floor,
+    Goal,
+    Enemy(EnemyType),
 }
 
 #[derive(Default, Clone)]
@@ -65,10 +69,7 @@ impl BaseMap for Map {
     fn get_available_exits(&self, idx: usize) -> SmallVec<[(usize, f32); 10]> {
         let mut exits = SmallVec::new();
         let (x, y) = self.idx_xy(idx);
-        NEIGHBORS.iter().for_each(|&[dx, dy]| {
-            if dx != 0 && dy != 0 {
-                return
-            };
+        ADJACENTS.iter().for_each(|&[dx, dy]| {
             let (x, y) = (x + dx, y + dy);
             if x == 0 || x == self.width - 1 || y == 0 || y == self.height - 1 {
                 return;
@@ -99,6 +100,7 @@ const NEIGHBORS: [[i32; 2]; 8] = [
     [1, 0],
     [1, 1],
 ];
+const ADJACENTS: [[i32; 2]; 4] = [[-1, 0], [1, 0], [0, -1], [0, 1]];
 
 pub fn gen_map(width: i32, height: i32) -> Map {
     let mut map = Map::new(width, height, move |_x, _y| {
@@ -148,13 +150,34 @@ pub fn gen_map(width: i32, height: i32) -> Map {
         start_pos.x -= 1;
     }
 
-    let map_starts : Vec<usize> = vec![map.xy_idx(start_pos.x, start_pos.y)];
-    let dijkstra_map = DijkstraMap::new(map.width as usize, map.height as usize, &map_starts , &map, 200.0);
+    let map_starts: Vec<usize> = vec![map.xy_idx(start_pos.x, start_pos.y)];
+    let dijkstra_map = DijkstraMap::new(
+        map.width as usize,
+        map.height as usize,
+        &map_starts,
+        &map,
+        200.0,
+    );
     for (i, tile) in map.tiles.iter_mut().enumerate() {
         if *tile == TileType::Floor {
             let distance_to_start = dijkstra_map.map[i];
             if distance_to_start == std::f32::MAX {
                 *tile = TileType::Wall;
+            }
+        }
+    }
+
+    // Spawn enemies
+    // First, the static ones
+    for y in 1..map.height - 1 {
+        for x in 1..map.width - 1 {
+            if map.xy(x, y) == &TileType::Wall
+                && ADJACENTS
+                    .iter()
+                    .all(|[dx, dy]| map.xy(x + dx, y + dy) == &TileType::Floor)
+                && rand::random::<f32>() > 0.5
+            {
+                *map.xy_mut(x, y) = TileType::Enemy(EnemyType::Spiky);
             }
         }
     }

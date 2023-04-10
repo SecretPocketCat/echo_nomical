@@ -6,10 +6,7 @@ use bevy_tweening::*;
 use interpolation::*;
 
 use crate::{
-    level::level::Wall,
-    physics::{check_collision_start_pair},
-    state::PersistReset,
-    time::time::*,
+    level::level::Wall, physics::check_collision_start_pair, state::PersistReset, time::time::*,
     AppSize,
 };
 

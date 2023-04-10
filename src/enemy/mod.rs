@@ -7,9 +7,7 @@ use rand::{thread_rng, Rng};
 
 use crate::{
     agent::agent::{MovementDirection, MovementDirectionEasing, Speed, StopOnCollision},
-    animation::{
-        get_relative_scale_anim, TweenDoneAction,
-    },
+    animation::{get_relative_scale_anim, TweenDoneAction},
     assets::textures::TextureAssets,
     echolocation::{
         echolocation::{EcholocationHitColor, EcholocationHitEv, FollowEchoOnHit},
@@ -29,7 +27,7 @@ pub fn enemy_plugin(app: &mut App) {
         .add_system(process_cooldown::<FollowEchoOnHit>);
 }
 
-#[derive(Debug, Component, Clone, Copy)]
+#[derive(Debug, Component, Clone, Copy, PartialEq, Eq)]
 pub enum EnemyType {
     Spiky,
     FollowPing,
