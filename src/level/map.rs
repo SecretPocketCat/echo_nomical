@@ -1,4 +1,4 @@
-use bevy::prelude::IVec2;
+use bevy::prelude::{IVec2, Resource};
 use bracket_algorithm_traits::prelude::{BaseMap, SmallVec};
 use bracket_geometry::prelude::{DistanceAlg, Point};
 use bracket_pathfinding::prelude::DijkstraMap;
@@ -17,7 +17,7 @@ pub enum TileType {
     Enemy(EnemyType),
 }
 
-#[derive(Default, Clone)]
+#[derive(Default, Clone, Resource)]
 pub struct Map {
     pub tiles: Vec<TileType>,
     pub width: i32,
@@ -103,7 +103,7 @@ const NEIGHBORS: [[i32; 2]; 8] = [
 ];
 const ADJACENTS: [[i32; 2]; 4] = [[-1, 0], [1, 0], [0, -1], [0, 1]];
 
-pub fn gen_map(width: i32, height: i32) -> Option<Map> {
+pub fn generate(width: i32, height: i32) -> Option<Map> {
     let mut map = Map::new(width, height, move |_x, _y| {
         if rand::random::<f32>() > 0.55 {
             TileType::Floor

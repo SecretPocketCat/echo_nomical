@@ -5,9 +5,7 @@ use bevy_rapier2d::prelude::*;
 use bevy_tweening::*;
 use interpolation::*;
 
-use crate::{
-    level::level::Wall, physics::check_collision_start_pair, time::time::*,
-};
+use crate::{level::level::Wall, physics::check_collision_start_pair, time::time::*};
 
 #[derive(Component, Deref, DerefMut, Default, Reflect)]
 pub struct MovementDirection(pub Vec2);
