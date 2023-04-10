@@ -3,10 +3,10 @@
 
 use bevy::prelude::*;
 use bevy::DefaultPlugins;
-use echo_nomical::palette::COL_BG;
-use echo_nomical::AppSize;
-use echo_nomical::GAME_NAME;
 use seldom_fn_plugin::FnPluginExt;
+use sonarscape::palette::COL_BG;
+use sonarscape::AppSize;
+use sonarscape::GAME_NAME;
 
 fn main() {
     let lvl_size = AppSize(Vec2::new(1000., 800.));
@@ -24,6 +24,6 @@ fn main() {
             ..default()
         }))
         .insert_resource(lvl_size)
-        .fn_plugin(echo_nomical::game_plugin)
+        .fn_plugin(sonarscape::game_plugin)
         .run();
 }
