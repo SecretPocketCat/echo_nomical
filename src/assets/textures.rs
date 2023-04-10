@@ -26,4 +26,7 @@ pub struct TextureAssets {
 
     #[asset(path = "textures/button.png")]
     pub button: Handle<Image>,
+
+    #[asset(path = "textures/controls_arrows.png")]
+    pub controls_arrows: Handle<Image>,
 }

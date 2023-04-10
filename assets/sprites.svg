@@ -24,9 +24,9 @@
      inkscape:pagecheckerboard="0"
      inkscape:document-units="mm"
      showgrid="false"
-     inkscape:zoom="6.2217172"
-     inkscape:cx="435.32998"
-     inkscape:cy="367.98523"
+     inkscape:zoom="3.1108586"
+     inkscape:cx="412.2656"
+     inkscape:cy="507.41618"
      inkscape:window-width="3440"
      inkscape:window-height="1351"
      inkscape:window-x="-9"
@@ -305,9 +305,26 @@
        inkscape:export-xdpi="484.63269"
        inkscape:export-ydpi="484.63269" />
     <path
+       id="path17695"
+       style="fill:#ffffff;stroke:#ffffff;stroke-width:1.165;stroke-linecap:round;stroke-linejoin:round;paint-order:stroke fill markers"
+       d="m 140.18941,96.876527 c 0.16862,0.28665 0.13651,4.864743 0.0107,5.172593 -0.12578,0.30786 -1.25349,1.44653 -1.56011,1.57528 -0.30663,0.12875 -35.01655,0.1365 -35.32441,0.0107 -0.30786,-0.12578 -1.44653,-1.25348 -1.57528,-1.56011 -0.12875,-0.30663 -0.1365,-4.864733 -0.0107,-5.172593 0.12578,-0.30786 1.25348,-1.44653 1.56011,-1.57528 0.30663,-0.12875 35.01655,-0.1365 35.32441,-0.0107 0.30786,0.12579 1.40666,1.27347 1.57527,1.56011 z"
+       sodipodi:nodetypes="ssssssssss"
+       inkscape:export-filename="C:\Projects\GameDev\jams\echo_nomical\assets\textures\button.png"
+       inkscape:export-xdpi="652.30927"
+       inkscape:export-ydpi="652.30927" />
+    <rect
+       style="fill:#666666;fill-opacity:1;fill-rule:nonzero;stroke:#ffffff;stroke-width:1.165;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;paint-order:stroke fill markers"
+       id="rect17719"
+       width="80.033997"
+       height="48.734535"
+       x="81.054115"
+       y="123.66495"
+       ry="2.5259027"
+       rx="2.5259027" />
+    <path
        id="path16311"
        style="fill:#ffffff;stroke:#ffffff;stroke-width:1.165;stroke-linecap:round;stroke-linejoin:round;paint-order:stroke fill markers"
-       d="m 141.38013,102.74508 c 0.16862,0.28665 0.13651,4.86474 0.0107,5.17259 -0.12578,0.30786 -1.25349,1.44653 -1.56011,1.57528 -0.30663,0.12875 -35.01655,0.1365 -35.32441,0.0107 -0.30786,-0.12578 -1.44653,-1.25348 -1.57528,-1.56011 -0.12875,-0.30663 -0.1365,-4.86473 -0.0107,-5.17259 0.12578,-0.30786 1.25348,-1.44653 1.56011,-1.57528 0.30663,-0.12875 35.01655,-0.1365 35.32441,-0.0107 0.30786,0.12579 1.40666,1.27347 1.57527,1.56011 z"
+       d="m 128.70746,143.14457 c 0.16862,0.28665 0.13651,4.86474 0.0107,5.17259 -0.12578,0.30786 -1.25349,1.44653 -1.56011,1.57528 -0.30663,0.12875 -35.016564,0.1365 -35.324424,0.0107 -0.30786,-0.12578 -1.446527,-1.25348 -1.575277,-1.56011 -0.12875,-0.30663 -0.1365,-4.86473 -0.0107,-5.17259 0.12578,-0.30786 1.253477,-1.44653 1.560107,-1.57528 0.30663,-0.12875 35.016564,-0.1365 35.324424,-0.0107 0.30786,0.12579 1.40666,1.27347 1.57527,1.56011 z"
        sodipodi:nodetypes="ssssssssss"
        inkscape:export-filename="C:\Projects\GameDev\jams\echo_nomical\assets\textures\button.png"
        inkscape:export-xdpi="652.30927"
@@ -331,5 +348,44 @@
        inkscape:export-filename="C:\Projects\GameDev\jams\echo_nomical\assets\textures\button_outline_9slice.png"
        inkscape:export-xdpi="121.15817"
        inkscape:export-ydpi="121.15817" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:5.64444px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       x="96.788651"
+       y="147.90463"
+       id="text19167"><tspan
+         sodipodi:role="line"
+         id="tspan19165"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.64444px;font-family:'Spaceport 2006';-inkscape-font-specification:'Spaceport 2006, ';stroke-width:0.264583"
+         x="96.788651"
+         y="147.90463">SPACE</tspan></text>
+    <path
+       id="path886"
+       style="fill:#e6e6e6;stroke:none;stroke-width:1.165;stroke-linecap:round;stroke-linejoin:round;paint-order:stroke fill markers"
+       d="m 35.866295,114.56445 c -1.399353,0 -2.525946,1.12659 -2.525946,2.52594 v 12.80904 c 0,1.39935 1.126593,2.52595 2.525946,2.52595 h 12.809034 c 1.399352,0 2.525946,-1.1266 2.525946,-2.52595 v -12.80904 c 0,-1.39935 -1.126594,-2.52594 -2.525946,-2.52594 z m 6.404258,2.88251 c 1.88695,0 7.233531,9.24179 6.290056,10.87272 -0.943475,1.63093 -11.636119,1.63093 -12.579594,0 -0.943475,-1.63093 4.40259,-10.87272 6.289538,-10.87272 z"
+       inkscape:export-filename="C:\Projects\GameDev\jams\echo_nomical\assets\controls_arrows.png"
+       inkscape:export-xdpi="113.1"
+       inkscape:export-ydpi="113.1" />
+    <path
+       id="path888"
+       style="fill:#e6e6e6;stroke:none;stroke-width:1.165;stroke-linecap:round;stroke-linejoin:round;paint-order:stroke fill markers"
+       d="m 35.866295,152.24239 c -1.399353,0 -2.525946,-1.12659 -2.525946,-2.52594 v -12.80904 c 0,-1.39935 1.126593,-2.52595 2.525946,-2.52595 h 12.809034 c 1.399352,0 2.525946,1.1266 2.525946,2.52595 v 12.80904 c 0,1.39935 -1.126594,2.52594 -2.525946,2.52594 z m 6.404258,-2.88251 c 1.88695,0 7.233531,-9.24179 6.290056,-10.87272 -0.943475,-1.63093 -11.636119,-1.63093 -12.579594,0 -0.943475,1.63093 4.40259,10.87272 6.289538,10.87272 z"
+       inkscape:export-filename="C:\Projects\GameDev\jams\echo_nomical\assets\controls_arrows.png"
+       inkscape:export-xdpi="113.1"
+       inkscape:export-ydpi="113.1" />
+    <path
+       id="path890"
+       style="fill:#e6e6e6;stroke:none;stroke-width:1.165;stroke-linecap:round;stroke-linejoin:round;paint-order:stroke fill markers"
+       d="m 13.523337,149.71644 c 0,1.39935 1.12659,2.52595 2.52594,2.52595 h 12.80904 c 1.39935,0 2.52595,-1.1266 2.52595,-2.52595 v -12.80903 c 0,-1.39935 -1.1266,-2.52595 -2.52595,-2.52595 h -12.80904 c -1.39935,0 -2.52594,1.1266 -2.52594,2.52595 z m 2.88251,-6.40426 c 0,-1.88695 9.24179,-7.23353 10.87272,-6.29005 1.63093,0.94347 1.63093,11.63612 0,12.57959 -1.63093,0.94348 -10.87272,-4.40259 -10.87272,-6.28954 z"
+       inkscape:export-filename="C:\Projects\GameDev\jams\echo_nomical\assets\controls_arrows.png"
+       inkscape:export-xdpi="113.1"
+       inkscape:export-ydpi="113.1" />
+    <path
+       id="rect7715"
+       style="fill:#e6e6e6;stroke:none;stroke-width:1.165;stroke-linecap:round;stroke-linejoin:round;paint-order:stroke fill markers"
+       d="m 71.018287,136.90741 c 0,-1.39936 -1.12659,-2.52595 -2.52594,-2.52595 h -12.80904 c -1.39935,0 -2.52595,1.12659 -2.52595,2.52595 v 12.80903 c 0,1.39935 1.1266,2.52595 2.52595,2.52595 h 12.80904 c 1.39935,0 2.52594,-1.1266 2.52594,-2.52595 z m -2.88251,6.40426 c 0,1.88695 -9.24179,7.23353 -10.87272,6.29005 -1.63093,-0.94347 -1.63093,-11.63612 0,-12.57959 1.63093,-0.94348 10.87272,4.40259 10.87272,6.28954 z"
+       inkscape:export-filename="C:\Projects\GameDev\jams\echo_nomical\assets\controls_arrows.png"
+       inkscape:export-xdpi="113.1"
+       inkscape:export-ydpi="113.1" />
   </g>
 </svg>

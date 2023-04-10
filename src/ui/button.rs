@@ -11,7 +11,11 @@ use super::UiDisabled;
 
 pub(super) fn button_plugin(app: &mut App) {
     app.init_resource::<ButtonColors>()
-        .add_system(spawn_ui_btn.run_if(resource_exists::<FontAssets>()))
+        .add_system(
+            spawn_ui_btn.run_if(
+                resource_exists::<FontAssets>().and_then(resource_exists::<TextureAssets>()),
+            ),
+        )
         .add_system(on_ui_btn_interaction);
 }
 

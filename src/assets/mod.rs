@@ -1,4 +1,4 @@
-use std::{ops::RangeInclusive};
+use std::ops::RangeInclusive;
 
 use bevy::prelude::*;
 use bevy_asset_loader::prelude::*;

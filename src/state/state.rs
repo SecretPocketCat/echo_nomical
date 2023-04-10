@@ -4,9 +4,7 @@ use bevy::{app::AppExit, prelude::*};
 pub enum AppState {
     #[default]
     Loading,
-    SplashFade,
     Splash,
-    // yes, this is hacky, but the jam end is nigh
     Menu,
     Game,
     GameOver,

@@ -16,6 +16,7 @@ mod game_over;
 mod menu;
 mod pause;
 mod splash;
+mod tutorial;
 
 pub fn ui_plugin(app: &mut App) {
     app.fn_plugin(button::button_plugin)
@@ -24,6 +25,7 @@ pub fn ui_plugin(app: &mut App) {
             resource_exists::<RootUiNode>().and_then(resource_exists_and_changed::<AppSize>()),
         ))
         .add_system(menu::setup_ui.in_schedule(OnEnter(AppState::Menu)))
+        .add_system(tutorial::setup_ui.in_schedule(OnEnter(AppState::Tutorial)))
         .add_system(game_over::setup_ui.in_schedule(OnEnter(AppState::GameOver)))
         .add_system(pause::setup_ui.in_schedule(OnEnter(GameState::Paused)))
         .add_system(teardown_ui.in_schedule(OnExit(GameState::Paused)))
