@@ -3,7 +3,7 @@ use bevy::{
     window::{PrimaryWindow, WindowResized},
 };
 
-use crate::AppSize;
+use crate::{palette::COL_BG, AppSize};
 
 #[derive(Component)]
 pub struct PrimaryCamera;
@@ -12,9 +12,7 @@ pub(super) fn setup_camera(mut cmd: Commands) {
     cmd.spawn((
         Camera2dBundle {
             camera_2d: Camera2d {
-                clear_color: bevy::core_pipeline::clear_color::ClearColorConfig::Custom(
-                    Color::BLACK,
-                ),
+                clear_color: bevy::core_pipeline::clear_color::ClearColorConfig::Custom(COL_BG),
                 ..default()
             },
             ..default()

@@ -15,6 +15,7 @@ use crate::{
     },
     input::cooldown::{process_cooldown, Cooldown},
     level::level::Wall,
+    palette::COL_ENEMY,
     physics::check_collision_start_pair,
     state::UnpausedGame,
     EntityCommandsExt,
@@ -91,7 +92,7 @@ fn spawn_enemy(mut ev_r: EventReader<SpawnEnemyEv>, mut cmd: Commands, tex: Res<
                         .insert(Collider::polyline(vert, None))
                         .insert(Name::new("Spiky"))
                         .insert(Killer)
-                        .insert(EcholocationHitColor(Color::RED));
+                        .insert(EcholocationHitColor(COL_ENEMY));
                 }
                 EnemyType::FollowPing => {
                     let half_width = 15.;
@@ -199,7 +200,7 @@ pub(super) fn enemy_hit(
             cmd.spawn(Wave {
                 position: t.translation() + dir.map_or(Vec2::ZERO, |d| d.0 * 50.).extend(0.),
                 radius: 80.,
-                color: color.map_or(Color::SEA_GREEN, |c| c.0),
+                color: color.map_or(COL_ENEMY, |c| c.0),
             });
         }
     }

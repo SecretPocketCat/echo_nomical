@@ -24,9 +24,9 @@
      inkscape:pagecheckerboard="0"
      inkscape:document-units="mm"
      showgrid="false"
-     inkscape:zoom="2.1997092"
-     inkscape:cx="785.78568"
-     inkscape:cy="221.1656"
+     inkscape:zoom="6.2217172"
+     inkscape:cx="435.32998"
+     inkscape:cy="367.98523"
      inkscape:window-width="3440"
      inkscape:window-height="1351"
      inkscape:window-x="-9"
@@ -39,14 +39,54 @@
        position="182.96714,257.70619"
        orientation="1,0"
        id="guide9234" />
+    <sodipodi:guide
+       position="114.98868,217.73479"
+       orientation="0,-1"
+       id="guide9394" />
   </sodipodi:namedview>
   <defs
      id="defs2">
     <linearGradient
        inkscape:collect="always"
+       id="linearGradient14767">
+      <stop
+         style="stop-color:#4d4d4d;stop-opacity:1"
+         offset="0"
+         id="stop14761" />
+      <stop
+         style="stop-color:#666666;stop-opacity:1"
+         offset="0.44377476"
+         id="stop14763" />
+      <stop
+         style="stop-color:#ffffff;stop-opacity:1"
+         offset="1"
+         id="stop14765" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient9978">
+      <stop
+         style="stop-color:#333333;stop-opacity:1"
+         offset="0"
+         id="stop9970" />
+      <stop
+         style="stop-color:#666666;stop-opacity:1"
+         offset="0.36430335"
+         id="stop9972" />
+      <stop
+         style="stop-color:#7c7c7c;stop-opacity:1;"
+         offset="0.46126562"
+         id="stop9974" />
+      <stop
+         style="stop-color:#ffffff;stop-opacity:1"
+         offset="1"
+         id="stop9976" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
        id="linearGradient8416">
       <stop
-         style="stop-color:#1a1a1a;stop-opacity:1"
+         style="stop-color:#333333;stop-opacity:1"
          offset="0"
          id="stop8410" />
       <stop
@@ -129,6 +169,28 @@
        fy="209.57317"
        r="100.3114"
        gradientUnits="userSpaceOnUse" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient9978"
+       id="radialGradient9584"
+       cx="917.34998"
+       cy="196.73378"
+       fx="917.34998"
+       fy="196.73378"
+       r="165.13028"
+       gradientTransform="matrix(0.99755927,0.09390102,-0.11682204,0.93602352,21.604297,-74.66889)"
+       gradientUnits="userSpaceOnUse" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient14767"
+       id="radialGradient14503"
+       cx="1170.3745"
+       cy="195.85013"
+       fx="1170.3745"
+       fy="195.85013"
+       r="86.604332"
+       gradientTransform="matrix(1,0,0,1.0875064,0,-17.13814)"
+       gradientUnits="userSpaceOnUse" />
   </defs>
   <g
      inkscape:label="Vrstva 1"
@@ -193,5 +255,81 @@
        inkscape:export-filename="C:\Projects\GameDev\jams\echo_nomical\assets\textures\spiky.png"
        inkscape:export-xdpi="59.48"
        inkscape:export-ydpi="59.48" />
+    <path
+       sodipodi:type="star"
+       style="fill:url(#radialGradient9584);fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:26.0441;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;paint-order:stroke fill markers"
+       id="path9312"
+       inkscape:flatsided="false"
+       sodipodi:sides="3"
+       sodipodi:cx="915.12097"
+       sodipodi:cy="200.02644"
+       sodipodi:r1="190.39888"
+       sodipodi:r2="121.85528"
+       sodipodi:arg1="0.59859823"
+       sodipodi:arg2="1.6457958"
+       inkscape:rounded="0.09"
+       inkscape:randomized="0"
+       d="m 1072.4145,307.31335 c -8.4708,12.41898 -151.43352,15.35221 -166.42404,14.22582 -14.99053,-1.12639 -155.90966,-25.39062 -162.42944,-38.936 -6.51978,-13.54537 62.42135,-138.82137 70.8921,-151.24035 8.47075,-12.41898 99.94376,-122.3264126 114.93428,-121.200018 14.99053,1.126394 89.0122,123.469168 95.5319,137.014538 6.5198,13.54537 55.9659,147.71704 47.4952,160.13601 z"
+       transform="matrix(0.12373197,-0.01001123,0.0087017,0.14235259,134.4001,52.613574)"
+       inkscape:transform-center-x="-1.1086145"
+       inkscape:transform-center-y="-0.13746265"
+       inkscape:export-filename="C:\Projects\GameDev\jams\echo_nomical\assets\textures\charge.png"
+       inkscape:export-xdpi="72.982109"
+       inkscape:export-ydpi="72.982109" />
+    <path
+       id="path11357"
+       style="fill:none;fill-rule:evenodd;stroke:url(#radialGradient14503);stroke-width:20.2772;stroke-linecap:round"
+       d="m 1167.9427,215.79015 c -9.5351,-6.2828 -10.4399,-19.71388 -4.1375,-28.59418 8.6072,-12.12777 26.0745,-13.11947 37.5264,-4.5584 14.9481,11.17477 16.0191,33.08378 4.9476,47.33504 -13.9716,17.98414 -40.7022,19.128 -57.9685,5.3107 -21.2257,-16.98568 -22.4369,-48.89714 -5.6517,-69.38428 20.2072,-24.66397 57.6417,-25.93754 81.5465,-5.97358 28.2915,23.62746 29.6231,66.91282 6.2787,94.4247 -27.2389,32.10158 -76.6902,33.48734 -107.9919,6.56885 -36.0884,-31.03485 -37.5247,-86.95635 -6.8456,-122.22474 24.2575,-27.88623 78.256,-35.29095 106.6942,-16.32335"
+       sodipodi:nodetypes="csssssssssc"
+       transform="matrix(0.26458333,0,0,0.26458333,4.811242,10.103608)"
+       inkscape:export-filename="C:\Projects\GameDev\jams\echo_nomical\assets\textures\portal.png"
+       inkscape:export-xdpi="70.840988"
+       inkscape:export-ydpi="70.840988" />
+    <path
+       sodipodi:type="star"
+       style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:#ffffff;stroke-width:4.40315;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;paint-order:stroke fill markers"
+       id="path16367"
+       inkscape:flatsided="true"
+       sodipodi:sides="8"
+       sodipodi:cx="262.98932"
+       sodipodi:cy="376.41339"
+       sodipodi:r1="10.948351"
+       sodipodi:r2="10.114958"
+       sodipodi:arg1="-0.84415399"
+       sodipodi:arg2="-0.4514549"
+       inkscape:rounded="0.15"
+       inkscape:randomized="0"
+       d="m 270.26301,368.23049 c 0.93944,0.83506 3.58196,6.28524 3.65577,7.53999 0.0738,1.25476 -1.91151,6.97716 -2.74656,7.9166 -0.83506,0.93944 -6.28524,3.58196 -7.53999,3.65577 -1.25476,0.0738 -6.97716,-1.9115 -7.9166,-2.74656 -0.93944,-0.83506 -3.58196,-6.28523 -3.65577,-7.53999 -0.0738,-1.25476 1.9115,-6.97716 2.74656,-7.9166 0.83506,-0.93944 6.28523,-3.58196 7.53999,-3.65577 1.25476,-0.0738 6.97716,1.91151 7.9166,2.74656 z"
+       transform="matrix(0.2386311,0.11427834,-0.11427834,0.2386311,49.841057,-19.647327)"
+       inkscape:export-filename="C:\Projects\GameDev\jams\echo_nomical\assets\textures\button_9slice.png"
+       inkscape:export-xdpi="484.63269"
+       inkscape:export-ydpi="484.63269" />
+    <path
+       id="path16311"
+       style="fill:#ffffff;stroke:#ffffff;stroke-width:1.165;stroke-linecap:round;stroke-linejoin:round;paint-order:stroke fill markers"
+       d="m 141.38013,102.74508 c 0.16862,0.28665 0.13651,4.86474 0.0107,5.17259 -0.12578,0.30786 -1.25349,1.44653 -1.56011,1.57528 -0.30663,0.12875 -35.01655,0.1365 -35.32441,0.0107 -0.30786,-0.12578 -1.44653,-1.25348 -1.57528,-1.56011 -0.12875,-0.30663 -0.1365,-4.86473 -0.0107,-5.17259 0.12578,-0.30786 1.25348,-1.44653 1.56011,-1.57528 0.30663,-0.12875 35.01655,-0.1365 35.32441,-0.0107 0.30786,0.12579 1.40666,1.27347 1.57527,1.56011 z"
+       sodipodi:nodetypes="ssssssssss"
+       inkscape:export-filename="C:\Projects\GameDev\jams\echo_nomical\assets\textures\button.png"
+       inkscape:export-xdpi="652.30927"
+       inkscape:export-ydpi="652.30927" />
+    <path
+       sodipodi:type="star"
+       style="fill:none;fill-opacity:1;fill-rule:nonzero;stroke:#ffffff;stroke-width:4.40315;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;paint-order:stroke fill markers"
+       id="path16157"
+       inkscape:flatsided="true"
+       sodipodi:sides="8"
+       sodipodi:cx="262.98932"
+       sodipodi:cy="376.41339"
+       sodipodi:r1="10.948351"
+       sodipodi:r2="10.114958"
+       sodipodi:arg1="-0.84415399"
+       sodipodi:arg2="-0.4514549"
+       inkscape:rounded="0.15"
+       inkscape:randomized="0"
+       d="m 270.26301,368.23049 c 0.93944,0.83506 3.58196,6.28524 3.65577,7.53999 0.0738,1.25476 -1.91151,6.97716 -2.74656,7.9166 -0.83506,0.93944 -6.28524,3.58196 -7.53999,3.65577 -1.25476,0.0738 -6.97716,-1.9115 -7.9166,-2.74656 -0.93944,-0.83506 -3.58196,-6.28523 -3.65577,-7.53999 -0.0738,-1.25476 1.9115,-6.97716 2.74656,-7.9166 0.83506,-0.93944 6.28523,-3.58196 7.53999,-3.65577 1.25476,-0.0738 6.97716,1.91151 7.9166,2.74656 z"
+       transform="matrix(0.2386311,0.11427834,-0.11427834,0.2386311,61.067861,-27.344492)"
+       inkscape:export-filename="C:\Projects\GameDev\jams\echo_nomical\assets\textures\button_outline_9slice.png"
+       inkscape:export-xdpi="121.15817"
+       inkscape:export-ydpi="121.15817" />
   </g>
 </svg>

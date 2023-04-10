@@ -9,6 +9,8 @@ mod state;
 
 pub use reset::{FadeReset, PersistReset};
 
+use self::state::quit_app;
+
 #[derive(Debug, Hash, PartialEq, Eq, Clone, SystemSet)]
 pub struct UnpausedGame;
 
@@ -19,5 +21,6 @@ pub fn state_plugin(app: &mut App) {
             UnpausedGame.run_if(in_state(AppState::Game).and_then(in_state(GameState::Running))),
         )
         .fn_plugin(pause::pause_plugin)
-        .fn_plugin(reset::reset_plugin);
+        .fn_plugin(reset::reset_plugin)
+        .add_system(quit_app.in_schedule(OnEnter(AppState::Quit)));
 }

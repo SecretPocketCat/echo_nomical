@@ -1709,34 +1709,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9ea835d29036a4087793836fa931b08837ad5e957da9e23886b29586fb9b6650"
 
 [[package]]
-name = "echo_nomical"
-version = "0.1.0"
-dependencies = [
- "bevy",
- "bevy_asset_loader",
- "bevy_editor_pls",
- "bevy_framepace",
- "bevy_kira_audio",
- "bevy_pkv",
- "bevy_rapier2d",
- "bevy_tweening",
- "bevycheck",
- "bracket-algorithm-traits",
- "bracket-geometry",
- "bracket-pathfinding",
- "embed-resource",
- "image",
- "interpolation",
- "iyes_progress",
- "leafwing-input-manager",
- "paste",
- "rand",
- "seldom_fn_plugin",
- "serde",
- "winit",
-]
-
-[[package]]
 name = "ecolor"
 version = "0.21.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3624,6 +3596,34 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a507befe795404456341dfab10cef66ead4c041f62b8b11bbb92bffe5d0953e0"
 dependencies = [
  "serde",
+]
+
+[[package]]
+name = "sonarscape"
+version = "0.1.0"
+dependencies = [
+ "bevy",
+ "bevy_asset_loader",
+ "bevy_editor_pls",
+ "bevy_framepace",
+ "bevy_kira_audio",
+ "bevy_pkv",
+ "bevy_rapier2d",
+ "bevy_tweening",
+ "bevycheck",
+ "bracket-algorithm-traits",
+ "bracket-geometry",
+ "bracket-pathfinding",
+ "embed-resource",
+ "image",
+ "interpolation",
+ "iyes_progress",
+ "leafwing-input-manager",
+ "paste",
+ "rand",
+ "seldom_fn_plugin",
+ "serde",
+ "winit",
 ]
 
 [[package]]

@@ -9,6 +9,7 @@ use crate::{
     enemy::EnemyType,
     input::actions::{PlayerAction, UiAction},
     level::level::{LevelEntry, LevelExit},
+    palette::COL_PLAYER,
     physics::{check_collision_start_pair, ECHO_COLL_GROUP, PLAYER_COLL_GROUP},
     state::{AppState, FadeReset},
     EntityCommandsExt,
@@ -85,7 +86,7 @@ pub(super) fn spawn_player(
                         texture: textures.player.clone(),
                         transform: Transform::from_scale(Vec2::ZERO.extend(0.)),
                         sprite: Sprite {
-                            color: Color::SEA_GREEN,
+                            color: COL_PLAYER,
                             custom_size: Some(Vec2::splat(radius * 2.)),
                             ..default()
                         },
@@ -185,7 +186,7 @@ pub(super) fn player_hit(
             cmd.spawn(Wave {
                 position: t.translation(),
                 radius: 130.,
-                color: Color::SEA_GREEN,
+                color: COL_PLAYER,
             });
 
             cmd.entity(coll.0).try_insert(get_relative_scale_anim(

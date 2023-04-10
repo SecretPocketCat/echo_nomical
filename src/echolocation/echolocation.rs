@@ -11,6 +11,7 @@ use crate::{
     },
     assets::textures::TextureAssets,
     input::{actions::PlayerAction, cooldown::Cooldown},
+    palette::COL_PING,
     physics::{check_collision_start, ECHO_COLL_GROUP, PLAYER_COLL_GROUP},
     EntityCommandsExt,
 };
@@ -84,7 +85,7 @@ pub(super) fn echolocate(
                     transform: Transform::from_scale(Vec2::ZERO.extend(1.)),
                     texture: textures.echo_ping.clone(),
                     sprite: Sprite {
-                        color: Color::SEA_GREEN,
+                        color: COL_PING,
                         custom_size: Some(Vec2::splat(8.)),
                         ..default()
                     },
@@ -140,9 +141,7 @@ pub(super) fn echo_hit(
             let age_mult = ((ECHO_RAY_MAX_AGE_S - age.0 - 0.1) / ECHO_RAY_MAX_AGE_S).min(1.);
 
             if age_mult > 0. {
-                let col = color_q
-                    .get(coll_success.other)
-                    .map_or(Color::SEA_GREEN, |c| c.0);
+                let col = color_q.get(coll_success.other).map_or(COL_PING, |c| c.0);
 
                 cmd.spawn(SpriteBundle {
                     transform: Transform::from_translation(

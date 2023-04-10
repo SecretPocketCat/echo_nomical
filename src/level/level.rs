@@ -4,7 +4,7 @@ use bevy_rapier2d::prelude::*;
 use super::mapgen::{gen_map, TileType};
 use crate::{
     agent::agent::AgentRotation, assets::textures::TextureAssets,
-    echolocation::echolocation::EcholocationHitColor, enemy::SpawnEnemyEv,
+    echolocation::echolocation::EcholocationHitColor, enemy::SpawnEnemyEv, palette::COL_PORTAL,
     player::player::PlayerEv, render::camera::PrimaryCamera, AppSize,
 };
 
@@ -88,7 +88,7 @@ pub(super) fn setup_test_lvl(
                     .insert(LevelExit)
                     .insert(ActiveEvents::COLLISION_EVENTS)
                     .insert(ActiveCollisionTypes::all())
-                    .insert(EcholocationHitColor(Color::LIME_GREEN))
+                    .insert(EcholocationHitColor(COL_PORTAL))
                     .insert(AgentRotation(-120.))
                     .insert(Name::new("Exit"));
                 }

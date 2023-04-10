@@ -18,13 +18,13 @@
       "cargo": {
         "args": [
           "build",
-          "--bin=echo_nomical",
-          "--package=echo_nomical",
+          "--bin=sonarscape",
+          "--package=sonarscape",
           "--features",
           "dev"
         ],
         "filter": {
-          "name": "echo_nomical",
+          "name": "sonarscape",
           "kind": "bin"
         }
       },
@@ -47,13 +47,13 @@
         "args": [
           "test",
           "--no-run",
-          "--bin=echo_nomical",
-          "--package=echo_nomical",
+          "--bin=sonarscape",
+          "--package=sonarscape",
           "--features",
           "dev"
         ],
         "filter": {
-          "name": "echo_nomical",
+          "name": "sonarscape",
           "kind": "bin"
         }
       },

@@ -1,14 +1,17 @@
-use bevy::prelude::*;
+use bevy::{app::AppExit, prelude::*};
 
 #[derive(States, Default, Clone, Eq, PartialEq, Debug, Hash)]
 pub enum AppState {
-    // #[default]
-    // Splash,
     #[default]
     Loading,
+    SplashFade,
+    Splash,
+    // yes, this is hacky, but the jam end is nigh
     Menu,
     Game,
     GameOver,
+    Tutorial,
+    Quit,
 }
 
 #[derive(States, Default, Clone, Eq, PartialEq, Debug, Hash)]
@@ -27,4 +30,8 @@ pub fn set_state_fn<S: States>(next_state: S) -> impl FnMut(ResMut<NextState<S>>
     move |mut state: ResMut<NextState<S>>| {
         state.set(next_state.clone());
     }
+}
+
+pub(super) fn quit_app(mut exit_ev_w: EventWriter<AppExit>) {
+    exit_ev_w.send(AppExit);
 }

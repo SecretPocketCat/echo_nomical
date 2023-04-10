@@ -5,17 +5,17 @@
         <key>CFBundleDevelopmentRegion</key>
         <string>en</string>
         <key>CFBundleDisplayName</key>
-        <string>EchoNomical</string>        <!-- ToDo: this should be the same as your OSX app name in the release flow -->
+        <string>sonarscape</string>        <!-- ToDo: this should be the same as your OSX app name in the release flow -->
         <key>CFBundleExecutable</key>
-        <string>echo_nomical</string>        <!-- ToDo: this should be the same as your executable name in the release flow -->
+        <string>sonarscape</string>        <!-- ToDo: this should be the same as your executable name in the release flow -->
         <key>CFBundleIconFile</key>
         <string>AppIcon.icns</string>
         <key>CFBundleIdentifier</key>
-        <string>spc.echo_nomical</string>        <!-- ToDo -->
+        <string>spc.sonarscape</string>        <!-- ToDo -->
         <key>CFBundleInfoDictionaryVersion</key>
         <string>6.0</string>
         <key>CFBundleName</key>
-        <string>echo_nomical</string>        <!-- ToDo -->
+        <string>sonarscape</string>        <!-- ToDo -->
         <key>CFBundlePackageType</key>
         <string>APPL</string>
         <key>CFBundleShortVersionString</key>
