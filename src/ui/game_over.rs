@@ -1,4 +1,6 @@
-use crate::{assets::fonts::FontAssets, level::level::ReachedLevel, state::AppState};
+use crate::{
+    assets::fonts::FontAssets, level::level::ReachedLevel, palette::COL_TEXT, state::AppState,
+};
 use bevy::prelude::*;
 
 use super::{
@@ -18,7 +20,7 @@ pub(super) fn setup_ui(
             TextStyle {
                 font: font_assets.menu.clone(),
                 font_size: 60.0,
-                color: Color::ANTIQUE_WHITE,
+                color: COL_TEXT,
             },
         ));
     });
@@ -30,7 +32,7 @@ pub(super) fn setup_ui(
                 TextStyle {
                     font: font_assets.menu.clone(),
                     font_size: 150.0,
-                    color: Color::ANTIQUE_WHITE,
+                    color: COL_TEXT,
                 },
             ),
             style: Style {

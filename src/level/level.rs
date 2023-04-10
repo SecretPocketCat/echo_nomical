@@ -7,6 +7,7 @@ use crate::{
     assets::textures::TextureAssets,
     echolocation::echolocation::EcholocationHitColor,
     enemy::{EnemyType, SpawnEnemyEv},
+    palette::COL_PORTAL,
     player::player::PlayerEv,
     AppSize,
 };
@@ -67,7 +68,7 @@ pub(super) fn setup_test_lvl(
     .insert(LevelExit)
     .insert(ActiveEvents::COLLISION_EVENTS)
     .insert(ActiveCollisionTypes::all())
-    .insert(EcholocationHitColor(Color::LIME_GREEN))
+    .insert(EcholocationHitColor(COL_PORTAL))
     .insert(AgentRotation(-120.))
     .insert(Name::new("Exit"));
 

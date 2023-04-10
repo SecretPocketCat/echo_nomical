@@ -29,6 +29,7 @@ mod ui;
 pub struct AppSize(pub Vec2);
 
 pub const GAME_NAME: &str = "todo";
+pub use render::palette;
 
 pub fn game_plugin(app: &mut App) {
     app.fn_plugin(state::state_plugin)

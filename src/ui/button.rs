@@ -1,6 +1,7 @@
 use crate::{
     animation::{get_relative_ui_bg_color_anim, TweenDoneAction},
     assets::fonts::FontAssets,
+    palette::{COL_PLAYER, COL_PORTAL, COL_TEXT},
     state::{AppState, FadeReset},
     EntityCommandsExt,
 };
@@ -32,8 +33,8 @@ pub(super) struct UiButton {
 impl Default for ButtonColors {
     fn default() -> Self {
         ButtonColors {
-            normal: Color::rgb(0.15, 0.15, 0.15),
-            hovered: Color::rgb(0.25, 0.25, 0.25),
+            normal: COL_PORTAL,
+            hovered: COL_PLAYER,
         }
     }
 }
@@ -71,7 +72,7 @@ fn spawn_ui_btn(
                     TextStyle {
                         font: font_assets.menu.clone(),
                         font_size: if ui_btn.primary { 60.0 } else { 40. },
-                        color: Color::ANTIQUE_WHITE,
+                        color: COL_TEXT,
                     },
                 ));
             });

@@ -4,6 +4,7 @@ use bevy_tweening::*;
 use crate::{
     animation::{get_relative_ui_bg_color_anim, get_relative_ui_bg_color_tween, TweenDoneAction},
     level::level::ReachedLevel,
+    palette::COL_BG,
     ui::RootUiNode,
 };
 
@@ -55,7 +56,7 @@ fn start_reset_fade_out(
                 })
                 .insert(ZIndex::Global(10000))
                 .insert(get_relative_ui_bg_color_anim(
-                    Color::BLACK,
+                    COL_BG,
                     500,
                     TweenDoneAction::ResetAndNextState(fade_reset.take().unwrap()),
                 ))
