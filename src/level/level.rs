@@ -3,12 +3,9 @@ use bevy_rapier2d::prelude::*;
 
 use super::mapgen::{gen_map, TileType};
 use crate::{
-    agent::agent::AgentRotation,
-    assets::textures::TextureAssets,
-    echolocation::echolocation::EcholocationHitColor,
-    enemy::{EnemyType, SpawnEnemyEv},
-    player::player::PlayerEv,
-    AppSize,
+    agent::agent::AgentRotation, assets::textures::TextureAssets,
+    echolocation::echolocation::EcholocationHitColor, enemy::SpawnEnemyEv,
+    player::player::PlayerEv, AppSize,
 };
 
 #[derive(Component)]
@@ -42,48 +39,45 @@ pub(super) fn setup_test_lvl(
             let y = scaling_factor * y - bounds.y / 2. + half_sf;
             match tile {
                 &TileType::Wall => {
-                    cmd
-                        .spawn(TransformBundle::from_transform(Transform::from_xyz(
-                            x, y, 0.,
-                        )))
-                        .insert(Collider::cuboid(half_sf, half_sf))
-                        .insert(Wall)
-                        .insert(Name::new("Wall"));
-                },
+                    cmd.spawn(TransformBundle::from_transform(Transform::from_xyz(
+                        x, y, 0.,
+                    )))
+                    .insert(Collider::cuboid(half_sf, half_sf))
+                    .insert(Wall)
+                    .insert(Name::new("Wall"));
+                }
                 &TileType::Enemy(enemy_type) => ev_w.send(SpawnEnemyEv {
                     position: Vec2::new(x, y),
                     enemy_type,
                 }),
                 &TileType::Goal => {
-                    cmd
-                        .spawn(SpriteBundle {
-                            transform: Transform::from_xyz(x, y, 0.),
-                            texture: tex.portal.clone(),
-                            sprite: Sprite {
-                                color: Color::NONE,
-                                custom_size: Some(Vec2::new(95., 100.)),
-                                ..default()
-                            },
+                    cmd.spawn(SpriteBundle {
+                        transform: Transform::from_xyz(x, y, 0.),
+                        texture: tex.portal.clone(),
+                        sprite: Sprite {
+                            color: Color::NONE,
+                            custom_size: Some(Vec2::new(95., 100.)),
                             ..default()
-                        })
-                        .insert(Collider::ball(20.))
-                        .insert(Sensor)
-                        .insert(LevelExit)
-                        .insert(ActiveEvents::COLLISION_EVENTS)
-                        .insert(ActiveCollisionTypes::all())
-                        .insert(EcholocationHitColor(Color::LIME_GREEN))
-                        .insert(AgentRotation(-120.))
-                        .insert(Name::new("Exit"));
-                },
+                        },
+                        ..default()
+                    })
+                    .insert(Collider::ball(20.))
+                    .insert(Sensor)
+                    .insert(LevelExit)
+                    .insert(ActiveEvents::COLLISION_EVENTS)
+                    .insert(ActiveCollisionTypes::all())
+                    .insert(EcholocationHitColor(Color::LIME_GREEN))
+                    .insert(AgentRotation(-120.))
+                    .insert(Name::new("Exit"));
+                }
                 &TileType::PlayerSpawn => {
-                    cmd
-                        .spawn(TransformBundle::from_transform(Transform::from_xyz(
-                            x, y, 0.,
-                        )))
-                        .insert(LevelEntry)
-                        .insert(Name::new("Entry"));
-                },
-                _ => {},
+                    cmd.spawn(TransformBundle::from_transform(Transform::from_xyz(
+                        x, y, 0.,
+                    )))
+                    .insert(LevelEntry)
+                    .insert(Name::new("Entry"));
+                }
+                _ => {}
             }
         }
     }

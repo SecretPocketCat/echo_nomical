@@ -192,10 +192,12 @@ pub fn gen_map(width: i32, height: i32) -> Map {
     }
 
     // Set goal spawn
-    let mut idx= 0usize;
+    let mut idx = 0usize;
     for _ in 0..100 {
         idx = rand::random::<usize>() % map.tiles.len();
-        if map.tiles[idx] == TileType::Floor && map.get_pathing_distance(idx, start_idx) > width as f32 * 0.3f32 {
+        if map.tiles[idx] == TileType::Floor
+            && map.get_pathing_distance(idx, start_idx) > width as f32 * 0.3f32
+        {
             break;
         }
     }

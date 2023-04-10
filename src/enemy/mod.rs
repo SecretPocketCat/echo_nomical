@@ -3,7 +3,7 @@ use std::time::Duration;
 use bevy::{prelude::*, sprite::Anchor};
 use bevy_rapier2d::prelude::*;
 use bevy_tweening::{lens::TransformRotateZLens, Animator, EaseFunction, Tween};
-use rand::{thread_rng, Rng};
+use rand::thread_rng;
 
 use crate::{
     agent::agent::{MovementDirection, MovementDirectionEasing, Speed, StopOnCollision},
@@ -47,7 +47,7 @@ pub struct SpawnEnemyEv {
 
 fn spawn_enemy(mut ev_r: EventReader<SpawnEnemyEv>, mut cmd: Commands, tex: Res<TextureAssets>) {
     if !ev_r.is_empty() {
-        let mut rng = thread_rng();
+        let _rng = thread_rng();
 
         for ev in ev_r.iter() {
             let mut sprite_bundle = SpriteBundle {
