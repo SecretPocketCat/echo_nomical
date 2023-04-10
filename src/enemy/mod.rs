@@ -127,6 +127,7 @@ fn spawn_enemy(mut ev_r: EventReader<SpawnEnemyEv>, mut cmd: Commands, tex: Res<
                         .insert(EcholocationHitColor(Color::CRIMSON))
                         .insert(FollowEchoOnHit)
                         .insert(Killable)
+                        .insert(Killer)
                         .insert(StopOnCollision::<Wall>::new())
                         .insert(Speed(220.))
                         .insert(MovementDirection::default())
@@ -198,22 +199,31 @@ pub(super) fn enemy_hit(
         .iter()
         .filter_map(|ev| check_collision_start_pair(ev, &killable_q, &killer_q))
     {
+        let mut killable = vec![coll.0];
+
+        if killer_q.contains(coll.0) && killer_q.contains(coll.1) {
+            // both are killable
+            killable.push(coll.1);
+        }
+
         enemy_ev_w.send(EnemyEv::Killed);
 
-        cmd.entity(coll.0)
-            .try_insert(ColliderDisabled)
-            .try_insert(get_relative_scale_anim(
-                Vec2::ZERO.extend(1.),
-                300,
-                TweenDoneAction::DespawnSelfRecursive,
-            ));
+        for e in killable.iter() {
+            cmd.entity(*e)
+                .try_insert(ColliderDisabled)
+                .try_insert(get_relative_scale_anim(
+                    Vec2::ZERO.extend(1.),
+                    300,
+                    TweenDoneAction::DespawnSelfRecursive,
+                ));
 
-        if let Ok((t, color, dir)) = wave_data_q.get(coll.0) {
-            cmd.spawn(Wave {
-                position: t.translation() + dir.map_or(Vec2::ZERO, |d| d.0 * 50.).extend(0.),
-                radius: 80.,
-                color: color.map_or(COL_ENEMY, |c| c.0),
-            });
+            if let Ok((t, color, dir)) = wave_data_q.get(*e) {
+                cmd.spawn(Wave {
+                    position: t.translation() + dir.map_or(Vec2::ZERO, |d| d.0 * 50.).extend(0.),
+                    radius: 80.,
+                    color: color.map_or(COL_ENEMY, |c| c.0),
+                });
+            }
         }
     }
 }
