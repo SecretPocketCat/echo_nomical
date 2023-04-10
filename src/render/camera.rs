@@ -1,4 +1,5 @@
 use bevy::{
+    core_pipeline::{bloom::BloomSettings, tonemapping::Tonemapping},
     prelude::*,
     window::{PrimaryWindow, WindowResized},
 };
@@ -15,9 +16,15 @@ pub(super) fn setup_camera(mut cmd: Commands) {
                 clear_color: bevy::core_pipeline::clear_color::ClearColorConfig::Custom(COL_BG),
                 ..default()
             },
+            camera: Camera {
+                hdr: true, // 1. HDR is required for bloom
+                ..default()
+            },
+            tonemapping: Tonemapping::TonyMcMapface,
             ..default()
         },
         PrimaryCamera,
+        BloomSettings::default(),
     ));
 }
 
