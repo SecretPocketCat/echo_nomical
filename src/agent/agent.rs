@@ -126,21 +126,6 @@ pub(super) fn age(mut age_q: Query<&mut Age>, time: ScaledTime) {
     }
 }
 
-pub(super) fn despawn_out_of_bounds(
-    despawn_q: Query<(Entity, &GlobalTransform, Option<&DespawnParent>), Without<PersistReset>>,
-    level_size: Res<AppSize>,
-    mut cmd: Commands,
-) {
-    for (e, t, despawn_parent) in despawn_q.iter() {
-        let pos = t.translation().abs();
-        if pos.x > level_size.x || pos.y > level_size.y {
-            if let Some(e_cmd) = cmd.get_entity(despawn_parent.map_or(e, |e| e.0)) {
-                e_cmd.despawn_recursive();
-            }
-        }
-    }
-}
-
 pub(super) fn stop_on_wall_collision(
     mut collision_events: EventReader<CollisionEvent>,
     stoppable_q: Query<(), With<StopOnCollision<Wall>>>,
