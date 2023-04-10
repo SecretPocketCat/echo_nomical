@@ -29,8 +29,8 @@ pub(super) fn setup_test_lvl(
     bounds: Res<AppSize>,
     tex: Res<TextureAssets>,
 ) {
-    let bounds = &*bounds;
-    let map = gen_map();
+    let tiles = (bounds.0 / 40.0).as_ivec2();
+    let map = gen_map(tiles.x, tiles.y);
     for y in 0..map.height {
         for x in 0..map.width {
             if map.xy(x, y) == &TileType::Wall {
