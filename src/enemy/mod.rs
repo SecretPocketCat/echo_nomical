@@ -68,7 +68,7 @@ fn spawn_enemy(mut ev_r: EventReader<SpawnEnemyEv>, mut cmd: Commands, tex: Res<
 
             match ev.enemy_type {
                 EnemyType::Spiky => {
-                    let radius = rng.gen_range(40.0..70.);
+                    let radius = 20.;
                     let spike_count = 12;
                     let ray_step = 360. / (spike_count * 2) as f32;
 
@@ -94,8 +94,8 @@ fn spawn_enemy(mut ev_r: EventReader<SpawnEnemyEv>, mut cmd: Commands, tex: Res<
                         .insert(EcholocationHitColor(Color::RED));
                 }
                 EnemyType::FollowPing => {
-                    let half_width = 25.;
-                    let height = 60.;
+                    let half_width = 15.;
+                    let height = 30.;
                     let btm = 5.;
                     sprite_bundle.texture = tex.charge.clone();
                     sprite_bundle.sprite.custom_size =

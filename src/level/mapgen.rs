@@ -13,6 +13,7 @@ pub enum TileType {
     Wall,
     Floor,
     Goal,
+    PlayerSpawn,
     Enemy(EnemyType),
 }
 
@@ -150,11 +151,11 @@ pub fn gen_map(width: i32, height: i32) -> Map {
         start_pos.x -= 1;
     }
 
-    let map_starts: Vec<usize> = vec![map.xy_idx(start_pos.x, start_pos.y)];
+    let start_idx = map.xy_idx(start_pos.x, start_pos.y);
     let dijkstra_map = DijkstraMap::new(
         map.width as usize,
         map.height as usize,
-        &map_starts,
+        &vec![start_idx],
         &map,
         200.0,
     );
@@ -167,10 +168,13 @@ pub fn gen_map(width: i32, height: i32) -> Map {
         }
     }
 
-    // Spawn enemies
-    // First, the static ones
+    // Set player spawns
+    map.tiles[start_idx] = TileType::PlayerSpawn;
+
+    // Set enemy spawns
     for y in 1..map.height - 1 {
         for x in 1..map.width - 1 {
+            // First, the static ones
             if map.xy(x, y) == &TileType::Wall
                 && ADJACENTS
                     .iter()
@@ -179,8 +183,23 @@ pub fn gen_map(width: i32, height: i32) -> Map {
             {
                 *map.xy_mut(x, y) = TileType::Enemy(EnemyType::Spiky);
             }
+
+            // Next, have a 5% chance of spawning following ones.
+            if map.xy(x, y) == &TileType::Floor && rand::random::<f32>() > 0.95 {
+                *map.xy_mut(x, y) = TileType::Enemy(EnemyType::FollowPing);
+            }
         }
     }
+
+    // Set goal spawn
+    let mut idx= 0usize;
+    for _ in 0..100 {
+        idx = rand::random::<usize>() % map.tiles.len();
+        if map.tiles[idx] == TileType::Floor && map.get_pathing_distance(idx, start_idx) > width as f32 * 0.3f32 {
+            break;
+        }
+    }
+    map.tiles[idx] = TileType::Goal;
 
     map
 }

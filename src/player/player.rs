@@ -31,14 +31,12 @@ pub enum PlayerEv {
 pub(super) fn spawn_player(
     mut cmd: Commands,
     textures: Res<TextureAssets>,
-    entry_q: Query<(), Added<LevelEntry>>,
+    entry_q: Query<&Transform, Added<LevelEntry>>,
 ) {
     let radius = 20.;
 
-    if entry_q.iter().next().is_some() {
-        cmd.spawn(SpatialBundle::from_transform(Transform::from_translation(
-            Vec3::new(200., -60., 1.),
-        )))
+    if let Some(transform) = entry_q.iter().next() {
+        cmd.spawn(SpatialBundle::from_transform(*transform))
         .insert(RigidBody::KinematicPositionBased)
         .insert(Collider::ball(radius * 0.8))
         .insert(KinematicCharacterController {
