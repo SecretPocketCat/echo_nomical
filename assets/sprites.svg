@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="210mm"
+   height="297mm"
+   viewBox="0 0 210 297"
+   version="1.1"
+   id="svg5"
+   inkscape:version="1.1.1 (3bf5ae0d25, 2021-09-20)"
+   sodipodi:docname="sprites.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview7"
+     pagecolor="#505050"
+     bordercolor="#eeeeee"
+     borderopacity="1"
+     inkscape:pageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="0"
+     inkscape:document-units="mm"
+     showgrid="false"
+     inkscape:zoom="2.1997092"
+     inkscape:cx="785.78568"
+     inkscape:cy="221.1656"
+     inkscape:window-width="3440"
+     inkscape:window-height="1351"
+     inkscape:window-x="-9"
+     inkscape:window-y="-9"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1"
+     showguides="true"
+     inkscape:guide-bbox="true">
+    <sodipodi:guide
+       position="182.96714,257.70619"
+       orientation="1,0"
+       id="guide9234" />
+  </sodipodi:namedview>
+  <defs
+     id="defs2">
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient8416">
+      <stop
+         style="stop-color:#1a1a1a;stop-opacity:1"
+         offset="0"
+         id="stop8410" />
+      <stop
+         style="stop-color:#666666;stop-opacity:1"
+         offset="0.36430335"
+         id="stop8412" />
+      <stop
+         style="stop-color:#7c7c7c;stop-opacity:1;"
+         offset="0.45850632"
+         id="stop8930" />
+      <stop
+         style="stop-color:#ffffff;stop-opacity:1"
+         offset="1"
+         id="stop8414" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient5884">
+      <stop
+         style="stop-color:#1a1a1a;stop-opacity:0"
+         offset="0"
+         id="stop5878" />
+      <stop
+         style="stop-color:#5e5e5e;stop-opacity:0;"
+         offset="0.69173872"
+         id="stop6410" />
+      <stop
+         style="stop-color:#ffffff;stop-opacity:1"
+         offset="0.78447044"
+         id="stop5880" />
+      <stop
+         style="stop-color:#ffffff;stop-opacity:1"
+         offset="1"
+         id="stop5882" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient1526">
+      <stop
+         style="stop-color:#1a1a1a;stop-opacity:1"
+         offset="0"
+         id="stop1522" />
+      <stop
+         style="stop-color:#666666;stop-opacity:1"
+         offset="0.6457783"
+         id="stop2390" />
+      <stop
+         style="stop-color:#ffffff;stop-opacity:1"
+         offset="1"
+         id="stop1524" />
+    </linearGradient>
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient1526"
+       id="radialGradient3140"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1,0,0,0.9999918,0,5.788898e-4)"
+       cx="87.842514"
+       cy="70.592781"
+       fx="87.842514"
+       fy="70.592781"
+       r="11.397" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient5884"
+       id="radialGradient5044"
+       cx="139.38776"
+       cy="71.399521"
+       fx="139.38776"
+       fy="71.399521"
+       r="13.129407"
+       gradientUnits="userSpaceOnUse" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient8416"
+       id="radialGradient8152"
+       cx="599.85199"
+       cy="209.57317"
+       fx="599.85199"
+       fy="209.57317"
+       r="100.3114"
+       gradientUnits="userSpaceOnUse" />
+  </defs>
+  <g
+     inkscape:label="Vrstva 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <circle
+       style="fill:none;stroke:#ffffff;stroke-width:3.465;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;paint-order:stroke fill markers"
+       id="circle5006"
+       cx="56.930286"
+       cy="71.314468"
+       r="11.396907"
+       inkscape:export-filename="C:\Projects\GameDev\jams\echo_nomical\assets\textures\echo_hit.png"
+       inkscape:export-xdpi="123.81367"
+       inkscape:export-ydpi="123.81367" />
+    <circle
+       style="fill:url(#radialGradient5044);stroke:none;stroke-width:3.465;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;paint-order:stroke fill markers;fill-opacity:1"
+       id="circle994"
+       cx="139.38776"
+       cy="71.399521"
+       r="11.396907"
+       inkscape:export-filename="C:\Projects\GameDev\jams\echo_nomical\assets\textures\wave.png"
+       inkscape:export-xdpi="142.63521"
+       inkscape:export-ydpi="142.63521" />
+    <ellipse
+       style="fill:url(#radialGradient3140);fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:2.565;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;paint-order:stroke fill markers"
+       id="ellipse3138"
+       cx="87.842514"
+       cy="70.592781"
+       inkscape:export-filename="C:\Projects\GameDev\jams\echo_nomical\assets\textures\player.png"
+       inkscape:export-xdpi="142.64"
+       inkscape:export-ydpi="142.64"
+       rx="11.397"
+       ry="11.396907" />
+    <ellipse
+       style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:2.565;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;paint-order:stroke fill markers"
+       id="path846"
+       cx="113.16167"
+       cy="71.344536"
+       inkscape:export-filename="C:\Projects\GameDev\jams\echo_nomical\assets\textures\echo_ping.png"
+       inkscape:export-xdpi="142.64"
+       inkscape:export-ydpi="142.64"
+       rx="11.397"
+       ry="11.396907" />
+    <path
+       sodipodi:type="star"
+       style="fill:url(#radialGradient8152);fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:13.0961;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;paint-order:stroke fill markers"
+       id="path7490"
+       inkscape:flatsided="false"
+       sodipodi:sides="12"
+       sodipodi:cx="599.85199"
+       sodipodi:cy="209.57317"
+       sodipodi:r1="71.279106"
+       sodipodi:r2="103.30305"
+       sodipodi:arg1="1.027358"
+       sodipodi:arg2="1.2891574"
+       inkscape:rounded="0.09"
+       inkscape:randomized="0"
+       d="m 636.70913,270.58351 c -3.01058,1.81873 -4.76736,37.24512 -8.14609,38.22269 -3.37872,0.97756 -23.78039,-28.03773 -27.297,-27.96796 -3.5166,0.0698 -22.75122,29.87155 -26.16606,29.02878 -3.41485,-0.84276 -6.57556,-36.17158 -9.65592,-37.86946 -3.08036,-1.69787 -34.63891,14.4939 -37.17487,12.05663 -2.53596,-2.43728 12.39119,-34.6133 10.57246,-37.62388 -1.81873,-3.01058 -37.24513,-4.76737 -38.22269,-8.14609 -0.97757,-3.37872 28.03773,-23.78039 27.96795,-27.297 -0.0698,-3.51661 -29.87154,-22.75123 -29.02878,-26.16607 0.84277,-3.41484 36.17159,-6.57556 37.86946,-9.65592 1.69788,-3.08036 -14.4939,-34.63891 -12.05662,-37.17486 2.43728,-2.53596 34.61329,12.39119 37.62387,10.57245 3.01059,-1.81873 4.76737,-37.24512 8.14609,-38.22269 3.37873,-0.97756 23.7804,28.03773 27.29701,27.96796 3.5166,-0.0698 22.75122,-29.87154 26.16606,-29.02878 3.41485,0.84277 6.57556,36.17159 9.65592,37.86946 3.08036,1.69788 34.63891,-14.4939 37.17487,-12.05662 2.53596,2.43727 -12.39119,34.61329 -10.57246,37.62387 1.81873,3.01058 37.24513,4.76737 38.22269,8.14609 0.97757,3.37872 -28.03773,23.7804 -27.96795,27.297 0.0698,3.51661 29.87154,22.75123 29.02877,26.16607 -0.84276,3.41484 -36.17158,6.57556 -37.86946,9.65592 -1.69787,3.08036 14.49391,34.63891 12.05663,37.17487 -2.43728,2.53595 -34.61329,-12.39119 -37.62388,-10.57246 z"
+       transform="matrix(0.25382043,0.07469622,-0.07469622,0.25382043,46.354229,-32.725432)"
+       inkscape:transform-center-x="3.9711466"
+       inkscape:transform-center-y="-1.4495542"
+       inkscape:export-filename="C:\Projects\GameDev\jams\echo_nomical\assets\textures\spiky.png"
+       inkscape:export-xdpi="59.48"
+       inkscape:export-ydpi="59.48" />
+  </g>
+</svg>

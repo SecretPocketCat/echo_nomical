@@ -8,4 +8,16 @@ pub struct TextureAssets {
 
     #[asset(path = "textures/echo_ping.png")]
     pub echo_ping: Handle<Image>,
+
+    #[asset(path = "textures/wave.png")]
+    pub wave: Handle<Image>,
+
+    #[asset(path = "textures/spiky.png")]
+    pub spiky: Handle<Image>,
+
+    #[asset(path = "textures/charge.png")]
+    pub charge: Handle<Image>,
+
+    #[asset(path = "textures/portal.png")]
+    pub portal: Handle<Image>,
 }

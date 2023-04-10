@@ -1,14 +1,21 @@
 use crate::{
-    agent::agent::{MovementDirection, Speed},
+    agent::agent::{MovementDirection, MovementDirectionEasing, Speed},
+    animation::{
+        delay_tween, get_relative_scale_anim, get_relative_sprite_color_anim, get_scale_anim,
+        get_scale_tween, TweenDoneAction,
+    },
     assets::textures::TextureAssets,
+    echolocation::{echolocation::EcholocationHitColor, wave::Wave},
     enemy::EnemyType,
     input::actions::{PlayerAction, UiAction},
     level::level::{LevelEntry, LevelExit},
     physics::{check_collision_start_pair, ECHO_COLL_GROUP, PLAYER_COLL_GROUP},
     state::{AppState, FadeReset},
+    EntityCommandsExt,
 };
 use bevy::prelude::*;
 use bevy_rapier2d::prelude::*;
+use bevy_tweening::{Animator, EaseFunction};
 use leafwing_input_manager::prelude::*;
 
 #[derive(Component)]
@@ -29,16 +36,9 @@ pub(super) fn spawn_player(
     let radius = 20.;
 
     if entry_q.iter().next().is_some() {
-        cmd.spawn(SpriteBundle {
-            texture: textures.player.clone(),
-            transform: Transform::from_translation(Vec3::new(200., -60., 1.)),
-            sprite: Sprite {
-                color: Color::SEA_GREEN,
-                custom_size: Some(Vec2::splat(radius * 2.)),
-                ..default()
-            },
-            ..Default::default()
-        })
+        cmd.spawn(SpatialBundle::from_transform(Transform::from_translation(
+            Vec3::new(200., -60., 1.),
+        )))
         .insert(RigidBody::KinematicPositionBased)
         .insert(Collider::ball(radius * 0.8))
         .insert(KinematicCharacterController {
@@ -55,6 +55,7 @@ pub(super) fn spawn_player(
         ))
         .insert(Player)
         .insert(MovementDirection::default())
+        .insert(MovementDirectionEasing::new(0.085))
         .insert(Speed(100.))
         .insert(InputManagerBundle::<PlayerAction> {
             input_map: InputMap::default()
@@ -78,6 +79,30 @@ pub(super) fn spawn_player(
                 .insert(GamepadButtonType::South, UiAction::Confirm)
                 .build(),
             ..default()
+        })
+        .insert(Name::new("PLAYER"))
+        .with_children(|parent| {
+            parent
+                .spawn(SpriteBundle {
+                    texture: textures.player.clone(),
+                    transform: Transform::from_scale(Vec2::ZERO.extend(0.)),
+                    sprite: Sprite {
+                        color: Color::SEA_GREEN,
+                        custom_size: Some(Vec2::splat(radius * 2.)),
+                        ..default()
+                    },
+                    ..default()
+                })
+                .insert(Animator::new(delay_tween(
+                    get_scale_tween(
+                        None,
+                        Vec3::ONE,
+                        400,
+                        EaseFunction::BackOut,
+                        TweenDoneAction::None,
+                    ),
+                    500,
+                )));
         });
     }
 }
@@ -87,41 +112,89 @@ pub(super) fn move_player(
 ) {
     for (mut dir, actions) in &mut player_q {
         if let Some(movement) = actions.clamped_axis_pair(PlayerAction::Move) {
-            dir.0 = movement.xy();
+            dir.0 = movement.xy().normalize_or_zero();
         }
     }
 }
 
 pub(super) fn exit_reached(
+    mut cmd: Commands,
     mut collision_events: EventReader<CollisionEvent>,
-    q_player: Query<(), With<Player>>,
-    q_exit: Query<(), With<LevelExit>>,
+    player_q: Query<(), With<Player>>,
+    exit_q: Query<(), With<LevelExit>>,
+    col_q: Query<(&EcholocationHitColor, &GlobalTransform)>,
     mut fade_reset: ResMut<FadeReset>,
     mut ev_w: EventWriter<PlayerEv>,
 ) {
-    if let Some(..) = collision_events
+    if let Some(coll) = collision_events
         .iter()
-        .filter(|ev| check_collision_start_pair(ev, &q_player, &q_exit).is_some())
+        .filter_map(|ev| check_collision_start_pair(ev, &player_q, &exit_q))
         .next()
     {
         fade_reset.set(AppState::Game);
         ev_w.send(PlayerEv::ClearedLevel);
+
+        cmd.entity(coll.0).try_insert(get_scale_anim(
+            None,
+            Vec2::ZERO.extend(1.),
+            400,
+            EaseFunction::BackIn,
+            TweenDoneAction::DespawnSelfRecursive,
+        ));
+
+        if let Ok((col, t)) = col_q.get(coll.1) {
+            cmd.entity(coll.1)
+                .try_insert(get_scale_anim(
+                    None,
+                    Vec2::ZERO.extend(1.),
+                    400,
+                    EaseFunction::BackIn,
+                    TweenDoneAction::DespawnSelfRecursive,
+                ))
+                .try_insert(get_relative_sprite_color_anim(
+                    col.0,
+                    200,
+                    TweenDoneAction::None,
+                ));
+
+            cmd.spawn(Wave {
+                position: t.translation(),
+                radius: 130.,
+                color: col.0,
+            });
+        }
     }
 }
 
 pub(super) fn player_hit(
+    mut cmd: Commands,
     mut collision_events: EventReader<CollisionEvent>,
-    q_player: Query<(), With<Player>>,
-    q_enemy: Query<(), With<EnemyType>>,
+    player_q: Query<(), With<Player>>,
+    enemy_q: Query<(), With<EnemyType>>,
+    trans_q: Query<&GlobalTransform>,
     mut fade_reset: ResMut<FadeReset>,
     mut ev_w: EventWriter<PlayerEv>,
 ) {
-    if let Some(..) = collision_events
+    if let Some(coll) = collision_events
         .iter()
-        .filter(|ev| check_collision_start_pair(ev, &q_player, &q_enemy).is_some())
+        .filter_map(|ev| check_collision_start_pair(ev, &player_q, &enemy_q))
         .next()
     {
         fade_reset.set(AppState::GameOver);
         ev_w.send(PlayerEv::Died);
+
+        if let Ok(t) = trans_q.get(coll.0) {
+            cmd.spawn(Wave {
+                position: t.translation(),
+                radius: 130.,
+                color: Color::SEA_GREEN,
+            });
+
+            cmd.entity(coll.0).try_insert(get_relative_scale_anim(
+                Vec2::ZERO.extend(1.),
+                300,
+                TweenDoneAction::DespawnSelfRecursive,
+            ));
+        }
     }
 }

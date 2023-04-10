@@ -1,18 +1,48 @@
-use bevy::{
-    prelude::*,
-    utils::{HashMap, HashSet},
-};
+use std::marker::PhantomData;
+
+use bevy::prelude::*;
 use bevy_rapier2d::prelude::*;
+use bevy_tweening::*;
+use interpolation::*;
 
 use crate::{
+    level::level::Wall,
     physics::{check_collision_start, check_collision_start_pair},
     state::PersistReset,
     time::time::*,
-    AppSize, EntityCommandsExt,
+    AppSize,
 };
 
-#[derive(Component, Deref, DerefMut, Default)]
+#[derive(Component, Deref, DerefMut, Default, Reflect)]
 pub struct MovementDirection(pub Vec2);
+
+#[derive(Component, Reflect)]
+pub struct MovementDirectionEasing {
+    time_to_ease: f32,
+    time: f32,
+    #[reflect(ignore)]
+    ease: EaseFunction,
+    eased_dir: Vec2,
+}
+
+impl MovementDirectionEasing {
+    pub fn new(time_to_ease: f32) -> Self {
+        Self::with_ease_fn(time_to_ease, EaseFunction::SineInOut)
+    }
+
+    pub fn with_ease_fn(time_to_ease: f32, ease: EaseFunction) -> Self {
+        Self {
+            time_to_ease,
+            time: 0.,
+            ease,
+            eased_dir: Vec2::ZERO,
+        }
+    }
+
+    pub fn reset(&mut self) {
+        self.time = 0.
+    }
+}
 
 #[derive(Component, Deref, DerefMut, Default)]
 pub struct Speed(pub f32);
@@ -22,21 +52,16 @@ pub struct Speed(pub f32);
 pub struct Damping(pub f32);
 
 #[derive(Component, Deref, DerefMut, Default)]
-pub struct Rotation(pub f32);
+pub struct AgentRotation(pub f32);
 
 #[derive(Component)]
-pub struct Bounce;
+pub struct StopOnCollision<T>(PhantomData<T>);
 
-pub struct BounceEv {
-    entity: Entity,
-    position: Vec2,
+impl<T> StopOnCollision<T> {
+    pub fn new() -> Self {
+        Self(PhantomData::default())
+    }
 }
-
-#[derive(Component, Deref, DerefMut)]
-pub struct ReenableCollider(Timer);
-
-#[derive(Component)]
-pub struct Bouncable;
 
 #[derive(Component, Deref, DerefMut)]
 pub struct DespawnParent(pub Entity);
@@ -47,20 +72,38 @@ pub struct Age(pub f32);
 pub(super) fn move_agents(
     mut velocity_q: Query<(
         &MovementDirection,
+        Option<&MovementDirectionEasing>,
         &Speed,
         &mut Transform,
         Option<&mut KinematicCharacterController>,
     )>,
     time: ScaledTime,
 ) {
-    for (dir, speed, mut trans, char_cont) in velocity_q.iter_mut() {
-        let vel = dir.0 * speed.0 * time.scaled_delta_seconds();
+    for (dir, eased, speed, mut trans, char_cont) in velocity_q.iter_mut() {
+        let vel = eased.map_or(dir.0, |e| e.eased_dir) * speed.0 * time.scaled_delta_seconds();
 
         if let Some(mut char_cont) = char_cont {
             char_cont.translation = Some(vel);
         } else {
             trans.translation += vel.extend(0.);
         }
+    }
+}
+
+pub(super) fn ease_direction(
+    mut dir_easing_q: Query<(&MovementDirection, &mut MovementDirectionEasing)>,
+    time: ScaledTime,
+) {
+    for (dir, mut ease_dir) in dir_easing_q.iter_mut() {
+        let time_step = time.scaled_delta_seconds()
+            * if ease_dir.eased_dir.length() < dir.0.length() {
+                1.
+            } else {
+                -1.
+            };
+
+        ease_dir.time = (ease_dir.time + time_step).clamp(0., ease_dir.time_to_ease);
+        ease_dir.eased_dir = dir.0 * ((ease_dir.time / ease_dir.time_to_ease).calc(ease_dir.ease));
     }
 }
 
@@ -74,17 +117,7 @@ pub(super) fn apply_damping(
     }
 }
 
-// todo: look at target?
-// pub(super) fn rotate_agent(
-//     mut velocity_q: Query<(&LookAtDirection, &Speed, &mut Transform)>,
-//     time: ScaledTime,
-// ) {
-//     for (dir, speed, mut trans) in velocity_q.iter_mut() {
-//         trans.translation += dir.extend(0.) * speed.0 * time.scaled_delta_seconds();
-//     }
-// }
-
-pub(super) fn rotate(mut dir_q: Query<(&mut Transform, &Rotation)>, time: ScaledTime) {
+pub(super) fn rotate(mut dir_q: Query<(&mut Transform, &AgentRotation)>, time: ScaledTime) {
     for (mut t, rotation) in &mut dir_q {
         t.rotate_local_z((rotation.0 * time.scaled_delta_seconds()).to_radians());
     }
@@ -111,32 +144,18 @@ pub(super) fn despawn_out_of_bounds(
     }
 }
 
-pub(super) fn bounce(
+pub(super) fn stop_on_wall_collision(
     mut collision_events: EventReader<CollisionEvent>,
-    mut bounce_q: Query<(&mut MovementDirection, &GlobalTransform), With<Bounce>>,
-    bouncable_q: Query<(), With<Bouncable>>,
-    phys_ctx: Res<RapierContext>,
+    stoppable_q: Query<(), With<StopOnCollision<Wall>>>,
+    stop_q: Query<(), With<Wall>>,
+    mut dir_q: Query<&mut MovementDirection>,
 ) {
-    let bounces: HashSet<_> = collision_events
+    for coll in collision_events
         .iter()
-        .filter_map(|ev| check_collision_start_pair(ev, &bounce_q, &bouncable_q))
-        .map(|e| e.0)
-        .collect();
-
-    for e in bounces.iter() {
-        if let Ok((mut dir, t)) = bounce_q.get_mut(*e) {
-            if let Some(hit) = phys_ctx.cast_ray_and_get_normal(
-                t.translation().truncate(),
-                dir.0,
-                1000.,
-                true,
-                QueryFilter::default().exclude_collider(*e),
-            ) {
-                // todo: this doesn's quite work
-                let reflected_dir = dir.0 - 2. * dir.0.dot(hit.1.normal) * hit.1.normal;
-                dir.0 = reflected_dir;
-            }
-            // todo: bounce ev
+        .filter_map(|ev| check_collision_start_pair(ev, &stoppable_q, &stop_q))
+    {
+        if let Ok(mut dir) = dir_q.get_mut(coll.0) && dir.0.length() > 0. {
+            dir.0 = Vec2::ZERO;
         }
     }
 }

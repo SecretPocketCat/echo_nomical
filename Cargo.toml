@@ -54,6 +54,7 @@ paste = "1.0.12"
 bracket-geometry = "0.8.7"
 bracket-algorithm-traits = "0.8.7"
 bracket-pathfinding = "0.8.7"
+interpolation = "0.2.0"
 
 [build-dependencies]
 embed-resource = "1.4"
