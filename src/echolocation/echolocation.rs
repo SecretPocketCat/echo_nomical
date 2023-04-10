@@ -33,6 +33,8 @@ pub struct EcholocationHitEv {
     pub hit_e: Entity,
 }
 
+pub struct EcholocationEv;
+
 pub struct Echolocate;
 
 pub(super) fn echolocate(
@@ -42,11 +44,14 @@ pub(super) fn echolocate(
         Without<Cooldown<Echolocate>>,
     >,
     textures: Res<TextureAssets>,
+    mut ev_w: EventWriter<EcholocationEv>,
 ) {
     for (player_e, _, player_t) in input_q
         .iter()
         .filter(|(_, input, ..)| input.just_pressed(PlayerAction::Echo))
     {
+        ev_w.send(EcholocationEv);
+
         // cooldown
         cmd.entity(player_e)
             .try_insert(Cooldown::<Echolocate>::new(1.2));

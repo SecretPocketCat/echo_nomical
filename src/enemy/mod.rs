@@ -23,6 +23,7 @@ use crate::{
 
 pub fn enemy_plugin(app: &mut App) {
     app.add_event::<SpawnEnemyEv>()
+        .add_event::<EnemyEv>()
         .add_systems((spawn_enemy, enemy_hit).in_set(UnpausedGame))
         .add_system(follow_echolocation)
         .add_system(process_cooldown::<FollowEchoOnHit>);
@@ -44,6 +45,11 @@ pub struct Killer;
 pub struct SpawnEnemyEv {
     pub position: Vec2,
     pub enemy_type: EnemyType,
+}
+
+pub enum EnemyEv {
+    Killed,
+    Alarmed,
 }
 
 fn spawn_enemy(mut ev_r: EventReader<SpawnEnemyEv>, mut cmd: Commands, tex: Res<TextureAssets>) {
@@ -145,9 +151,14 @@ pub(super) fn follow_echolocation(
         ),
         (With<FollowEchoOnHit>, Without<Cooldown<FollowEchoOnHit>>),
     >,
+    mut enemy_ev_w: EventWriter<EnemyEv>,
 ) {
     for ev in echo_hit_r.iter() {
         if let Ok((mut dir, dir_easing, t)) = follow_q.get_mut(ev.hit_e) {
+            enemy_ev_w.send(EnemyEv::Alarmed);
+            cmd.entity(ev.hit_e)
+                .try_insert(Cooldown::<FollowEchoOnHit>::new(1.25));
+
             let dir_norm = ev.direction.normalize_or_zero();
 
             // look at dir
@@ -163,8 +174,6 @@ pub(super) fn follow_echolocation(
                 .with_completed_event(TweenDoneAction::None),
             ));
             dir.0 = dir_norm;
-            cmd.entity(ev.hit_e)
-                .try_insert(Cooldown::<FollowEchoOnHit>::new(1.25));
 
             if let Some(mut dir_ease) = dir_easing {
                 dir_ease.reset();
@@ -183,11 +192,14 @@ pub(super) fn enemy_hit(
         Option<&EcholocationHitColor>,
         Option<&MovementDirection>,
     )>,
+    mut enemy_ev_w: EventWriter<EnemyEv>,
 ) {
     for coll in collision_events
         .iter()
         .filter_map(|ev| check_collision_start_pair(ev, &killable_q, &killer_q))
     {
+        enemy_ev_w.send(EnemyEv::Killed);
+
         cmd.entity(coll.0)
             .try_insert(ColliderDisabled)
             .try_insert(get_relative_scale_anim(
