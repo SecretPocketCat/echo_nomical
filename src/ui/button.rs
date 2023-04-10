@@ -1,6 +1,6 @@
 use crate::{
     animation::{get_relative_text_color_anim, get_relative_ui_bg_color_anim, TweenDoneAction},
-    assets::fonts::FontAssets,
+    assets::{fonts::FontAssets, textures::TextureAssets},
     palette::{COL_PLAYER, COL_PORTAL, COL_TEXT},
     state::{AppState, FadeReset, GameState},
     EntityCommandsExt,
@@ -46,6 +46,7 @@ impl Default for ButtonColors {
 fn spawn_ui_btn(
     mut cmd: Commands,
     font_assets: Res<FontAssets>,
+    tex: Res<TextureAssets>,
     button_colors: Res<ButtonColors>,
     spawn_q: Query<(Entity, &UiButton), Added<UiButton>>,
 ) {
@@ -55,6 +56,7 @@ fn spawn_ui_btn(
 
         cmd.entity(e)
             .try_insert(ButtonBundle {
+                image: UiImage::new(tex.button.clone()),
                 style: Style {
                     padding: UiRect::new(
                         Val::Px(pad_x),

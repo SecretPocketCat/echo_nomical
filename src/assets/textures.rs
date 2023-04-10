@@ -20,4 +20,7 @@ pub struct TextureAssets {
 
     #[asset(path = "textures/portal.png")]
     pub portal: Handle<Image>,
+
+    #[asset(path = "textures/button.png")]
+    pub button: Handle<Image>,
 }
