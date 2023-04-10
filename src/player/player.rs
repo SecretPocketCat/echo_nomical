@@ -34,7 +34,7 @@ pub(super) fn spawn_player(
     textures: Res<TextureAssets>,
     entry_q: Query<&Transform, Added<LevelEntry>>,
 ) {
-    let radius = 20.;
+    let radius = 12.;
 
     if let Some(transform) = entry_q.iter().next() {
         bevy::log::info!("Spawning player");

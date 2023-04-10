@@ -103,18 +103,18 @@ fn spawn_enemy(mut ev_r: EventReader<SpawnEnemyEv>, mut cmd: Commands, tex: Res<
                 EnemyType::FollowPing => {
                     let half_width = 15.;
                     let height = 30.;
-                    let btm = 5.;
+                    let offset = 15.;
                     sprite_bundle.texture = tex.charge.clone();
                     sprite_bundle.sprite.custom_size =
                         Some(Vec2::new(half_width * 2.25, height * 1.125));
-                    sprite_bundle.sprite.anchor = Anchor::BottomCenter;
-                    sprite_bundle.transform.translation.y -= height / 2.;
+                    // sprite_bundle.sprite.anchor = Anchor::BottomCenter;
+                    sprite_bundle.transform.translation.y -= height / 2. + offset;
 
                     let verts = vec![
-                        (-half_width, btm),
-                        (half_width, btm),
-                        (0., height),
-                        (-half_width, btm),
+                        (-half_width, -offset),
+                        (half_width, -offset),
+                        (0., height - offset),
+                        (-half_width, -offset),
                     ]
                     .iter()
                     .map(|(x, y)| Vec2::new(*x, *y))
@@ -127,6 +127,7 @@ fn spawn_enemy(mut ev_r: EventReader<SpawnEnemyEv>, mut cmd: Commands, tex: Res<
                         .insert(EcholocationHitColor(Color::CRIMSON))
                         .insert(FollowEchoOnHit)
                         .insert(Killable)
+                        .insert(Killer)
                         .insert(StopOnCollision::<Wall>::new())
                         .insert(Speed(220.))
                         .insert(MovementDirection::default())
@@ -198,22 +199,31 @@ pub(super) fn enemy_hit(
         .iter()
         .filter_map(|ev| check_collision_start_pair(ev, &killable_q, &killer_q))
     {
+        let mut killable = vec![coll.0];
+
+        if killer_q.contains(coll.0) && killer_q.contains(coll.1) {
+            // both are killable
+            killable.push(coll.1);
+        }
+
         enemy_ev_w.send(EnemyEv::Killed);
 
-        cmd.entity(coll.0)
-            .try_insert(ColliderDisabled)
-            .try_insert(get_relative_scale_anim(
-                Vec2::ZERO.extend(1.),
-                300,
-                TweenDoneAction::DespawnSelfRecursive,
-            ));
+        for e in killable.iter() {
+            cmd.entity(*e)
+                .try_insert(ColliderDisabled)
+                .try_insert(get_relative_scale_anim(
+                    Vec2::ZERO.extend(1.),
+                    300,
+                    TweenDoneAction::DespawnSelfRecursive,
+                ));
 
-        if let Ok((t, color, dir)) = wave_data_q.get(coll.0) {
-            cmd.spawn(Wave {
-                position: t.translation() + dir.map_or(Vec2::ZERO, |d| d.0 * 50.).extend(0.),
-                radius: 80.,
-                color: color.map_or(COL_ENEMY, |c| c.0),
-            });
+            if let Ok((t, color, dir)) = wave_data_q.get(*e) {
+                cmd.spawn(Wave {
+                    position: t.translation() + dir.map_or(Vec2::ZERO, |d| d.0 * 50.).extend(0.),
+                    radius: 80.,
+                    color: color.map_or(COL_ENEMY, |c| c.0),
+                });
+            }
         }
     }
 }
