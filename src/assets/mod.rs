@@ -4,7 +4,7 @@ use bevy::prelude::*;
 use bevy_asset_loader::prelude::*;
 use iyes_progress::{ProgressCounter, ProgressPlugin};
 
-use crate::{state::FadeReset, AppState};
+use crate::AppState;
 
 pub mod audio;
 pub mod fonts;
@@ -42,7 +42,7 @@ fn add_dynamic_assets(
     );
 }
 
-fn fade_to_splash(progress: Res<ProgressCounter>, mut fade_reset: ResMut<FadeReset>) {
+fn fade_to_splash(progress: Res<ProgressCounter>, mut fade_reset: ResMut<NextState<AppState>>) {
     let progress = progress.progress();
     if progress.total > 0 && progress.done == progress.total {
         fade_reset.set(if cfg!(debug_assertions) {

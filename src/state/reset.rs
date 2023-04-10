@@ -17,7 +17,7 @@ pub struct PersistReset;
 pub struct FadeNode;
 
 #[derive(Resource, Deref, DerefMut)]
-pub struct FadeReset(Option<AppState>);
+pub struct FadeReset(pub Option<AppState>);
 
 impl FadeReset {
     pub fn set(&mut self, state: AppState) {

@@ -37,6 +37,7 @@ pub(super) fn spawn_player(
     let radius = 20.;
 
     if let Some(transform) = entry_q.iter().next() {
+        bevy::log::info!("Spawning player");
         cmd.spawn(SpatialBundle::from_transform(*transform))
             .insert(RigidBody::KinematicPositionBased)
             .insert(Collider::ball(radius * 0.8))
