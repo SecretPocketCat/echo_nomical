@@ -39,18 +39,21 @@ pub(super) fn setup_ui(mut cmd: Commands, font_assets: Res<FontAssets>, root: Re
             action: UiButtonAction::Unpause,
             primary: true,
             text: "continue".into(),
+            margin: None,
         });
 
         parent.spawn(UiButton {
             action: UiButtonAction::ChangeState(AppState::Game),
             primary: false,
             text: "restart".into(),
+            margin: None,
         });
 
         parent.spawn(UiButton {
             action: UiButtonAction::ChangeState(AppState::Menu),
             primary: false,
             text: "menu".into(),
+            margin: None,
         });
     });
 }

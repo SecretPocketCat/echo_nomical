@@ -48,6 +48,7 @@ pub(super) fn setup_ui(
             action: UiButtonAction::ChangeState(AppState::Game),
             primary: true,
             text: "PLAY AGAIN".into(),
+            margin: None,
         });
     });
 
@@ -56,6 +57,7 @@ pub(super) fn setup_ui(
             action: UiButtonAction::ChangeState(AppState::Menu),
             primary: false,
             text: "MENU".into(),
+            margin: None,
         });
     });
 }

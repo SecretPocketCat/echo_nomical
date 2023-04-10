@@ -31,6 +31,7 @@ pub(super) struct UiButton {
     pub text: String,
     pub action: UiButtonAction,
     pub primary: bool,
+    pub margin: Option<UiRect>,
 }
 
 impl Default for ButtonColors {
@@ -63,7 +64,13 @@ fn spawn_ui_btn(
                     ),
                     justify_content: JustifyContent::Center,
                     align_items: AlignItems::Center,
-                    margin: UiRect::vertical(Val::Px(if ui_btn.primary { 20.0 } else { 12. })),
+                    margin: ui_btn
+                        .margin
+                        .unwrap_or(UiRect::vertical(Val::Px(if ui_btn.primary {
+                            20.0
+                        } else {
+                            12.
+                        }))),
                     min_size: Size::width(Val::Percent(if ui_btn.primary { 40.0 } else { 25. })),
                     ..default()
                 },

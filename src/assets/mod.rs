@@ -25,7 +25,13 @@ pub fn assets_plugin(app: &mut App) {
         .add_collection_to_loading_state::<_, textures::TextureAssets>(AppState::Loading)
         .add_startup_system(audio::setup_sfx_assets)
         // .add_plugin(ProgressPlugin::new(AppState::Splash))
-        .add_plugin(ProgressPlugin::new(AppState::Loading).continue_to(AppState::Game))
+        .add_plugin(
+            ProgressPlugin::new(AppState::Loading).continue_to(if cfg!(debug_assertions) {
+                AppState::Game
+            } else {
+                AppState::Menu
+            }),
+        )
         .add_system(
             print_progress
                 .in_set(OnUpdate(AppState::Loading))
