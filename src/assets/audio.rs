@@ -21,6 +21,9 @@ pub struct SfxAssets {
 
     #[asset(path = "audio/sfx/level_cleared.ogg")]
     pub level_cleared: Handle<AudioSource>,
+
+    #[asset(path = "audio/sfx/drone.ogg")]
+    pub drone: Handle<AudioSource>,
 }
 
 pub(super) fn setup_sfx_assets(mut dynamic_assets: ResMut<DynamicAssets>) {

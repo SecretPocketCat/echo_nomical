@@ -1,3 +1,5 @@
+use std::time::Duration;
+
 use bevy::input::mouse::MouseButtonInput;
 use bevy::{ecs::system::Resource, prelude::*};
 use bevy_kira_audio::prelude::*;
@@ -9,6 +11,7 @@ use crate::echolocation::echolocation::EcholocationEv;
 use crate::enemy::EnemyEv;
 use crate::io::save::VolumeSettings;
 use crate::player::player::PlayerEv;
+use crate::state::AppState;
 
 // todo: use sfx + master volume
 pub(super) fn sfx_plugin(app: &mut bevy::prelude::App) {
@@ -22,7 +25,8 @@ pub(super) fn sfx_plugin(app: &mut bevy::prelude::App) {
                 .in_base_set(CoreSet::PostUpdate)
                 .distributive_run_if(resource_exists::<SfxAssets>()),
         )
-        .add_system(set_sfx_volume.run_if(resource_changed::<VolumeSettings>()));
+        .add_system(set_sfx_volume.run_if(resource_changed::<VolumeSettings>()))
+        .add_system(play_drone.in_schedule(OnExit(AppState::Loading)));
 }
 
 #[derive(Resource)]
@@ -101,4 +105,15 @@ fn play_sfx_on_evt<TEvt: Event + SfxEv>(
 
 fn set_sfx_volume(audio: Res<AudioChannel<SfxChannel>>, volume: Res<VolumeSettings>) {
     audio.set_volume(volume.get_sfx_volume());
+}
+
+fn play_drone(audio: Res<Audio>, assets: Res<SfxAssets>) {
+    audio
+        .play(assets.drone.clone())
+        .loop_from(1.5)
+        .fade_in(AudioTween::new(
+            Duration::from_secs(2),
+            AudioEasing::OutPowi(2),
+        ))
+        .with_volume(0.3);
 }
