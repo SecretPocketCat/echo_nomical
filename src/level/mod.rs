@@ -1,10 +1,6 @@
-use bevy::{prelude::*, render::view::NoFrustumCulling};
+use bevy::prelude::*;
 
-use crate::{
-    render::camera::PrimaryCamera,
-    state::{AppState, PersistReset},
-    AppSize,
-};
+use crate::{render::camera::PrimaryCamera, state::AppState, AppSize};
 
 use self::{
     level::{setup_level, update_score, ReachedLevel},
@@ -36,10 +32,10 @@ pub fn lvl_plugin(app: &mut App) {
 
 pub fn update_map(mut map_resource: ResMut<Map>, reached: Res<ReachedLevel>) {
     bevy::log::info!("Creating map");
-    let map_scale = 16. + 6. * reached.0 as f32;
+    let map_scale = 16. + 4. * reached.0 as f32;
     let map_size = (Vec2::new(16.0f32, 12.0f32).normalize() * map_scale).as_ivec2();
     loop {
-        if let Some(new_map) = map::generate(map_size.x, map_size.y) {
+        if let Some(new_map) = map::generate(map_size.x, map_size.y, reached.0) {
             let wall_count = new_map
                 .tiles
                 .iter()

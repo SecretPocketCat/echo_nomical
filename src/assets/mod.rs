@@ -4,7 +4,7 @@ use bevy::prelude::*;
 use bevy_asset_loader::prelude::*;
 use iyes_progress::{ProgressCounter, ProgressPlugin};
 
-use crate::{state::FadeReset, AppState};
+use crate::AppState;
 
 pub mod audio;
 pub mod fonts;
