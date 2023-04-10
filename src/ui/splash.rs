@@ -1,11 +1,9 @@
 use bevy::prelude::*;
-use bevy_tweening::EaseFunction;
-use interpolation::Ease;
+
+
 
 use crate::{
-    animation::{get_relative_scale_anim, get_scale_anim, TweenDoneAction},
     assets::textures::TextureAssets,
-    state::AppState,
     ui::RootUiNode,
 };
 

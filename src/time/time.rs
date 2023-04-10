@@ -86,11 +86,3 @@ pub(super) fn update_time_scale<const SCALE: usize>(mut time: ScaledTimeMut) {
     //todo: tween?
     time.set_time_scale(SCALE as f32);
 }
-
-pub fn after_delay(duration: Duration) -> impl FnMut(Res<Time>) -> bool {
-    let mut timer = Timer::new(duration, TimerMode::Once);
-    move |time: Res<Time>| {
-        timer.tick(time.delta());
-        timer.finished()
-    }
-}
