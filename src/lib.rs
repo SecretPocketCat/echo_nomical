@@ -28,7 +28,7 @@ mod ui;
 #[derive(Resource, Deref)]
 pub struct AppSize(pub Vec2);
 
-pub const GAME_NAME: &str = "sonarscape";
+pub const GAME_NAME: &str = "ranos";
 pub use render::palette;
 
 pub fn game_plugin(app: &mut App) {

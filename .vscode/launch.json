@@ -18,13 +18,13 @@
       "cargo": {
         "args": [
           "build",
-          "--bin=sonarscape",
-          "--package=sonarscape",
+          "--bin=ranos",
+          "--package=ranos",
           "--features",
           "dev"
         ],
         "filter": {
-          "name": "sonarscape",
+          "name": "ranos",
           "kind": "bin"
         }
       },
@@ -47,13 +47,13 @@
         "args": [
           "test",
           "--no-run",
-          "--bin=sonarscape",
-          "--package=sonarscape",
+          "--bin=ranos",
+          "--package=ranos",
           "--features",
           "dev"
         ],
         "filter": {
-          "name": "sonarscape",
+          "name": "ranos",
           "kind": "bin"
         }
       },
