@@ -53,7 +53,7 @@ impl Map {
     }
 
     pub fn xy(&self, x: i32, y: i32) -> &TileType {
-        &self.tiles[self.xy_idx(x, y)]
+        &self.tiles[self.xy_idx(x, y) % self.tiles.len()]
     }
 
     pub fn xy_mut(&mut self, x: i32, y: i32) -> &mut TileType {
@@ -103,7 +103,7 @@ const NEIGHBORS: [[i32; 2]; 8] = [
 ];
 const ADJACENTS: [[i32; 2]; 4] = [[-1, 0], [1, 0], [0, -1], [0, 1]];
 
-pub fn gen_map(width: i32, height: i32) -> Map {
+pub fn gen_map(width: i32, height: i32) -> Option<Map> {
     let mut map = Map::new(width, height, move |_x, _y| {
         if rand::random::<f32>() > 0.55 {
             TileType::Floor
@@ -148,6 +148,9 @@ pub fn gen_map(width: i32, height: i32) -> Map {
     // Make sure everything is accessible
     let mut start_pos = IVec2::new(map.width / 2, map.height / 2);
     while map.xy(start_pos.x, start_pos.y) != &TileType::Floor {
+        if start_pos.x == 0 {
+            return None;
+        }
         start_pos.x -= 1;
     }
 
@@ -186,7 +189,10 @@ pub fn gen_map(width: i32, height: i32) -> Map {
 
             // Next, have a 5% chance of spawning following ones.
             if map.xy(x, y) == &TileType::Floor && rand::random::<f32>() > 0.95 {
-                *map.xy_mut(x, y) = TileType::Enemy(EnemyType::FollowPing);
+                let idx = map.xy_idx(x, y);
+                if map.get_pathing_distance(idx, start_idx) > 2.0 {
+                    *map.xy_mut(x, y) = TileType::Enemy(EnemyType::FollowPing);
+                }
             }
         }
     }
@@ -203,5 +209,5 @@ pub fn gen_map(width: i32, height: i32) -> Map {
     }
     map.tiles[idx] = TileType::Goal;
 
-    map
+    Some(map)
 }

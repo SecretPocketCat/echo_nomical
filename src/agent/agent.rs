@@ -6,8 +6,7 @@ use bevy_tweening::*;
 use interpolation::*;
 
 use crate::{
-    level::level::Wall, physics::check_collision_start_pair, state::PersistReset, time::time::*,
-    AppSize,
+    level::level::Wall, physics::check_collision_start_pair, time::time::*,
 };
 
 #[derive(Component, Deref, DerefMut, Default, Reflect)]
@@ -123,21 +122,6 @@ pub(super) fn rotate(mut dir_q: Query<(&mut Transform, &AgentRotation)>, time: S
 pub(super) fn age(mut age_q: Query<&mut Age>, time: ScaledTime) {
     for mut age in &mut age_q.iter_mut() {
         age.0 += time.scaled_delta_seconds();
-    }
-}
-
-pub(super) fn despawn_out_of_bounds(
-    despawn_q: Query<(Entity, &GlobalTransform, Option<&DespawnParent>), Without<PersistReset>>,
-    level_size: Res<AppSize>,
-    mut cmd: Commands,
-) {
-    for (e, t, despawn_parent) in despawn_q.iter() {
-        let pos = t.translation().abs();
-        if pos.x > level_size.x || pos.y > level_size.y {
-            if let Some(e_cmd) = cmd.get_entity(despawn_parent.map_or(e, |e| e.0)) {
-                e_cmd.despawn_recursive();
-            }
-        }
     }
 }
 
