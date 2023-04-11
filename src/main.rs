@@ -19,6 +19,7 @@ fn main() {
                 title: GAME_NAME.to_string(), // ToDo
                 resolution: (lvl_size.0).into(),
                 canvas: Some("#bevy".to_owned()),
+                fit_canvas_to_parent: true,
                 ..default()
             }),
             ..default()
